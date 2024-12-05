@@ -1,4 +1,4 @@
-package com.lodrean.todolist.local
+package com.practicum.spisokpokupok.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
