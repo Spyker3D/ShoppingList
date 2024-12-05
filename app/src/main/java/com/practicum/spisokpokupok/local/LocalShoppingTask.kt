@@ -7,9 +7,10 @@ import androidx.room.PrimaryKey
     tableName = "shopping_task",
 )
 data class LocalShoppingTask(
-    val goodName: String,
+    val shoppingListId: String,
+    val goodId: String,
     val quantity: Int,
-    val quantityOption: String,
+    val quantityType: String,
     val isCompleted: Boolean,
     @PrimaryKey val id: String,
 )
