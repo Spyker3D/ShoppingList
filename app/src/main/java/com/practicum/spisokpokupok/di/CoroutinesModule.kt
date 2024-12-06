@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.lodrean.todolist.di
+package com.practicum.spisokpokupok.di
 
 import dagger.Module
 import dagger.Provides

@@ -13,7 +13,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.lodrean.todolist"
+        applicationId = "com.practicum.spisokpokupok"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

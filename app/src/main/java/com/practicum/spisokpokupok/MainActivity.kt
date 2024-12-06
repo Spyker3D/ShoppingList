@@ -1,4 +1,4 @@
-package com.lodrean.todolist
+package com.practicum.spisokpokupok
 
 import android.animation.ObjectAnimator
 import android.media.Image
@@ -60,16 +60,20 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        suspend fun combineImages(await: Image, await1: Image) : Image{
+
+        suspend fun combineImages(
+            await: Image,
+            await1: Image,
+        ): Image {
             TODO("Not yet implemented")
         }
 
-        fun loadImage(name1: String): Image {
+        fun loadImage(name1: String): Image = TODO("Provide the return value")
 
-            return TODO("Provide the return value")
-        }
-
-        suspend fun loadAndCombine(name1: String, name2: String): Image =
+        suspend fun loadAndCombine(
+            name1: String,
+            name2: String,
+        ): Image =
             coroutineScope {
                 val deferred1 = async { loadImage(name1) }
                 val deferred2 = async { loadImage(name2) }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.lodrean.todolist.di
+package com.practicum.spisokpokupok.di
 
 import android.content.Context
 import androidx.room.Room
-import com.lodrean.todolist.local.ShoppingListDatabase
-import com.lodrean.todolist.local.ShoppingTaskDao
+import com.practicum.spisokpokupok.local.ShoppingListDatabase
+import com.practicum.spisokpokupok.local.ShoppingTaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
