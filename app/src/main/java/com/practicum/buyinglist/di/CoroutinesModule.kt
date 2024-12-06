@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.practicum.spisokpokupok.di
+package com.practicum.buyinglist.di
 
 import dagger.Module
 import dagger.Provides

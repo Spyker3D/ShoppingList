@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok
+package com.practicum.buyinglist
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

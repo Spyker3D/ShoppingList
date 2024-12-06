@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.practicum.spisokpokupok.di
+package com.practicum.buyinglist.di
 
 import android.content.Context
 import androidx.room.Room
-import com.practicum.spisokpokupok.local.ShoppingListDatabase
-import com.practicum.spisokpokupok.local.ShoppingTaskDao
+import com.practicum.buyinglist.data.source.local.ShoppingListDatabase
+import com.practicum.buyinglist.data.source.local.ShoppingTaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

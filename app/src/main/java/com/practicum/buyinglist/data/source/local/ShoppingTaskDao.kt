@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.local
+package com.practicum.buyinglist.data.source.local
 
 import androidx.room.Dao
 import androidx.room.Query

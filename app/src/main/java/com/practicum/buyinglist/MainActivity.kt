@@ -1,7 +1,6 @@
-package com.practicum.spisokpokupok
+package com.practicum.buyinglist
 
 import android.animation.ObjectAnimator
-import android.media.Image
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -18,10 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.compose.ToDoListTheme
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import com.practicum.buyinglist.ui.theme.ToDoListTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,25 +59,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        suspend fun combineImages(
-            await: Image,
-            await1: Image,
-        ): Image {
-            TODO("Not yet implemented")
-        }
-
-        fun loadImage(name1: String): Image = TODO("Provide the return value")
-
-        suspend fun loadAndCombine(
-            name1: String,
-            name2: String,
-        ): Image =
-            coroutineScope {
-                val deferred1 = async { loadImage(name1) }
-                val deferred2 = async { loadImage(name2) }
-                combineImages(deferred1.await(), deferred2.await())
-            }
     }
 }
 

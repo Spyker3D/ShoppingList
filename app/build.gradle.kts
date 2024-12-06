@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.practicum.spisokpokupok"
+    namespace = "com.practicum.buyinglist"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.practicum.spisokpokupok"
+        applicationId = "com.practicum.buyinglist"
         minSdk = 21
         targetSdk = 35
         versionCode = 1
