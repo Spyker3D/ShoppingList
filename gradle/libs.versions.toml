@@ -8,6 +8,8 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
+navigationCompose = "2.8.4"
+kotlinxSerializationJson = "1.6.3"
 roomCompilerVersion = "2.6.1"
 splashscreen = "1.0.1"
 detekt = "1.23.7"
@@ -19,6 +21,7 @@ androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.6.0-alpha03"
 androidxNavigation = "2.5.3"
 androidxComposeCompiler = "1.4.3"
+gson = "2.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,10 +39,12 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-core-splashscreen= { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 # Navigation
-
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 # Detekt
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
@@ -74,3 +79,4 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 room = { id = "androidx.room", version.ref = "roomCommon" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}

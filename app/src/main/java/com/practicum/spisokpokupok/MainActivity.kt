@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok
+package com.lodrean.todolist
 
 import android.animation.ObjectAnimator
 import android.media.Image
@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.compose.ToDoListTheme
+import com.lodrean.todolist.navigation.AppNavHost
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
@@ -52,12 +53,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ToDoListTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
+                AppNavHost()
             }
         }
 
