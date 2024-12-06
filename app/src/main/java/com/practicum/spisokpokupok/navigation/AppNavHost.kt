@@ -1,4 +1,4 @@
-package com.lodrean.todolist.navigation
+package com.practicum.spisokpokupok.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
