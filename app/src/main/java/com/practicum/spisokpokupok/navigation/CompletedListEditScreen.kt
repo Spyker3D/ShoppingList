@@ -1,4 +1,4 @@
-package com.lodrean.todolist.navigation
+package com.practicum.spisokpokupok.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,17 +10,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.compose.ToDoListTheme
 
-
 @Composable
-fun CurrentPurchasesListScreen(
+fun CompletedListEditScreen(
     modifier: Modifier = Modifier,
-    onNavigateToNewList: (String) -> Unit,
-    onNavigateToCompletedLists: () -> Unit,
-    onItemClicked: (String) -> Unit
+    onNavigateToCurrentPurchasesListScreen: () -> Unit,
+    onBackPressed: () -> Unit,
+    args: CompletedListEdit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(
-            text = "Все ваши списки",
+            text = "Завершенный список №1",
             fontSize = 22.sp,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodyLarge
@@ -30,12 +29,12 @@ fun CurrentPurchasesListScreen(
 
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
-fun CurrentPurchasesListScreenPreview() {
+fun CompletedListEditScreenPreview() {
     ToDoListTheme {
-        CurrentPurchasesListScreen(
-            onNavigateToNewList = {},
-            onNavigateToCompletedLists = {},
-            onItemClicked = {}
+        CompletedListEditScreen(
+            onNavigateToCurrentPurchasesListScreen = {},
+            onBackPressed = {},
+            args = CompletedListEdit(id = "12143213")
         )
     }
 }

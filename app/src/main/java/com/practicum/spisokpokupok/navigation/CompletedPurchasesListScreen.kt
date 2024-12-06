@@ -1,4 +1,4 @@
-package com.lodrean.todolist.navigation
+package com.practicum.spisokpokupok.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
