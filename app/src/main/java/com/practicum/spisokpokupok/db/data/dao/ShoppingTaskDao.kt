@@ -1,8 +1,9 @@
-package com.practicum.spisokpokupok.local
+package com.practicum.spisokpokupok.db.data.dao
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import com.practicum.spisokpokupok.db.data.entity.LocalShoppingTask
 import kotlinx.coroutines.flow.Flow
 
 @Dao
