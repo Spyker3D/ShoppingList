@@ -1,4 +1,5 @@
 package com.practicum.spisokpokupok.ui.theme
+
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -10,59 +11,62 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.example.compose.blackDark
-import com.example.compose.blackLight
+import com.example.compose.black
 import com.example.compose.blackLightForCounter
 import com.example.compose.blue
-import com.example.compose.blueLight
-import com.example.compose.blueLightArrow
+import com.example.compose.cyan
 import com.example.compose.grey
-import com.example.compose.greyLight
-import com.example.compose.greyMedium
+import com.example.compose.lightBlue
+import com.example.compose.lightGrey
+import com.example.compose.lightOutline
+import com.example.compose.onSurface
+import com.example.compose.outlineVariant
 import com.example.compose.red
 import com.example.compose.white
 import com.example.ui.theme.AppTypography
 
 private val lightScheme =
     lightColorScheme(
-        primary = blue,
+        primary = cyan,
         onPrimary = white,
         surface = white,
-        onSurface = blackLight,
+        onSurface = onSurface,
         onSurfaceVariant = grey,
-        onTertiary = blackDark,
-        outlineVariant = greyMedium,
-        secondary = greyLight,
+        onTertiary = black,
+        outlineVariant = outlineVariant,
+        secondary = lightGrey,
         onSecondary = white,
-        secondaryContainer = blueLight,
+        secondaryContainer = lightBlue,
         onSecondaryContainer = white,
         tertiaryContainer = white,
         onTertiaryContainer = blackLightForCounter,
-        surfaceVariant = blueLight,
-        onBackground = blueLightArrow,
+        surfaceVariant = lightBlue,
+        onBackground = blue,
         onError = red,
         errorContainer = red,
+        outline = lightOutline
     )
 
 private val darkScheme =
     darkColorScheme(
-        primary = blue,
+        primary = cyan,
         onPrimary = white,
         surface = white,
-        onSurface = blackLight,
+        onSurface = onSurface,
         onSurfaceVariant = grey,
-        onTertiary = blackDark,
-        outlineVariant = greyMedium,
-        secondary = greyLight,
+        onTertiary = black,
+        outlineVariant = outlineVariant,
+        secondary = lightGrey,
         onSecondary = white,
-        secondaryContainer = blueLight,
+        secondaryContainer = lightBlue,
         onSecondaryContainer = white,
         tertiaryContainer = white,
         onTertiaryContainer = blackLightForCounter,
-        surfaceVariant = blueLight,
-        onBackground = blueLightArrow,
+        surfaceVariant = lightBlue,
+        onBackground = blue,
         onError = red,
         errorContainer = red,
+        outline = lightOutline
     )
 
 @Immutable
@@ -87,7 +91,7 @@ fun ToDoListTheme(
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content:
-        @Composable()
+    @Composable()
         () -> Unit,
 ) {
     val colorScheme =
