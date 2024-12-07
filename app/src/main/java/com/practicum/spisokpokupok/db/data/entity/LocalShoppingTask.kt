@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.local
+package com.practicum.spisokpokupok.db.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

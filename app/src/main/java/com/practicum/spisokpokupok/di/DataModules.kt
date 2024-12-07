@@ -18,8 +18,8 @@ package com.practicum.spisokpokupok.di
 
 import android.content.Context
 import androidx.room.Room
-import com.practicum.spisokpokupok.local.ShoppingListDatabase
-import com.practicum.spisokpokupok.local.ShoppingTaskDao
+import com.practicum.spisokpokupok.db.data.ShoppingListDatabase
+import com.practicum.spisokpokupok.db.data.dao.ShoppingTaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok
+package com.practicum.spisokpokupok.root
 
 import android.animation.ObjectAnimator
 import android.media.Image
