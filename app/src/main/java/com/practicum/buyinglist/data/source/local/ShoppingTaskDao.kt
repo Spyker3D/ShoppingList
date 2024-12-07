@@ -2,6 +2,7 @@ package com.practicum.buyinglist.data.source.local
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
@@ -24,4 +25,12 @@ interface ShoppingTaskDao {
 
     @Query("DELETE FROM shopping_task WHERE id = :shoppingListId")
     suspend fun deleteAll(shoppingListId: List<String>)
+
+    @Transaction
+    @Query("SELECT * FROM shopping_task")
+    suspend fun getShoppingTasksWithGoods(): List<LocalShoppingTaskWithGood>
+
+    @Transaction
+    @Query("SELECT * FROM shopping_task WHERE shoppingListId = :shoppingListId")
+    suspend fun getShoppingTasksWithGoods(shoppingListId: String): List<LocalShoppingTaskWithGood>
 }

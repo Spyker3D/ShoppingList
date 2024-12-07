@@ -18,7 +18,8 @@ package com.practicum.buyinglist.di
 
 import android.content.Context
 import androidx.room.Room
-import com.practicum.buyinglist.data.source.local.ShoppingListDatabase
+import com.practicum.buyinglist.data.source.local.BuyingListDatabase
+import com.practicum.buyinglist.data.source.local.ShoppingListDao
 import com.practicum.buyinglist.data.source.local.ShoppingTaskDao
 import dagger.Module
 import dagger.Provides
@@ -31,17 +32,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
     @Provides
-    fun provideShoppingTaskDao(database: ShoppingListDatabase): ShoppingTaskDao = database.shoppingTaskDao()
+    fun provideShoppingTaskDao(database: BuyingListDatabase): ShoppingTaskDao = database.ShoppingTaskDao()
+
+    @Provides
+    fun provideShoppingListDao(database: BuyingListDatabase): ShoppingListDao = database.ShoppingListDao()
 
     @Singleton
     @Provides
     fun provideDataBase(
         @ApplicationContext context: Context,
-    ): ShoppingListDatabase =
+    ): BuyingListDatabase =
         Room
             .databaseBuilder(
                 context.applicationContext,
-                ShoppingListDatabase::class.java,
+                BuyingListDatabase::class.java,
                 "Tasks.db",
             ).build()
 }

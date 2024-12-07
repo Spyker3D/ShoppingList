@@ -16,4 +16,6 @@ import androidx.room.RoomDatabase
 )
 abstract class BuyingListDatabase : RoomDatabase() {
     abstract fun ShoppingTaskDao(): ShoppingTaskDao
+
+    abstract fun ShoppingListDao(): ShoppingListDao
 }

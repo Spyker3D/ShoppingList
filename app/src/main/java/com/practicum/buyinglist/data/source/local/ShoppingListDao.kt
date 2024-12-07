@@ -11,10 +11,10 @@ interface ShoppingListDao {
     fun observeAll(): Flow<List<LocalShoppingList>>
 
     @Upsert
-    suspend fun upsert(task: LocalShoppingList)
+    suspend fun upsert(shoppingList: LocalShoppingList)
 
     @Upsert
-    suspend fun upsertAll(tasks: List<LocalShoppingList>)
+    suspend fun upsertAll(shoppingLists: List<LocalShoppingList>)
 
     @Query("UPDATE shopping_list SET isCompleted = :completed WHERE id = :listId")
     suspend fun updateCompleted(
