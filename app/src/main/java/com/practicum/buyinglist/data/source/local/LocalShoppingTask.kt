@@ -13,6 +13,7 @@ data class LocalShoppingTask(
     val quantity: Int,
     val quantityType: String,
     val isCompleted: Boolean,
+    val position: Int,
     @PrimaryKey val id: String,
 )
 
@@ -25,6 +26,7 @@ fun LocalShoppingTask.toExternal(good: LocalGood) =
         quantity = quantity,
         quantityType = quantityType,
         isCompleted = isCompleted,
+        position = position,
     )
 
 fun Task.toLocal(
@@ -37,4 +39,5 @@ fun Task.toLocal(
     shoppingListId = shoppingListId,
     quantity = quantity,
     quantityType = quantityType,
+    position = position,
 )

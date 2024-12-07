@@ -6,6 +6,7 @@ data class Task(
     val id: String,
     val quantity: Int,
     val quantityType: String,
+    val position: Int,
 ) {
     val nameForList: String
         get() = name

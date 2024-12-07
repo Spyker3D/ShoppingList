@@ -11,19 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.example.compose.black
-import com.example.compose.blackLightForCounter
-import com.example.compose.blue
-import com.example.compose.cyan
-import com.example.compose.grey
-import com.example.compose.lightBlue
-import com.example.compose.lightGrey
-import com.example.compose.lightOutline
-import com.example.compose.onSurface
-import com.example.compose.outlineVariant
-import com.example.compose.red
-import com.example.compose.white
-import com.example.ui.theme.AppTypography
+import com.practicum.buyinglist.ui.theme.AppTypography
+import com.practicum.buyinglist.ui.theme.black
+import com.practicum.buyinglist.ui.theme.blackLightForCounter
+import com.practicum.buyinglist.ui.theme.blue
+import com.practicum.buyinglist.ui.theme.cyan
+import com.practicum.buyinglist.ui.theme.grey
+import com.practicum.buyinglist.ui.theme.lightBlue
+import com.practicum.buyinglist.ui.theme.lightGrey
+import com.practicum.buyinglist.ui.theme.lightOutline
+import com.practicum.buyinglist.ui.theme.onSurface
+import com.practicum.buyinglist.ui.theme.outlineVariant
+import com.practicum.buyinglist.ui.theme.red
+import com.practicum.buyinglist.ui.theme.white
 
 private val lightScheme =
     lightColorScheme(
@@ -44,7 +44,7 @@ private val lightScheme =
         onBackground = blue,
         onError = red,
         errorContainer = red,
-        outline = lightOutline
+        outline = lightOutline,
     )
 
 private val darkScheme =
@@ -66,7 +66,7 @@ private val darkScheme =
         onBackground = blue,
         onError = red,
         errorContainer = red,
-        outline = lightOutline
+        outline = lightOutline,
     )
 
 @Immutable
@@ -91,7 +91,7 @@ fun ToDoListTheme(
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content:
-    @Composable()
+        @Composable()
         () -> Unit,
 ) {
     val colorScheme =
