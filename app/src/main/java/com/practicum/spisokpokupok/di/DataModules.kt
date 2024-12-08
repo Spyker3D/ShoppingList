@@ -3,8 +3,10 @@ package com.practicum.spisokpokupok.di
 import android.content.Context
 import androidx.room.Room
 import com.practicum.spisokpokupok.core.data.ShoppingListDatabase
-import com.practicum.spisokpokupok.core.data.dao.ShoppingListDao
-import com.practicum.spisokpokupok.core.data.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.roomDb.dao.CompletedListDao
+import com.practicum.spisokpokupok.core.data.roomDb.dao.GoodDao
+import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
+import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +23,12 @@ object DatabaseModule {
     @Provides
     fun provideShoppingListDao(database: ShoppingListDatabase): ShoppingListDao = database.ShoppingListDao()
 
+    @Provides
+    fun provideCompletedListDao(database: ShoppingListDatabase): CompletedListDao = database.CompletedListDao()
+
+    @Provides
+    fun provideGoodDao(database: ShoppingListDatabase): GoodDao = database.GoodDao()
+
     @Singleton
     @Provides
     fun provideDataBase(
@@ -30,6 +38,6 @@ object DatabaseModule {
             .databaseBuilder(
                 context.applicationContext,
                 ShoppingListDatabase::class.java,
-                "Tasks.db",
+                "ShoppingList.db",
             ).build()
 }

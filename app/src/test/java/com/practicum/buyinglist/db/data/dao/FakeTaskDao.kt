@@ -1,8 +1,8 @@
 package com.practicum.buyinglist.db.data.dao
 
-import com.practicum.spisokpokupok.core.data.dao.ShoppingTaskDao
-import com.practicum.spisokpokupok.core.data.entity.LocalShoppingTask
-import com.practicum.spisokpokupok.core.data.entity.LocalShoppingTaskWithGood
+import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTask
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTaskWithGood
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

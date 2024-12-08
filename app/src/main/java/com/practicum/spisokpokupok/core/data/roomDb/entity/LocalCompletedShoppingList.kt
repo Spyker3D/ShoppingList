@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.core.data.entity
+package com.practicum.spisokpokupok.core.data.roomDb.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,5 @@ import androidx.room.PrimaryKey
 data class LocalCompletedShoppingList(
     val shoppingListId: String,
     @PrimaryKey(autoGenerate = true)
-    val id: String,
+    val id: Int,
 )

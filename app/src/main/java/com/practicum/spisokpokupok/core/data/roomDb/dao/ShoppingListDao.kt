@@ -1,9 +1,10 @@
-package com.practicum.spisokpokupok.core.data.dao
+package com.practicum.spisokpokupok.core.data.roomDb.dao
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.practicum.spisokpokupok.core.data.entity.LocalShoppingList
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalActualShoppingListWithName
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingList
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -11,10 +12,27 @@ interface ShoppingListDao {
     @Query("SELECT * FROM shopping_list")
     fun observeAll(): Flow<List<LocalShoppingList>>
 
+    @Query("SELECT * FROM actual_shopping_list")
+    fun observeActualLists(): Flow<List<LocalActualShoppingListWithName>>
+
     @Upsert(
         entity = LocalShoppingList::class,
     )
     suspend fun upsert(shoppingList: LocalShoppingList)
+
+    @Query(
+        "INSERT INTO actual_shopping_list (shoppingListId, isFavorite) VALUES (:listId, :isFavorite)",
+    )
+    suspend fun addActualList(
+        listId: String,
+        isFavorite: Boolean,
+    )
+
+    @Query("UPDATE shopping_list SET name = :name WHERE id = :id")
+    suspend fun updateName(
+        id: String,
+        name: String,
+    )
 
     @Upsert(
         entity = LocalShoppingList::class,
