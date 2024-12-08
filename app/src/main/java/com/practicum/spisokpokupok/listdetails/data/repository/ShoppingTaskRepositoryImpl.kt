@@ -1,9 +1,9 @@
 package com.practicum.spisokpokupok.listdetails.data.repository
 
-import com.practicum.spisokpokupok.core.domain.repository.ShoppingTaskRepository
 import com.practicum.spisokpokupok.di.ApplicationScope
 import com.practicum.spisokpokupok.di.DefaultDispatcher
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
+import com.practicum.spisokpokupok.listdetails.domain.repository.ShoppingTaskRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

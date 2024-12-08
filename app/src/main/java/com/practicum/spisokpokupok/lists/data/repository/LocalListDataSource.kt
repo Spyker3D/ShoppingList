@@ -4,7 +4,7 @@ import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import kotlinx.coroutines.flow.Flow
 
 interface LocalListDataSource {
-    suspend fun createList(name: String): String
+    suspend fun createList(shoppingList: ShoppingList)
 
     suspend fun updateName(
         name: String,
@@ -17,5 +17,9 @@ interface LocalListDataSource {
 
     fun observeActualLists(): Flow<List<ShoppingList>>
 
+    suspend fun addActualList(listId: String)
+
     suspend fun fetchCompletedLists(): List<ShoppingList>
+
+    suspend fun completeList(listId: String)
 }

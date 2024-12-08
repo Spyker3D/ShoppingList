@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.core.domain.repository
+package com.practicum.spisokpokupok.lists.domain.repository
 
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import kotlinx.coroutines.flow.Flow
@@ -10,9 +10,12 @@ interface ShoppingListRepository {
 
     suspend fun deleteList(listId: String)
 
-    suspend fun addList(list: ShoppingList)
+    suspend fun createList(name: String)
 
-    suspend fun updateList(list: ShoppingList)
+    suspend fun updateName(
+        id: String,
+        name: String,
+    )
 
     suspend fun getCompletedLists(): Flow<List<ShoppingList>>
 

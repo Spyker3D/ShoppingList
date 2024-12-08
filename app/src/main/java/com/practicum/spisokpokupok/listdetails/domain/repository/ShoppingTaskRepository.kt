@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.core.domain.repository
+package com.practicum.spisokpokupok.listdetails.domain.repository
 
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
 import kotlinx.coroutines.flow.Flow
