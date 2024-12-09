@@ -1,5 +1,6 @@
 package com.practicum.spisokpokupok.listdetails.domain.repository
 
+import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
 import kotlinx.coroutines.flow.Flow
 
@@ -9,7 +10,7 @@ interface ShoppingTaskRepository {
     suspend fun createTask(
         goodName: String,
         quantity: Int,
-        quantityType: String,
+        quantityType: QuantityType,
         position: Int,
     ): String
 
@@ -17,18 +18,11 @@ interface ShoppingTaskRepository {
 
     suspend fun deleteTask(taskId: String)
 
-    suspend fun addTask(
-        goodName: String,
-        quantity: Int,
-        quantityType: String,
-        position: Int,
-    )
-
     suspend fun updateTask(
         taskId: String,
         goodName: String,
         quantity: Int,
-        quantityType: String,
+        quantityType: QuantityType,
         position: Int,
     )
 

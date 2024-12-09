@@ -8,7 +8,5 @@ class CreateListUseCase
     constructor(
         private val shoppingListRepository: ShoppingListRepository,
     ) {
-        suspend operator fun invoke(listName: String) {
-            shoppingListRepository.createList(listName)
-        }
+        suspend operator fun invoke(listName: String) = shoppingListRepository.createList(listName)
     }

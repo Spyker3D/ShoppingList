@@ -19,7 +19,7 @@ class ShoppingListRepositoryImpl
         @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
         @ApplicationScope private val scope: CoroutineScope,
     ) : ShoppingListRepository {
-        override suspend fun getCurrentLists(): Flow<List<ShoppingList>> = localDataSource.observeActualLists()
+        override fun getCurrentLists(): Flow<List<ShoppingList>> = localDataSource.observeActualLists()
 
         override suspend fun completeList(listId: String) {
             scope.launch {
@@ -28,7 +28,9 @@ class ShoppingListRepositoryImpl
         }
 
         override suspend fun deleteList(listId: String) {
-            TODO("Not yet implemented")
+            scope.launch {
+                localDataSource.deleteList(listId)
+            }
         }
 
         override suspend fun createList(name: String) {
@@ -51,22 +53,17 @@ class ShoppingListRepositoryImpl
             id: String,
             name: String,
         ) {
+            localDataSource.updateName(id, name)
         }
 
-        override suspend fun getCompletedLists(): Flow<List<ShoppingList>> {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun getFavoriteLists(): Flow<List<ShoppingList>> {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun getListById(listId: String): ShoppingList {
-            TODO("Not yet implemented")
-        }
+        override suspend fun getCompletedLists(): Flow<List<ShoppingList>> = localDataSource.observeCompletedLists()
 
         override suspend fun addToFavorite(listId: String) {
-            TODO("Not yet implemented")
+            localDataSource.addListToFavorite(listId)
+        }
+
+        override suspend fun removeFromFavorite(listId: String) {
+            localDataSource.removeListFromFavorite(listId)
         }
 
         private fun createListId(): String = UUID.randomUUID().toString()

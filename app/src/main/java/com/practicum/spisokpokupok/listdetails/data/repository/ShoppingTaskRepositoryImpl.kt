@@ -2,6 +2,7 @@ package com.practicum.spisokpokupok.listdetails.data.repository
 
 import com.practicum.spisokpokupok.di.ApplicationScope
 import com.practicum.spisokpokupok.di.DefaultDispatcher
+import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
 import com.practicum.spisokpokupok.listdetails.domain.repository.ShoppingTaskRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,22 +23,14 @@ class ShoppingTaskRepositoryImpl(
     override suspend fun createTask(
         goodName: String,
         quantity: Int,
-        quantityType: String,
+        quantityType: QuantityType,
         position: Int,
     ): String {
         val taskId =
             withContext(dispatcher) {
                 createTaskId()
             }
-        val task =
-            Task(
-                goodName = goodName,
-                isCompleted = false,
-                id = taskId,
-                quantity = quantity,
-                quantityType = quantityType,
-                position = position,
-            )
+
         localTaskDataSource.createTask(goodName, quantity, quantityType, position)
         return taskId
     }
@@ -50,20 +43,11 @@ class ShoppingTaskRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun addTask(
-        goodName: String,
-        quantity: Int,
-        quantityType: String,
-        position: Int,
-    ) {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun updateTask(
         taskId: String,
         goodName: String,
         quantity: Int,
-        quantityType: String,
+        quantityType: QuantityType,
         position: Int,
     ) {
         TODO("Not yet implemented")

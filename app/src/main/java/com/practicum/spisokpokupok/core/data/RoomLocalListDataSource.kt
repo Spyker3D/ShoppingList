@@ -1,10 +1,10 @@
 package com.practicum.spisokpokupok.core.data
 
-import android.util.Log
 import com.practicum.spisokpokupok.core.data.roomDb.dao.CompletedListDao
 import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalActualShoppingListWithName
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingList
 import com.practicum.spisokpokupok.core.data.roomDb.mapper.toExternal
+import com.practicum.spisokpokupok.core.data.roomDb.mapper.toExternalList
 import com.practicum.spisokpokupok.core.data.roomDb.mapper.toLocal
 import com.practicum.spisokpokupok.di.ApplicationScope
 import com.practicum.spisokpokupok.di.DefaultDispatcher
@@ -36,29 +36,34 @@ class RoomLocalListDataSource
         }
 
         override suspend fun deleteList(shoppingListId: String) {
-            TODO("Not yet implemented")
+            shoppingListDao.deleteActualList(shoppingListId)
         }
 
         override suspend fun addListToFavorite(shoppingListId: String) {
-            TODO("Not yet implemented")
+            shoppingListDao.updateActualList(shoppingListId, true)
+        }
+
+        override suspend fun removeListFromFavorite(shoppingListId: String) {
+            shoppingListDao.updateActualList(shoppingListId, false)
         }
 
         override fun observeActualLists(): Flow<List<ShoppingList>> =
             shoppingListDao.observeActualLists().map {
-                it.map(LocalActualShoppingListWithName::toExternal).also {
-                    Log.d("RoomLocalListDataSource", "observeActualLists: $it")
-                }
+                it.toExternalList()
             }
 
         override suspend fun addActualList(listId: String) {
             shoppingListDao.addActualList(listId, false)
         }
 
-        override suspend fun fetchCompletedLists(): List<ShoppingList> {
-            TODO("Not yet implemented")
-        }
+        override fun observeCompletedLists(): Flow<List<ShoppingList>> =
+            completedListDao.observeAll().map { list ->
+                list.map {
+                    it.toExternal()
+                }
+            }
 
         override suspend fun completeList(listId: String) {
-            completedListDao.addCompletedList(listId)
+            completedListDao.addCompletedList(LocalCompletedShoppingList(listId, 0))
         }
     }

@@ -1,15 +1,21 @@
 package com.practicum.spisokpokupok.core.data.roomDb.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingList
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingListWithName
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CompletedListDao {
     @Query("SELECT * FROM completed_shopping_list")
-    fun observeAll(): Flow<List<LocalCompletedShoppingList>>
+    fun observeAll(): Flow<List<LocalCompletedShoppingListWithName>>
 
-    @Query("INSERT INTO completed_shopping_list (shoppingListId) VALUES (:shoppingListId)")
-    suspend fun addCompletedList(shoppingListId: String)
+    @Insert(
+        entity = LocalCompletedShoppingList::class,
+        onConflict = OnConflictStrategy.IGNORE,
+    )
+    suspend fun addCompletedList(localCompletedShoppingList: LocalCompletedShoppingList)
 }

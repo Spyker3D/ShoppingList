@@ -15,11 +15,13 @@ interface LocalListDataSource {
 
     suspend fun addListToFavorite(shoppingListId: String)
 
+    suspend fun removeListFromFavorite(shoppingListId: String)
+
     fun observeActualLists(): Flow<List<ShoppingList>>
 
     suspend fun addActualList(listId: String)
 
-    suspend fun fetchCompletedLists(): List<ShoppingList>
+    fun observeCompletedLists(): Flow<List<ShoppingList>>
 
     suspend fun completeList(listId: String)
 }

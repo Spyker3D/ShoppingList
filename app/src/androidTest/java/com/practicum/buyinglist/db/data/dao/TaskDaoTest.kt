@@ -84,11 +84,13 @@ class ShoppingTaskDaoTest {
                     localShoppingList = list,
                 )
             database.ShoppingListDao().upsert(list)
-            database.ShoppingListDao()
+            database
+                .ShoppingListDao()
+                .addActualList(actualList.shoppingListId, actualList.isFavorite)
 
-            val tasks = database.ShoppingTaskDao().observeAllWithGoods().first()
+            val lists = database.ShoppingListDao().observeActualLists().first()
 
-            assertEquals(1, tasks.size)
-            assertEquals(taskWithGood, tasks[0])
+            assertEquals(1, lists.size)
+            assertEquals(taskWithGood, lists[0])
         }
 }

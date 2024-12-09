@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetActualListsUseCase
     @Inject
     constructor(
-        private val shoppingListRepository: ShoppingListRepository,
-    ) {
-        suspend operator fun invoke(): Flow<List<ShoppingList>> = shoppingListRepository.getCurrentLists()
-    }
+    private val shoppingListRepository: ShoppingListRepository,
+) {
+    operator fun invoke(): Flow<List<ShoppingList>> = shoppingListRepository.getCurrentLists()
+}

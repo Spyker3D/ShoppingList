@@ -1,12 +1,13 @@
 package com.practicum.spisokpokupok.listdetails.data.repository
 
+import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
 
 interface LocalTaskDataSource {
     suspend fun createTask(
         goodName: String,
         quantity: Int,
-        quantityType: String,
+        quantityType: QuantityType,
         position: Int,
     )
 

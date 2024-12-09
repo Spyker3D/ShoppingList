@@ -5,11 +5,19 @@ data class Task(
     val isCompleted: Boolean = false,
     val id: String,
     val quantity: Int,
-    val quantityType: String,
+    val quantityType: QuantityType,
     val position: Int,
 ) {
     val nameForList: String
         get() = goodName
     val isActive
         get() = !isCompleted
+}
+
+enum class QuantityType {
+    KILOGRAM,
+    LITRE,
+    PACK,
+    PIECE,
+    UNKNOWN,
 }

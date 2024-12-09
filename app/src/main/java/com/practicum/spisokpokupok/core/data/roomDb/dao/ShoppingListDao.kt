@@ -28,6 +28,12 @@ interface ShoppingListDao {
         isFavorite: Boolean,
     )
 
+    @Query("UPDATE actual_shopping_list SET isFavorite = :isFavorite WHERE shoppingListId = :listId")
+    suspend fun updateActualList(
+        listId: String,
+        isFavorite: Boolean,
+    )
+
     @Query("UPDATE shopping_list SET name = :name WHERE id = :id")
     suspend fun updateName(
         id: String,
@@ -47,4 +53,10 @@ interface ShoppingListDao {
 
     @Query("DELETE FROM shopping_list WHERE id = :shoppingListId")
     suspend fun deleteAll(shoppingListId: List<String>)
+
+    @Query("DELETE FROM shopping_list WHERE id = :shoppingListId")
+    suspend fun deleteList(shoppingListId: String)
+
+    @Query("DELETE FROM actual_shopping_list WHERE shoppingListId = :shoppingListId")
+    suspend fun deleteActualList(shoppingListId: String)
 }
