@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShoppingTaskDao {
+    @Transaction
     @Query("SELECT * FROM shopping_task")
     fun observeAllWithGoods(): Flow<List<LocalShoppingTaskWithGood>>
 
@@ -25,8 +26,27 @@ interface ShoppingTaskDao {
         completed: Boolean,
     )
 
+    @Query(
+        "UPDATE shopping_task " +
+            "SET goodId = :goodId" +
+            " AND quantity = :quantity" +
+            " AND quantityType = :quantityType" +
+            " AND position = :position " +
+            " WHERE id = :taskId",
+    )
+    suspend fun updateTask(
+        taskId: String,
+        goodId: String,
+        quantity: Int,
+        quantityType: String,
+        position: Int,
+    )
+
     @Query("DELETE FROM shopping_task WHERE id = :shoppingListId")
     suspend fun deleteAll(shoppingListId: List<String>)
+
+    @Query("DELETE FROM shopping_task WHERE id = :taskId")
+    suspend fun deleteTask(taskId: String)
 
     @Transaction
     @Query("SELECT * FROM shopping_task")

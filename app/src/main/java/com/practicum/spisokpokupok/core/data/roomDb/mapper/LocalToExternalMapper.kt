@@ -51,7 +51,7 @@ private const val PACK = "PACK"
 private const val PIECE = "PIECE"
 private const val UNKNOWN = "UNKNOWN"
 
-private fun quantityTypeFromString(quantityType: String): QuantityType =
+fun quantityTypeFromString(quantityType: String): QuantityType =
     when (quantityType) {
         KILOGRAM -> QuantityType.KILOGRAM
         LITRE -> QuantityType.LITRE
@@ -60,7 +60,7 @@ private fun quantityTypeFromString(quantityType: String): QuantityType =
         else -> QuantityType.UNKNOWN
     }
 
-private fun quantityTypeToString(quantityType: QuantityType): String =
+fun quantityTypeToString(quantityType: QuantityType): String =
     when (quantityType) {
         QuantityType.KILOGRAM -> {
             KILOGRAM

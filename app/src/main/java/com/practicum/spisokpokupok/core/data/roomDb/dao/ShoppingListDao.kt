@@ -2,6 +2,7 @@ package com.practicum.spisokpokupok.core.data.roomDb.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalActualShoppingListWithName
 import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingList
@@ -12,6 +13,7 @@ interface ShoppingListDao {
     @Query("SELECT * FROM shopping_list")
     fun observeAll(): Flow<List<LocalShoppingList>>
 
+    @Transaction
     @Query("SELECT * FROM actual_shopping_list")
     fun observeActualLists(): Flow<List<LocalActualShoppingListWithName>>
 

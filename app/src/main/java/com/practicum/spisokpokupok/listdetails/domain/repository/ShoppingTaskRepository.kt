@@ -8,6 +8,7 @@ interface ShoppingTaskRepository {
     suspend fun getCurrentTasks(listId: String): Flow<List<Task>>
 
     suspend fun createTask(
+        shoppingListId: String,
         goodName: String,
         quantity: Int,
         quantityType: QuantityType,
@@ -25,6 +26,4 @@ interface ShoppingTaskRepository {
         quantityType: QuantityType,
         position: Int,
     )
-
-    suspend fun getTaskById(taskId: String): Task
 }

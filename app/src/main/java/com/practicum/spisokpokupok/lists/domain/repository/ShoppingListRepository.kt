@@ -10,12 +10,14 @@ interface ShoppingListRepository {
 
     suspend fun deleteList(listId: String)
 
-    suspend fun createList(name: String)
+    suspend fun createList(name: String): String
 
     suspend fun updateName(
         id: String,
         name: String,
     )
+
+    suspend fun moveToActualLists(listId: String)
 
     suspend fun getCompletedLists(): Flow<List<ShoppingList>>
 

@@ -21,6 +21,7 @@ class ShoppingTaskRepositoryImpl(
     }
 
     override suspend fun createTask(
+        shoppingListId: String,
         goodName: String,
         quantity: Int,
         quantityType: QuantityType,
@@ -30,8 +31,17 @@ class ShoppingTaskRepositoryImpl(
             withContext(dispatcher) {
                 createTaskId()
             }
+        val task =
+            Task(
+                id = taskId,
+                goodName = goodName,
+                quantity = quantity,
+                quantityType = quantityType,
+                isCompleted = false,
+                position = position,
+            )
 
-        localTaskDataSource.createTask(goodName, quantity, quantityType, position)
+        localTaskDataSource.createTask(task, shoppingListId)
         return taskId
     }
 
@@ -40,7 +50,7 @@ class ShoppingTaskRepositoryImpl(
     }
 
     override suspend fun deleteTask(taskId: String) {
-        TODO("Not yet implemented")
+        localTaskDataSource.deleteTask(taskId)
     }
 
     override suspend fun updateTask(
@@ -50,11 +60,13 @@ class ShoppingTaskRepositoryImpl(
         quantityType: QuantityType,
         position: Int,
     ) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getTaskById(taskId: String): Task {
-        TODO("Not yet implemented")
+        localTaskDataSource.updateTask(
+            id = taskId,
+            goodName = goodName,
+            quantity = quantity,
+            quantityType = quantityType,
+            position = position,
+        )
     }
 
     private fun createTaskId(): String = UUID.randomUUID().toString()

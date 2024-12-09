@@ -33,7 +33,7 @@ class ShoppingListRepositoryImpl
             }
         }
 
-        override suspend fun createList(name: String) {
+        override suspend fun createList(name: String): String {
             val listId =
                 withContext(dispatcher) {
                     createListId()
@@ -46,7 +46,7 @@ class ShoppingListRepositoryImpl
                     isFavorite = false,
                 )
             localDataSource.createList(list)
-            localDataSource.addActualList(listId)
+            return listId
         }
 
         override suspend fun updateName(
@@ -54,6 +54,10 @@ class ShoppingListRepositoryImpl
             name: String,
         ) {
             localDataSource.updateName(id, name)
+        }
+
+        override suspend fun moveToActualLists(listId: String) {
+            localDataSource.addActualList(listId)
         }
 
         override suspend fun getCompletedLists(): Flow<List<ShoppingList>> = localDataSource.observeCompletedLists()

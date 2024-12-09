@@ -4,6 +4,8 @@ import com.practicum.spisokpokupok.core.data.roomDb.dao.GoodDao
 import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
 import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
 import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalGood
+import com.practicum.spisokpokupok.core.data.roomDb.mapper.quantityTypeToString
+import com.practicum.spisokpokupok.core.data.roomDb.mapper.toLocal
 import com.practicum.spisokpokupok.listdetails.data.repository.LocalTaskDataSource
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
@@ -11,39 +13,56 @@ import com.practicum.spisokpokupok.listdetails.domain.model.Task
 class RoomLocalTaskDataSource(
     private val shoppingTaskDao: ShoppingTaskDao,
     private val goodDao: GoodDao,
-    private val shoppingListDao: ShoppingListDao,
 ) : LocalTaskDataSource {
     override suspend fun createTask(
-        goodName: String,
-        quantity: Int,
-        quantityType: QuantityType,
-        position: Int,
+        task: Task,
+        shoppingListId: String,
     ) {
-        val goodId =
-            goodDao.upsert(
-                LocalGood(
-                    name = goodName,
-                    id = 0,
-                ),
-            )
+        goodDao.upsert(
+            LocalGood(
+                name = task.goodName,
+                id = 0,
+            ),
+        )
+        val goodId = goodDao.getGoodIdByName(task.goodName)
+        shoppingTaskDao.upsert(
+            task.toLocal(
+                shoppingListId = shoppingListId,
+                localGoodId = goodId.toString(),
+            ),
+        )
     }
 
     override suspend fun updateCompleted(
         taskId: String,
         isCompleted: Boolean,
     ) {
-        TODO("Not yet implemented")
+        shoppingTaskDao.updateCompleted(taskId, isCompleted)
     }
 
     override suspend fun deleteTask(taskId: String) {
-        TODO("Not yet implemented")
+        shoppingTaskDao.deleteTask(taskId)
     }
 
-    override suspend fun addTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateTask(task: Task) {
-        TODO("Not yet implemented")
+    override suspend fun updateTask(
+        id: String,
+        goodName: String,
+        quantity: Int,
+        quantityType: QuantityType,
+        position: Int,
+    ) {
+        goodDao.upsert(
+            LocalGood(
+                name = goodName,
+                id = 0,
+            ),
+        )
+        shoppingTaskDao.updateTask(
+            taskId = id,
+            goodId = goodDao.getGoodIdByName(goodName).toString(),
+            quantity = quantity,
+            quantityType = quantityTypeToString(quantityType),
+            position = position,
+        )
     }
 }

@@ -22,7 +22,7 @@ fun Task.toLocal(
     isCompleted = isCompleted,
     shoppingListId = shoppingListId,
     quantity = quantity,
-    quantityType = quantityType,
+    quantityType = quantityTypeToString(quantityType),
     position = position,
 )
 
