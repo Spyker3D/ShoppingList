@@ -45,12 +45,6 @@ fun LocalCompletedShoppingListWithName.toExternal() =
         isCompleted = true,
     )
 
-private const val KILOGRAM = "KILOGRAM"
-private const val LITRE = "LITRE"
-private const val PACK = "PACK"
-private const val PIECE = "PIECE"
-private const val UNKNOWN = "UNKNOWN"
-
 fun quantityTypeFromString(quantityType: String): QuantityType =
     when (quantityType) {
         KILOGRAM -> QuantityType.KILOGRAM
@@ -71,3 +65,9 @@ fun quantityTypeToString(quantityType: QuantityType): String =
         QuantityType.PIECE -> PIECE
         QuantityType.UNKNOWN -> UNKNOWN
     }
+
+private const val KILOGRAM = "KILOGRAM"
+private const val LITRE = "LITRE"
+private const val PACK = "PACK"
+private const val PIECE = "PIECE"
+private const val UNKNOWN = "UNKNOWN"
