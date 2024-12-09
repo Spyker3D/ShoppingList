@@ -47,12 +47,6 @@ interface ShoppingListDao {
     )
     suspend fun upsertAll(shoppingLists: List<LocalShoppingList>)
 
-//    @Query("UPDATE shopping_list SET isCompleted = :completed WHERE id = :listId")
-//    suspend fun updateCompleted(
-//        listId: String,
-//        completed: Boolean,
-//    )
-
     @Query("DELETE FROM shopping_list WHERE id = :shoppingListId")
     suspend fun deleteAll(shoppingListId: List<String>)
 
