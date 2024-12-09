@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.practicum.spisokpokupok.lists.presentation.completedlists.CompletedPurchasesListScreen
+import com.practicum.spisokpokupok.lists.presentation.currentlists.CurrentPurchasesListScreen
 import kotlinx.serialization.Serializable
 
 
@@ -15,9 +17,9 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = CurrentPurchasesList
+        startDestination = CompletedPurchasesList
     ) {
-        composable<CurrentPurchasesList> {
+        composable<CurrentPurchasesList> {  // тут написать horizontal pager и ее вызывать с нужными слушателями ниже. Потом эти слушатели уже передавать в current/ completed
             CurrentPurchasesListScreen(
                 onNavigateToNewList = { navController.navigate(route = NewList) },
                 onNavigateToCompletedLists = { navController.navigate(route = CompletedPurchasesList) },
@@ -72,7 +74,7 @@ object CompletedPurchasesList
 object NewList
 
 @Serializable
-data class CurrentListEdit(val id: String)
+data class CurrentListEdit(val id: Int)
 
 @Serializable
-data class CompletedListEdit(val id: String)
+data class CompletedListEdit(val id: Int)

@@ -16,8 +16,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
+import com.practicum.spisokpokupok.lists.presentation.currentlists.HorizontalPager
 import com.practicum.spisokpokupok.navigation.AppNavHost
+import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
