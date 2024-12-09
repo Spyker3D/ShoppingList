@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 @Composable
@@ -22,7 +23,7 @@ fun CurrentListEditScreen(
             text = "Текущий список №1",
             fontSize = 22.sp,
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -34,7 +35,7 @@ fun CurrentListEditScreenPreview() {
         CurrentListEditScreen(
             onNavigateToCompletedList = {},
             onBackPressed = {},
-            args = CurrentListEdit(id = "123")
+            args = CurrentListEdit(id = "123"),
         )
     }
 }

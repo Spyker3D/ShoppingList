@@ -14,14 +14,14 @@ import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 fun NewListScreen(
     modifier: Modifier = Modifier,
     onNavigateToCurrentLists: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(
             text = "Новый список",
             fontSize = 22.sp,
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }

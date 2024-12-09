@@ -1,25 +1,12 @@
-/*
- * Copyright 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.practicum.spisokpokupok.di
 
 import android.content.Context
 import androidx.room.Room
-import com.practicum.spisokpokupok.db.data.ShoppingListDatabase
-import com.practicum.spisokpokupok.db.data.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.ShoppingListDatabase
+import com.practicum.spisokpokupok.core.data.roomDb.dao.CompletedListDao
+import com.practicum.spisokpokupok.core.data.roomDb.dao.GoodDao
+import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
+import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +18,16 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
     @Provides
-    fun provideShoppingTaskDao(database: ShoppingListDatabase): ShoppingTaskDao = database.shoppingTaskDao()
+    fun provideShoppingTaskDao(database: ShoppingListDatabase): ShoppingTaskDao = database.ShoppingTaskDao()
+
+    @Provides
+    fun provideShoppingListDao(database: ShoppingListDatabase): ShoppingListDao = database.ShoppingListDao()
+
+    @Provides
+    fun provideCompletedListDao(database: ShoppingListDatabase): CompletedListDao = database.CompletedListDao()
+
+    @Provides
+    fun provideGoodDao(database: ShoppingListDatabase): GoodDao = database.GoodDao()
 
     @Singleton
     @Provides
@@ -42,6 +38,6 @@ object DatabaseModule {
             .databaseBuilder(
                 context.applicationContext,
                 ShoppingListDatabase::class.java,
-                "Tasks.db",
+                "ShoppingList.db",
             ).build()
 }
