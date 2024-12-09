@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.lists.domain.usecases.CreateListUseCase
 import com.practicum.spisokpokupok.lists.domain.usecases.GetActualListsUseCase
+import com.practicum.spisokpokupok.lists.domain.usecases.MoveToActualListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -17,7 +18,9 @@ class CurrentListViewModel
     constructor(
         private val createListUseCase: CreateListUseCase,
         getActualListsUseCase: GetActualListsUseCase,
+        private val moveToActualListUseCase: MoveToActualListUseCase,
     ) : ViewModel() {
+        private var listId = ""
         private val _listStream = getActualListsUseCase()
         val listStream: StateFlow<List<ShoppingList>> =
             _listStream.stateIn(
@@ -28,14 +31,10 @@ class CurrentListViewModel
                 initialValue = emptyList(),
             )
 
-        fun fetchLists() {
-            viewModelScope.launch {
-            }
-        }
-
         fun addList(listName: String) {
             viewModelScope.launch {
-                createListUseCase(listName)
+                listId = createListUseCase(listName)
+                moveToActualListUseCase(listId)
             }
         }
     }

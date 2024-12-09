@@ -1,18 +1,21 @@
 package com.practicum.spisokpokupok.lists.domain.usecases
 
 import com.practicum.spisokpokupok.lists.domain.repository.ShoppingListRepository
+import javax.inject.Inject
 
-class UpdateFavoriteStatusUseCase(
-    private val shoppingListRepository: ShoppingListRepository,
-) {
-    suspend operator fun invoke(
-        listId: String,
-        isFavorite: Boolean,
+class UpdateFavoriteStatusUseCase
+    @Inject
+    constructor(
+        private val shoppingListRepository: ShoppingListRepository,
     ) {
-        if (isFavorite) {
-            shoppingListRepository.addToFavorite(listId)
-        } else {
-            shoppingListRepository.removeFromFavorite(listId)
+        suspend operator fun invoke(
+            listId: String,
+            isFavorite: Boolean,
+        ) {
+            if (isFavorite) {
+                shoppingListRepository.addToFavorite(listId)
+            } else {
+                shoppingListRepository.removeFromFavorite(listId)
+            }
         }
     }
-}

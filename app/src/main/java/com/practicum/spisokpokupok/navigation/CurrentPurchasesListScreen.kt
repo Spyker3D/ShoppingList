@@ -61,13 +61,12 @@ fun CurrentPurchasesListScreen(
         }
         Button(
             modifier =
-            modifier
-                .fillMaxSize(
-                    fraction = 0.2f,
-                ).weight(0.2f),
+                modifier
+                    .fillMaxSize(
+                        fraction = 0.2f,
+                    ).weight(0.2f),
             onClick = {
                 viewModel.addList("Новый список")
-                viewModel.fetchLists()
             },
         ) {
             Text(text = "Новый список")
@@ -75,19 +74,18 @@ fun CurrentPurchasesListScreen(
     }
 }
 
-    @Preview(
-        backgroundColor = 0xFFFFFFFF,
-        showBackground = true
-    )
-    @Composable
-    fun CurrentPurchasesListScreenPreview() {
-        ToDoListTheme {
-            CurrentPurchasesListScreen(
-                onNavigateToNewList = {},
-                onNavigateToCompletedLists = {},
-                onItemClicked = {},
-                viewModel = hiltViewModel(),
-            )
-        }
+@Preview(
+    backgroundColor = 0xFFFFFFFF,
+    showBackground = true,
+)
+@Composable
+fun CurrentPurchasesListScreenPreview() {
+    ToDoListTheme {
+        CurrentPurchasesListScreen(
+            onNavigateToNewList = {},
+            onNavigateToCompletedLists = {},
+            onItemClicked = {},
+            viewModel = hiltViewModel(),
+        )
     }
-
+}
