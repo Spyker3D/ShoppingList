@@ -33,6 +33,7 @@ kotlinxCoroutines = "1.9.0"
 junit4 = "4.13.2"
 androidxArchCore = "2.2.0"
 truth = "1.4.2"
+material = "1.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -99,6 +100,7 @@ androidx-archcore-testing = { group = "androidx.arch.core", name = "core-testing
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxNavigation" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [bundles]
 staticAnalysis-detekt = [
