@@ -1,6 +1,5 @@
 package com.practicum.spisokpokupok.lists.presentation.currentlists
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +16,15 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,57 +42,38 @@ import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentPurchasesListScreen(
     modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
-    onNavigateToCompletedLists: () -> Unit,
-    onItemClicked: (Int) -> Unit
+    onItemClicked: (String) -> Unit
 ) {
-//    val purchasesList = emptyList<PurchaseList>()
+//    val purchasesList = remember {    // для тестирования UI без списков
+//        mutableStateListOf<PurchaseList>()
+//    }
 
-    val purchasesList = listOf(
-        PurchaseList(
-            id = 123,
-            name = "Продукты",
-            isAttached = true
-        ),
-        PurchaseList(
-            id = 111,
-            name = "Канцтовары"
-        ),
-        PurchaseList(
-            id = 111,
-            name = "Еда для животных"
+    val purchasesList = remember {
+        mutableStateListOf(
+            PurchaseList(
+                id = "123",
+                name = "Продукты",
+                isAttached = true
+            ),
+            PurchaseList(
+                id = "111",
+                name = "Канцтовары"
+            ),
+            PurchaseList(
+                id = "11100",
+                name = "Еда для животных"
+            )
         )
-    )
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopAppBar(
-                modifier = modifier
-                    .padding(top = 48.dp)
-                    .wrapContentHeight(),
-                title = {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 0.dp),
-                        text = if (purchasesList.isNotEmpty()) {
-                            "Все ваши списки"
-                        } else {
-                            "Все ваши списки здесь"
-                        },
-                        fontSize = 44.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onTertiary
-                )
-            )
+                TopBar(modifier = modifier, purchasesList = purchasesList)
         },
         content = { paddingValues ->
             Box(
@@ -113,7 +96,10 @@ fun CurrentPurchasesListScreen(
                         ) {
                             PurchasesList(
                                 listOfPurchases = purchasesList,
-                                onClickListener = onItemClicked
+                                onClickListener = onItemClicked,
+                                onListOfPurchases = {
+                                    purchasesList -= it
+                                }
                             )
                         }
                         Icon(
@@ -167,65 +153,96 @@ fun CurrentPurchasesListScreen(
             }
         },
         bottomBar = {
-            BottomAppBar(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .height(164.dp),
-                containerColor = MaterialTheme.colorScheme.surface
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_navigate_back),
-                            tint = cyan,
-                            contentDescription = null
-                        )
-                        Text(
-                            modifier = Modifier.width(200.dp),
-                            text = "Проведите, чтобы открыть завершенные списки",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 16.sp,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_navigate_forward),
-                            tint = cyan,
-                            contentDescription = null
-                        )
-                    }
-                    Icon(
-                        modifier = Modifier
-                            .padding(bottom = 24.dp)
-                            .size(48.dp)
-                            .clickable { onNavigateToNewList() },
-                        painter = painterResource(id = R.drawable.ic_add),
-                        tint = cyan,
-                        contentDescription = null,
-                    )
-                }
-            }
+            BottomBar(onNavigateToNewList = onNavigateToNewList)
         }
-
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopBar(modifier: Modifier, purchasesList: SnapshotStateList<PurchaseList>) {
+    LargeTopAppBar(
+        modifier = modifier
+            .padding(top = 0.dp)
+            .wrapContentHeight(),
+        title = {
+            Text(
+                modifier = Modifier.padding(horizontal = 0.dp),
+                text = if (purchasesList.isNotEmpty()) {
+                    "Все ваши списки"
+                } else {
+                    "Все ваши списки здесь"
+                },
+                fontSize = 44.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium,
+                lineHeight = 44.sp
+            )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onTertiary
+        )
+    )
+}
+
+@Composable
+private fun BottomBar(onNavigateToNewList: () -> Unit) {
+    BottomAppBar(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .height(164.dp),
+        containerColor = MaterialTheme.colorScheme.surface
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_navigate_back),
+                    tint = cyan,
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier.width(200.dp),
+                    text = "Проведите, чтобы открыть завершенные списки",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_navigate_forward),
+                    tint = cyan,
+                    contentDescription = null
+                )
+            }
+            Icon(
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .size(48.dp)
+                    .clickable { onNavigateToNewList() },
+                painter = painterResource(id = R.drawable.ic_add),
+                tint = cyan,
+                contentDescription = null,
+            )
+        }
+    }
 }
 
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
-fun CurrentPurchasesListScreenPreview() {
+fun CurrentPurchasesListScreenScaffoldPreview() {
     ToDoListTheme {
         CurrentPurchasesListScreen(
             onNavigateToNewList = {},
-            onNavigateToCompletedLists = {},
             onItemClicked = {}
         )
     }

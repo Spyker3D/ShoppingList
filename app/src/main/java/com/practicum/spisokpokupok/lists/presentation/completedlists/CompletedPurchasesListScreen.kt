@@ -16,12 +16,14 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,36 +46,35 @@ import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 fun CompletedPurchasesListScreen(
     modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
-    onNavigateToCurrentLists: () -> Unit,
-    onItemClicked: (Int) -> Unit
+    onItemClicked: (String) -> Unit
 ) {
-//    val purchasesList = emptyList<PurchaseList>()
+//    val purchasesList = remember {    // для тестирования UI без списков
+//        mutableStateListOf<PurchaseList>()
+//    }
 
-    val purchasesList = listOf(
-        PurchaseList(
-            id = 123,
-            name = "Продукты",
-            isAttached = true,
-            isCompleted = true
-        ),
-        PurchaseList(
-            id = 111,
-            name = "Канцтовары",
-            isCompleted = true
-        ),
-        PurchaseList(
-            id = 111,
-            name = "Еда для животных",
-            isCompleted = true
+    val purchasesList = remember {
+        mutableStateListOf(
+            PurchaseList(
+                id = "123",
+                name = "Продукты",
+                isAttached = true
+            ),
+            PurchaseList(
+                id = "111",
+                name = "Канцтовары"
+            ),
+            PurchaseList(
+                id = "1100",
+                name = "Еда для животных"
+            )
         )
-    )
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopAppBar(
+            LargeTopAppBar(
                 modifier = modifier
-                    .padding(top = 48.dp)
                     .wrapContentHeight(),
                 title = {
                     Text(
@@ -96,7 +97,7 @@ fun CompletedPurchasesListScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        top = paddingValues.calculateTopPadding(),
+                        top = paddingValues.calculateTopPadding() + 28.dp,
                         bottom = paddingValues.calculateBottomPadding()
                     )
             ) {
@@ -113,8 +114,9 @@ fun CompletedPurchasesListScreen(
                             PurchasesList(
                                 listOfPurchases = purchasesList,
                                 onClickListener = onItemClicked,
-
-
+                                onListOfPurchases = {
+                                    purchasesList -= it
+                                }
                             )
                         }
                         Icon(
@@ -134,8 +136,7 @@ fun CompletedPurchasesListScreen(
                                 .padding(horizontal = 16.dp)
                                 .background(Color.Transparent),
                             contentAlignment = Alignment.Center,
-
-                            ) {
+                        ) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -168,56 +169,60 @@ fun CompletedPurchasesListScreen(
             }
         },
         bottomBar = {
-            BottomAppBar(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .height(164.dp),
-                containerColor = MaterialTheme.colorScheme.surface
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_navigate_back),
-                            tint = cyan,
-                            contentDescription = null
-                        )
-                        Text(
-                            modifier = Modifier.width(200.dp),
-                            text = "Проведите, чтобы открыть все списки",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 16.sp,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_navigate_forward),
-                            tint = cyan,
-                            contentDescription = null
-                        )
-                    }
-                    Icon(
-                        modifier = Modifier
-                            .padding(bottom = 24.dp)
-                            .size(48.dp)
-                            .clickable { onNavigateToNewList() },
-                        painter = painterResource(id = R.drawable.ic_add),
-                        tint = cyan,
-                        contentDescription = null,
-                    )
-                }
-            }
+            BottomBar(onNavigateToNewList = onNavigateToNewList)
         }
-
     )
+}
+
+@Composable
+private fun BottomBar(onNavigateToNewList: () -> Unit) {
+    BottomAppBar(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .height(164.dp),
+        containerColor = MaterialTheme.colorScheme.surface
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_navigate_back),
+                    tint = cyan,
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier.width(200.dp),
+                    text = "Проведите, чтобы открыть все списки",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 16.sp,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_navigate_forward),
+                    tint = cyan,
+                    contentDescription = null
+                )
+            }
+            Icon(
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .size(48.dp)
+                    .clickable { onNavigateToNewList() },
+                painter = painterResource(id = R.drawable.ic_add),
+                tint = cyan,
+                contentDescription = null,
+            )
+        }
+    }
 }
 
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
@@ -226,7 +231,6 @@ fun CompletedPurchasesListScreenPreview() {
     ToDoListTheme {
         CompletedPurchasesListScreen(
             onNavigateToNewList = {},
-            onNavigateToCurrentLists = {},
             onItemClicked = {}
         )
     }

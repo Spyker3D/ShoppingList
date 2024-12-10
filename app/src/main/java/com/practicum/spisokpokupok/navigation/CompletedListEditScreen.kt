@@ -34,7 +34,7 @@ fun CompletedListEditScreenPreview() {
         CompletedListEditScreen(
             onNavigateToCurrentPurchasesListScreen = {},
             onBackPressed = {},
-            args = CompletedListEdit(id = 1214)
+            args = CompletedListEdit(id = "1214")
         )
     }
 }

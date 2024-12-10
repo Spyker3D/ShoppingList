@@ -29,9 +29,13 @@ import androidx.compose.ui.unit.sp
 import com.practicum.spisokpokupok.R
 import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
+import com.practicum.spisokpokupok.utils.SwipeToDeleteContainer
 
 @Composable
-fun PurchasesList(listOfPurchases: List<PurchaseList>, onClickListener: (Int) -> Unit) {
+fun PurchasesList(
+    listOfPurchases: List<PurchaseList>,
+    onListOfPurchases: (PurchaseList) -> Unit,
+    onClickListener: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
@@ -40,14 +44,27 @@ fun PurchasesList(listOfPurchases: List<PurchaseList>, onClickListener: (Int) ->
         ), // по идее вызывать паддинг на уровне выше?
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(listOfPurchases) { purchase ->
-            ItemCard(purchase, onClickListener)
+        items(
+            items = listOfPurchases,
+            key = { it.id }
+        ) { purchase ->
+            SwipeToDeleteContainer(
+                item = purchase,
+                onDelete = {
+                    onListOfPurchases(purchase)
+                },
+                onAttach = {
+                    purchase.isAttached = true
+                }
+            ) {
+                ItemCard(purchase, onClickListener)
+            }
         }
     }
 }
 
 @Composable
-fun ItemCard(purchaseList: PurchaseList, onClickListener: (Int) -> Unit) {
+fun ItemCard(purchaseList: PurchaseList, onClickListener: (String) -> Unit) {
     Row(
         modifier = Modifier
             .height(56.dp)
@@ -107,20 +124,21 @@ fun PurchasesListPreview() {
         PurchasesList(
             listOfPurchases = listOf(
                 PurchaseList(
-                    id = 123,
+                    id = "123",
                     name = "Продукты",
                     isAttached = true
                 ),
                 PurchaseList(
-                    id = 111,
+                    id = "111",
                     name = "Канцтовары"
                 ),
                 PurchaseList(
-                    id = 111,
+                    id = "11100",
                     name = "Еда для животных"
                 )
             ),
-            onClickListener = {}
+            onClickListener = {},
+            onListOfPurchases = {}
         )
     }
 }
@@ -131,7 +149,7 @@ fun ItemPreview() {
     ToDoListTheme {
         ItemCard(
             purchaseList = PurchaseList(
-                id = 123,
+                id = "123",
                 name = "Продукты"
             ),
             onClickListener = {}

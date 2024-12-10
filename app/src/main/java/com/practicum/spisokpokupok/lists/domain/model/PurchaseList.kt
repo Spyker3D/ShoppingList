@@ -1,8 +1,8 @@
 package com.practicum.spisokpokupok.lists.domain.model
 
 data class PurchaseList(
-    val id: Int,
+    val id: String,
     val name: String,
     val isCompleted: Boolean = false,
-    val isAttached: Boolean = false
+    var isAttached: Boolean = false
 )
