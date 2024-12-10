@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -35,18 +36,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.compose.blue
-import com.example.compose.cyan
-import com.practicum.spisokpokupok.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
+import com.practicum.spisokpokupok.ui.theme.blue
+import com.practicum.spisokpokupok.ui.theme.cyan
 
 
 @Composable
 fun CurrentPurchasesListScreen(
     modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
-    onItemClicked: (String) -> Unit
+    onItemClicked: (String) -> Unit,
+    viewModel: CurrentListViewModel = hiltViewModel(),
 ) {
 //    val purchasesList = remember {    // для тестирования UI без списков
 //        mutableStateListOf<PurchaseList>()
@@ -69,6 +72,8 @@ fun CurrentPurchasesListScreen(
             )
         )
     }
+
+//    val purchasesList = viewModel.listStream.collectAsState()  // пока закомментировал, т.к. список нет в БД
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,

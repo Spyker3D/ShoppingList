@@ -34,12 +34,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.compose.blue
-import com.example.compose.cyan
-import com.practicum.spisokpokupok.R
+import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
 import com.practicum.spisokpokupok.lists.presentation.currentlists.PurchasesList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
+import com.practicum.spisokpokupok.ui.theme.blue
+import com.practicum.spisokpokupok.ui.theme.cyan
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

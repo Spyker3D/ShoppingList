@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.practicum.spisokpokupok.R
+import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.utils.SwipeToDeleteContainer
@@ -41,7 +41,7 @@ fun PurchasesList(
         contentPadding = PaddingValues(
             horizontal = 16.dp,
             vertical = 0.dp
-        ), // по идее вызывать паддинг на уровне выше?
+        ),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(
