@@ -1,4 +1,4 @@
-package com.example.compose
+package com.practicum.spisokpokupok.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val white = Color(0xFFFFFFFF)
