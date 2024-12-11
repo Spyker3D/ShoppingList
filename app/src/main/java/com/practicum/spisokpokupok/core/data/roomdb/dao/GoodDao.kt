@@ -1,9 +1,9 @@
-package com.practicum.spisokpokupok.core.data.roomDb.dao
+package com.practicum.spisokpokupok.core.data.roomdb.dao
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalGood
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
 
 @Dao
 interface GoodDao {

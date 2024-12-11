@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun MainPreview() {
+private fun MainPreview() {
     ToDoListTheme {
         AppNavHost()
     }

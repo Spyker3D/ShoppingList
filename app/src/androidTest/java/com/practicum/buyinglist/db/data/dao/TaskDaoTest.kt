@@ -4,12 +4,12 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.practicum.spisokpokupok.core.data.ShoppingListDatabase
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalActualShoppingList
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalActualShoppingListWithName
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalGood
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingList
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTask
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTaskWithGood
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalActualShoppingList
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalActualShoppingListWithName
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingList
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTask
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTaskWithGood
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -18,7 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ShoppingTaskDaoTest {
+class TaskDaoTest {
     private lateinit var database: ShoppingListDatabase
 
     @Before

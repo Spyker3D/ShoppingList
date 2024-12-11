@@ -3,10 +3,10 @@ package com.practicum.spisokpokupok.di
 import android.content.Context
 import androidx.room.Room
 import com.practicum.spisokpokupok.core.data.ShoppingListDatabase
-import com.practicum.spisokpokupok.core.data.roomDb.dao.CompletedListDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.GoodDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.CompletedListDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.GoodDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingListDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingTaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

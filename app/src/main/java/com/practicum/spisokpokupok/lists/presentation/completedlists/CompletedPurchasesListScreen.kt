@@ -44,9 +44,9 @@ import com.practicum.spisokpokupok.ui.theme.cyan
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompletedPurchasesListScreen(
-    modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
-    onItemClicked: (String) -> Unit
+    onItemClicked: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 //    val purchasesList = remember {    // для тестирования UI без списков
 //        mutableStateListOf<PurchaseList>()

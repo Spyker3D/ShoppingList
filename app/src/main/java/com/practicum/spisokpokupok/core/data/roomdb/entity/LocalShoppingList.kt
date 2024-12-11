@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.core.data.roomDb.entity
+package com.practicum.spisokpokupok.core.data.roomdb.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -8,8 +8,6 @@ import androidx.room.PrimaryKey
     tableName = "shopping_list",
 )
 data class LocalShoppingList(
-    @ColumnInfo(name = "name")
-    val name: String,
-    @PrimaryKey
-    val id: String,
+    @ColumnInfo(name = "name") val name: String,
+    @PrimaryKey val id: String,
 )
