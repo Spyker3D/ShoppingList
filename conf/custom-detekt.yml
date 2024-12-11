@@ -791,7 +791,6 @@ libraries:
         active: false
         excludes: [ '**' ]
 
-
 Compose:
     ComposableAnnotationNaming:
         active: true
