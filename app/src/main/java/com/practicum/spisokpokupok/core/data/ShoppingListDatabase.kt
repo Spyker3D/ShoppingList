@@ -2,15 +2,15 @@ package com.practicum.spisokpokupok.core.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.practicum.spisokpokupok.core.data.roomDb.dao.CompletedListDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.GoodDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalActualShoppingList
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingList
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalGood
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingList
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTask
+import com.practicum.spisokpokupok.core.data.roomdb.dao.CompletedListDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.GoodDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingListDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalActualShoppingList
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingList
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingList
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTask
 
 @Database(
     entities = [

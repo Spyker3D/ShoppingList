@@ -6,6 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.practicum.spisokpokupok.lists.presentation.completedlists.CompletedPurchasesListScreen
+import com.practicum.spisokpokupok.lists.presentation.currentlists.CurrentPurchasesListScreen
+import com.practicum.spisokpokupok.lists.presentation.HorizontalPagerScreen
 import kotlinx.serialization.Serializable
 
 
@@ -15,12 +18,19 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = CurrentPurchasesList
+        startDestination = HorizontalPager
     ) {
+        composable<HorizontalPager> {
+            HorizontalPagerScreen(
+                onNavigateToNewList = { navController.navigate(route = NewList) },
+                onItemCurrentClicked = { id -> navController.navigate(route = CurrentListEdit(id = id))},
+                onItemCompletedClicked = { id -> navController.navigate(route = CompletedListEdit(id = id))}
+            )
+        }
+
         composable<CurrentPurchasesList> {
             CurrentPurchasesListScreen(
                 onNavigateToNewList = { navController.navigate(route = NewList) },
-                onNavigateToCompletedLists = { navController.navigate(route = CompletedPurchasesList) },
                 onItemClicked = { id -> navController.navigate(route = CurrentListEdit(id = id))}
             )
         }
@@ -28,7 +38,6 @@ fun AppNavHost(
         composable<CompletedPurchasesList> {
             CompletedPurchasesListScreen(
                 onNavigateToNewList = { navController.navigate(route = NewList) },
-                onNavigateToCurrentLists = { navController.navigate(route = CurrentPurchasesList) },
                 onItemClicked = { id -> navController.navigate(route = CompletedListEdit(id = id))}
             )
         }
@@ -61,6 +70,8 @@ fun AppNavHost(
     }
 }
 
+@Serializable
+object HorizontalPager
 
 @Serializable
 object CurrentPurchasesList

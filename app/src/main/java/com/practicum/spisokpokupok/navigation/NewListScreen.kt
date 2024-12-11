@@ -28,7 +28,7 @@ fun NewListScreen(
 
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
-fun NewListScreenPreview() {
+private fun NewListScreenPreview() {
     ToDoListTheme {
         NewListScreen(onNavigateToCurrentLists = {}, onBackPressed = {})
     }

@@ -1,11 +1,11 @@
 package com.practicum.spisokpokupok.core.data
 
-import com.practicum.spisokpokupok.core.data.roomDb.dao.CompletedListDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingList
-import com.practicum.spisokpokupok.core.data.roomDb.mapper.toExternal
-import com.practicum.spisokpokupok.core.data.roomDb.mapper.toExternalList
-import com.practicum.spisokpokupok.core.data.roomDb.mapper.toLocal
+import com.practicum.spisokpokupok.core.data.roomdb.dao.CompletedListDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingListDao
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingList
+import com.practicum.spisokpokupok.core.data.roomdb.mapper.toExternal
+import com.practicum.spisokpokupok.core.data.roomdb.mapper.toExternalList
+import com.practicum.spisokpokupok.core.data.roomdb.mapper.toLocal
 import com.practicum.spisokpokupok.di.ApplicationScope
 import com.practicum.spisokpokupok.di.DefaultDispatcher
 import com.practicum.spisokpokupok.lists.data.repository.LocalListDataSource

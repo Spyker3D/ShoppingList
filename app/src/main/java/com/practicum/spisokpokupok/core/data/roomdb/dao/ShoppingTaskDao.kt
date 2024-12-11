@@ -1,11 +1,11 @@
-package com.practicum.spisokpokupok.core.data.roomDb.dao
+package com.practicum.spisokpokupok.core.data.roomdb.dao
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTask
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTaskWithGood
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTask
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTaskWithGood
 import kotlinx.coroutines.flow.Flow
 
 @Dao

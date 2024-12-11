@@ -15,7 +15,6 @@ kotlinxSerializationJson = "1.6.3"
 roomCompilerVersion = "2.6.1"
 splashscreen = "1.0.1"
 detekt = "1.23.7"
-detektCompose ="0.4.16"
 roomCommon = "2.6.1"
 ksp = "2.1.0-1.0.29"
 hilt = "2.52"
@@ -36,7 +35,7 @@ kotlinxCoroutines = "1.9.0"
 junit4 = "4.13.2"
 androidxArchCore = "2.2.0"
 truth = "1.4.2"
-material = "1.12.0"
+detektCompose = "0.4.16"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,7 +54,6 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-core-splashscreen= { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlinCompilerEmbeddable" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 # Navigation
@@ -67,8 +65,8 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCom
 staticAnalysis-detektCli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
 staticAnalysis-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 staticAnalysis-detektLibraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektCompose" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 
 
 #room
@@ -107,13 +105,12 @@ androidx-archcore-testing = { group = "androidx.arch.core", name = "core-testing
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxNavigation" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [bundles]
 staticAnalysis-detekt = [
     "staticAnalysis-detektFormatting",
     "staticAnalysis-detektLibraries",
-    "detekt-compose",
+    "detekt-compose"
 ]
 
 

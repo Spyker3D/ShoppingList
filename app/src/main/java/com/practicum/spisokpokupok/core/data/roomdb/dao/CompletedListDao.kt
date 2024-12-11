@@ -1,12 +1,12 @@
-package com.practicum.spisokpokupok.core.data.roomDb.dao
+package com.practicum.spisokpokupok.core.data.roomdb.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingList
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingListWithName
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingList
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingListWithName
 import kotlinx.coroutines.flow.Flow
 
 @Dao
