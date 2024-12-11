@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.buyinglist.R.drawable.ic_arrow_right
 
@@ -22,7 +23,7 @@ import com.practicum.buyinglist.R.drawable.ic_arrow_right
 fun TaskElement(
     title: String,
     isSelected: Boolean,
-    onFilterItemClick: () -> Unit,
+    onElementClick: () -> Unit,
     modifier: Modifier,
 ) {
     Column {
@@ -30,10 +31,10 @@ fun TaskElement(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier =
-                modifier
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .clickable { onFilterItemClick() },
+            modifier
+                .height(48.dp)
+                .fillMaxWidth()
+                .clickable { onElementClick() },
         ) {
             Text(
                 text = title,
@@ -47,4 +48,16 @@ fun TaskElement(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun TaskElementPreview() {
+    TaskElement(
+        title = "Title",
+        isSelected = true,
+        onElementClick = {},
+        modifier = Modifier,
+    )
+//
 }

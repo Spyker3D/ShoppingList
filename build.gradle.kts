@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.room) apply false
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
@@ -22,7 +24,6 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     include("**/*.kts")
     exclude("**/resources/**")
     exclude("**/build/**")
-
     reports {
         xml.required.set(false)
         html.required.set(true)
@@ -32,9 +33,16 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     }
 
     config.setFrom(files(project.rootDir.resolve("conf/custom-detekt.yml")))
+
+    configurations.matching { it.name == "detekt" }.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlin") {
+                useVersion("2.0.10")
+            }
+        }
+    }
 }
 
 dependencies {
-    add("detekt", libs.bundles.staticAnalysis.detekt)
-    detektPlugins(libs.staticAnalysis.detektCli)
+    detektPlugins(libs.bundles.staticAnalysis.detekt)
 }

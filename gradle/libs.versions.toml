@@ -5,6 +5,8 @@ coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+kotlinCompilerEmbeddable = "2.1.0"
+kotlinGradlePlugin = "2.1.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
@@ -13,6 +15,7 @@ kotlinxSerializationJson = "1.6.3"
 roomCompilerVersion = "2.6.1"
 splashscreen = "1.0.1"
 detekt = "1.23.7"
+detektCompose ="0.4.16"
 roomCommon = "2.6.1"
 ksp = "2.1.0-1.0.29"
 hilt = "2.52"
@@ -52,6 +55,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-core-splashscreen= { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlinCompilerEmbeddable" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 # Navigation
@@ -63,6 +67,9 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCom
 staticAnalysis-detektCli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
 staticAnalysis-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 staticAnalysis-detektLibraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektCompose" }
+
 
 #room
 room = { group = "androidx.room", name = "room-runtime", version.ref = "roomCommon" }
@@ -104,9 +111,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 [bundles]
 staticAnalysis-detekt = [
-    "staticAnalysis-detektCli",
     "staticAnalysis-detektFormatting",
-    "staticAnalysis-detektLibraries"
+    "staticAnalysis-detektLibraries",
+    "detekt-compose",
 ]
 
 
