@@ -36,5 +36,4 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 dependencies {
     add("detekt", libs.bundles.staticAnalysis.detekt)
-    detektPlugins(libs.staticAnalysis.detektCli)
 }
