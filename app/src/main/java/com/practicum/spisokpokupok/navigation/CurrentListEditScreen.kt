@@ -8,15 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 @Composable
 fun CurrentListEditScreen(
+    args: CurrentListEdit,
     modifier: Modifier = Modifier,
     onNavigateToCompletedList: () -> Unit,
     onBackPressed: () -> Unit,
-    args: CurrentListEdit,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(

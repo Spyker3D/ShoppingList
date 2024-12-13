@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.core.data.roomDb.entity
+package com.practicum.spisokpokupok.core.data.roomdb.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation

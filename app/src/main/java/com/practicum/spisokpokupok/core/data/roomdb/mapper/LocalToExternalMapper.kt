@@ -1,9 +1,9 @@
-package com.practicum.spisokpokupok.core.data.roomDb.mapper
+package com.practicum.spisokpokupok.core.data.roomdb.mapper
 
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalActualShoppingListWithName
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalCompletedShoppingListWithName
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalGood
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTaskWithGood
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalActualShoppingListWithName
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingListWithName
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTaskWithGood
 import com.practicum.spisokpokupok.listdetails.domain.model.Good
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task

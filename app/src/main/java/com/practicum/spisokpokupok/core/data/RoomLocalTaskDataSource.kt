@@ -1,11 +1,10 @@
 package com.practicum.spisokpokupok.core.data
 
-import com.practicum.spisokpokupok.core.data.roomDb.dao.GoodDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingListDao
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalGood
-import com.practicum.spisokpokupok.core.data.roomDb.mapper.quantityTypeToString
-import com.practicum.spisokpokupok.core.data.roomDb.mapper.toLocal
+import com.practicum.spisokpokupok.core.data.roomdb.dao.GoodDao
+import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
+import com.practicum.spisokpokupok.core.data.roomdb.mapper.quantityTypeToString
+import com.practicum.spisokpokupok.core.data.roomdb.mapper.toLocal
 import com.practicum.spisokpokupok.listdetails.data.repository.LocalTaskDataSource
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
