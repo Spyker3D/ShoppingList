@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.lists.presentation.currentlists
+package com.practicum.spisokpokupok.lists.presentation.model
 
 data class PurchaseListUi(
     val id: String,

@@ -22,9 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -38,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.practicum.buyinglist.R
-import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
+import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.ui.theme.blue
 import com.practicum.spisokpokupok.ui.theme.cyan
@@ -49,44 +48,14 @@ fun CurrentPurchasesListScreen(
     modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
     onItemClicked: (String) -> Unit,
-    viewModel: CurrentListViewModel = hiltViewModel(),
+    shoppingList: List<PurchaseListUi>,
+    onDeleteItem: (String) -> Unit,
+    onFavoriteItem: (String, Boolean) -> Unit
 ) {
-//    val purchasesList = remember {    // для тестирования UI без списков
-//        mutableStateListOf<PurchaseList>()
-//    }
-
-    val purchasesList = remember {
-        mutableStateListOf(
-            PurchaseListUi(
-                id = "123",
-                name = "Продукты",
-                isAttached = true,
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "111",
-                name = "Канцтовары",
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "11100",
-                name = "Еда для животных",
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "1111200",
-                name = "Еда для людей",
-                isOptionsRevealed = false
-            ),
-        )
-    }
-
-//    val purchasesList = viewModel.listStream.collectAsState()  // пока закомментировал, т.к. список нет в БД
-
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopBar(modifier = modifier, purchasesList = purchasesList)
+            TopBar(modifier = modifier, purchasesList = shoppingList)
         },
         content = { paddingValues ->
             Box(
@@ -97,7 +66,7 @@ fun CurrentPurchasesListScreen(
                         bottom = paddingValues.calculateBottomPadding()
                     )
             ) {
-                if (purchasesList.isNotEmpty()) {
+                if (shoppingList.isNotEmpty()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -126,18 +95,19 @@ fun CurrentPurchasesListScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    if (purchasesList.isNotEmpty()) {
+                    if (shoppingList.isNotEmpty()) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
                         ) {
                             PurchasesListSwipe(
-                                listOfPurchases = purchasesList,
+                                listOfPurchases = shoppingList,
                                 onClickListener = onItemClicked,
                                 onDeleteItemListener = {
-                                    purchasesList -= it
-                                }
+                                    onDeleteItem(it)
+                                },
+                                onFavoriteItemListener = onFavoriteItem
                             )
                         }
                     } else {
@@ -188,7 +158,7 @@ fun CurrentPurchasesListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(modifier: Modifier, purchasesList: SnapshotStateList<PurchaseListUi>) {
+private fun TopBar(modifier: Modifier, purchasesList: List<PurchaseListUi>) {
     LargeTopAppBar(
         modifier = modifier
             .padding(top = 0.dp)
@@ -265,13 +235,37 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
     }
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
-@Composable
-fun CurrentPurchasesListScreenScaffoldPreview() {
-    ToDoListTheme {
-        CurrentPurchasesListScreen(
-            onNavigateToNewList = {},
-            onItemClicked = {}
-        )
-    }
-}
+//@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+//@Composable
+//fun CurrentPurchasesListScreenScaffoldPreview() {
+//    ToDoListTheme {
+//        CurrentPurchasesListScreen(
+//            onNavigateToNewList = {},
+//            onItemClicked = {},
+//            onDeleteItem = {},
+//            onFavoriteItem = { },
+//            shoppingList = listOf(
+//                PurchaseListUi(
+//                id = "123",
+//                name = "Продукты",
+//                isAttached = true,
+//                isOptionsRevealed = false
+//            ),
+//            PurchaseListUi(
+//                id = "111",
+//                name = "Канцтовары",
+//                isOptionsRevealed = false
+//            ),
+//            PurchaseListUi(
+//                id = "11100",
+//                name = "Еда для животных",
+//                isOptionsRevealed = false
+//            ),
+//            PurchaseListUi(
+//                id = "1111200",
+//                name = "Еда для людей",
+//                isOptionsRevealed = false
+//            ),)
+//        )
+//    }
+//}

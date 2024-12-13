@@ -36,8 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
-import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
-import com.practicum.spisokpokupok.lists.presentation.currentlists.PurchaseListUi
+import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
 import com.practicum.spisokpokupok.lists.presentation.currentlists.PurchasesListSwipe
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.ui.theme.blue
@@ -48,7 +47,8 @@ import com.practicum.spisokpokupok.ui.theme.cyan
 fun CompletedPurchasesListScreen(
     modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
-    onItemClicked: (String) -> Unit
+    onItemClicked: (String) -> Unit,
+    onDeleteItem: (String) -> Unit
 ) {
 //    val purchasesList = remember {    // для тестирования UI без списков
 //        mutableStateListOf<PurchaseList>()
@@ -144,8 +144,9 @@ fun CompletedPurchasesListScreen(
                                 listOfPurchases = purchasesList,
                                 onClickListener = onItemClicked,
                                 onDeleteItemListener = {
-                                    purchasesList -= it
-                                }
+                                    onDeleteItem(it)
+                                },
+                                onFavoriteItemListener = null
                             )
                         }
                     } else {
@@ -250,7 +251,8 @@ fun CompletedPurchasesListScreenPreview() {
     ToDoListTheme {
         CompletedPurchasesListScreen(
             onNavigateToNewList = {},
-            onItemClicked = {}
+            onItemClicked = {},
+            onDeleteItem = {}
         )
     }
 }
