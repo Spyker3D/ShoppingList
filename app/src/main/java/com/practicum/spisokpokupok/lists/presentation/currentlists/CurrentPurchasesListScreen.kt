@@ -235,37 +235,39 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
     }
 }
 
-//@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
-//@Composable
-//fun CurrentPurchasesListScreenScaffoldPreview() {
-//    ToDoListTheme {
-//        CurrentPurchasesListScreen(
-//            onNavigateToNewList = {},
-//            onItemClicked = {},
-//            onDeleteItem = {},
-//            onFavoriteItem = { },
-//            shoppingList = listOf(
-//                PurchaseListUi(
-//                id = "123",
-//                name = "Продукты",
-//                isAttached = true,
-//                isOptionsRevealed = false
-//            ),
-//            PurchaseListUi(
-//                id = "111",
-//                name = "Канцтовары",
-//                isOptionsRevealed = false
-//            ),
-//            PurchaseListUi(
-//                id = "11100",
-//                name = "Еда для животных",
-//                isOptionsRevealed = false
-//            ),
-//            PurchaseListUi(
-//                id = "1111200",
-//                name = "Еда для людей",
-//                isOptionsRevealed = false
-//            ),)
-//        )
-//    }
-//}
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Composable
+fun CurrentPurchasesListScreenScaffoldPreview() {
+    ToDoListTheme {
+        CurrentPurchasesListScreen(
+            onNavigateToNewList = {},
+            onItemClicked = {},
+            onDeleteItem = {},
+            onFavoriteItem = { id, isFavorite ->
+                println("Item $id marked as favorite: $isFavorite")
+            },
+            shoppingList = listOf(
+                PurchaseListUi(
+                id = "123",
+                name = "Продукты",
+                isAttached = true,
+                isOptionsRevealed = false
+            ),
+            PurchaseListUi(
+                id = "111",
+                name = "Канцтовары",
+                isOptionsRevealed = false
+            ),
+            PurchaseListUi(
+                id = "11100",
+                name = "Еда для животных",
+                isOptionsRevealed = false
+            ),
+            PurchaseListUi(
+                id = "1111200",
+                name = "Еда для людей",
+                isOptionsRevealed = false
+            ),)
+        )
+    }
+}
