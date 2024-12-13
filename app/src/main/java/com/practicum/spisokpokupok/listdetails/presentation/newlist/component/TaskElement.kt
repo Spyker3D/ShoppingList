@@ -21,8 +21,9 @@ import com.practicum.buyinglist.R.drawable.ic_arrow_right
 
 @Composable
 fun TaskElement(
-    title: String,
-    isSelected: Boolean,
+    name: String,
+    quantity: String,
+    quantityType: String,
     onElementClick: () -> Unit,
     modifier: Modifier,
 ) {
@@ -31,15 +32,31 @@ fun TaskElement(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier =
-            modifier
-                .height(48.dp)
-                .fillMaxWidth()
-                .clickable { onElementClick() },
+                modifier
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    .clickable { onElementClick() },
         ) {
-            Text(
-                text = title,
-                color = Black,
-            )
+            Column {
+                Text(
+                    text = name,
+                    color = Black,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.alpha(0.5f),
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = quantity,
+                        color = Black,
+                    )
+                    Text(
+                        text = quantityType,
+                        color = Black,
+                    )
+                }
+            }
             Icon(
                 painter = painterResource(ic_arrow_right),
                 contentDescription = null,
@@ -54,10 +71,11 @@ fun TaskElement(
 @Composable
 private fun TaskElementPreview() {
     TaskElement(
-        title = "Title",
-        isSelected = true,
+        name = "Огурцы",
         onElementClick = {},
         modifier = Modifier,
+        quantity = "1",
+        quantityType = "кг",
     )
 //
 }
