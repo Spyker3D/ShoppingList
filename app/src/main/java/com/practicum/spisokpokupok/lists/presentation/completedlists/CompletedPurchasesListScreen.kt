@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -35,8 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
-import com.practicum.spisokpokupok.lists.domain.model.PurchaseList
-import com.practicum.spisokpokupok.lists.presentation.currentlists.PurchasesList
+import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
+import com.practicum.spisokpokupok.lists.presentation.currentlists.PurchasesListSwipe
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.ui.theme.blue
 import com.practicum.spisokpokupok.ui.theme.cyan
@@ -44,9 +45,10 @@ import com.practicum.spisokpokupok.ui.theme.cyan
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompletedPurchasesListScreen(
+    modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
     onItemClicked: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    onDeleteItem: (String) -> Unit
 ) {
 //    val purchasesList = remember {    // для тестирования UI без списков
 //        mutableStateListOf<PurchaseList>()
@@ -54,19 +56,22 @@ fun CompletedPurchasesListScreen(
 
     val purchasesList = remember {
         mutableStateListOf(
-            PurchaseList(
+            PurchaseListUi(
                 id = "123",
                 name = "Продукты",
-                isAttached = true
+                isAttached = true,
+                isOptionsRevealed = false
             ),
-            PurchaseList(
+            PurchaseListUi(
                 id = "111",
-                name = "Канцтовары"
+                name = "Канцтовары",
+                isOptionsRevealed = false
             ),
-            PurchaseList(
-                id = "1100",
-                name = "Еда для животных"
-            )
+            PurchaseListUi(
+                id = "11100",
+                name = "Еда для животных",
+                isOptionsRevealed = false
+            ),
         )
     }
 
@@ -101,6 +106,30 @@ fun CompletedPurchasesListScreen(
                         bottom = paddingValues.calculateBottomPadding()
                     )
             ) {
+                if (purchasesList.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.surface
+                                    )
+                                )
+                            )
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 48.dp)
+                                .size(250.dp),
+                            painter = painterResource(id = R.drawable.img_bags),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.SpaceBetween
@@ -111,24 +140,15 @@ fun CompletedPurchasesListScreen(
                                 .weight(1f)
                                 .fillMaxWidth()
                         ) {
-                            PurchasesList(
+                            PurchasesListSwipe(
                                 listOfPurchases = purchasesList,
                                 onClickListener = onItemClicked,
-                                onListOfPurchases = {
-                                    purchasesList -= it
-                                }
+                                onDeleteItemListener = {
+                                    onDeleteItem(it)
+                                },
+                                onFavoriteItemListener = null
                             )
                         }
-                        Icon(
-                            modifier = Modifier
-                                .padding(bottom = 48.dp)
-                                .height(113.dp)
-                                .width(250.dp)
-                                .align(Alignment.CenterHorizontally),
-                            painter = painterResource(id = R.drawable.img_bags),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
                     } else {
                         Box(
                             modifier = Modifier
@@ -231,7 +251,8 @@ fun CompletedPurchasesListScreenPreview() {
     ToDoListTheme {
         CompletedPurchasesListScreen(
             onNavigateToNewList = {},
-            onItemClicked = {}
+            onItemClicked = {},
+            onDeleteItem = {}
         )
     }
 }

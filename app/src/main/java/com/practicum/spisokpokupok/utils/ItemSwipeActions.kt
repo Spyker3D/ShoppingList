@@ -32,23 +32,18 @@ import kotlinx.coroutines.delay
 fun <T> SwipeToDeleteContainer(
     item: T,
     onDelete: (T) -> Unit,
-    onAttach: (T) -> Unit,
     animationDuration: Int = 500,
     content: @Composable (T) -> Unit
 ) {
     var isRemoved by remember { mutableStateOf(false) }
-    var isAttached by remember { mutableStateOf(false) }
     val state = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value -> // прописать слева направо
+        confirmValueChange = { value ->
             when (value) {
                 SwipeToDismissBoxValue.EndToStart -> {
                     isRemoved = true
                     true
                 }
-                SwipeToDismissBoxValue.StartToEnd -> {
-                    isAttached = true
-                    true
-                }
+
                 else -> {
                     false
                 }
@@ -64,54 +59,42 @@ fun <T> SwipeToDeleteContainer(
         ) + fadeOut()
     ) {
         SwipeToDismissBox(
+            modifier = Modifier,
             state = state,
             backgroundContent = {
-                SwipeBackground(swipeDismissState = state)
+                DeleteBackground(swipeDismissState = state)
             },
             content = { content(item) },
         )
     }
 
-    LaunchedEffect(key1 = isRemoved || isAttached) {
+    LaunchedEffect(key1 = isRemoved) {
         if (isRemoved) {
             delay(animationDuration.toLong())
             onDelete(item)
-            isRemoved = false
-        } else if (isAttached) {
-            onAttach(item)
-            isAttached = false
         }
     }
 }
 
 @Composable
-fun SwipeBackground(
+fun DeleteBackground(
     swipeDismissState: SwipeToDismissBoxState
 ) {
     val color = Color.Transparent
     val isSwipingToDelete = swipeDismissState.targetValue == SwipeToDismissBoxValue.EndToStart
-    val isSwipingToAttach = swipeDismissState.targetValue == SwipeToDismissBoxValue.StartToEnd
-
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color)
-            .padding(16.dp)
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterEnd
     ) {
         if (isSwipingToDelete) {
             Icon(
-                modifier = Modifier.align(Alignment.CenterEnd),
                 painter = painterResource(id = R.drawable.ic_delete_blue),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-            )
-        } else if (isSwipingToAttach) {
-            Icon(
-                modifier = Modifier.align(Alignment.CenterStart),
-                painter = painterResource(id = R.drawable.ic_blue_paperclip),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
