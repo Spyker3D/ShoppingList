@@ -1,8 +1,8 @@
 package com.practicum.buyinglist.db.data.dao
 
-import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingTaskDao
-import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTask
-import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTaskWithGood
+import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTask
+import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTaskWithGood
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -36,7 +36,7 @@ class FakeTaskDao(
         goodId: String,
         quantity: Int,
         quantityType: String,
-        position: Int,
+        position: Int
     ) {
         TODO("Not yet implemented")
     }
