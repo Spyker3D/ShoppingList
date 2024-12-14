@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.navigation
+package com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,14 +12,14 @@ import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 @Composable
 fun CurrentListEditScreen(
-    args: CurrentListEdit,
+    listId: String,
     modifier: Modifier = Modifier,
     onNavigateToCompletedList: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(
-            text = "Текущий список №1",
+            text = "Текущий список №$listId",
             fontSize = 22.sp,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodyLarge,
@@ -34,7 +34,7 @@ fun CurrentListEditScreenPreview() {
         CurrentListEditScreen(
             onNavigateToCompletedList = {},
             onBackPressed = {},
-            args = CurrentListEdit(id = "123"),
+            listId = "123",
         )
     }
 }

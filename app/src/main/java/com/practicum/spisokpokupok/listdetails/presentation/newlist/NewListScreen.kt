@@ -15,16 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.practicum.buyinglist.R
-import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListViewModel
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListAction
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListUIState
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.AddNewItemBottomSheet
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.EditableTextField
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.TaskElement
@@ -35,9 +33,9 @@ fun NewListScreen(
     modifier: Modifier = Modifier,
     onNavigateToCurrentLists: () -> Unit,
     onBackPressed: () -> Unit,
-    viewModel: NewListViewModel = hiltViewModel(),
+    action: (NewListAction) -> Unit,
+    state: NewListUIState,
 ) {
-    val newListUiState by viewModel.uiState.collectAsStateWithLifecycle()
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surface,
@@ -45,7 +43,7 @@ fun NewListScreen(
             NewListTopBar(
                 onNavigateToCurrentLists = onNavigateToCurrentLists,
                 onBackPressed = onBackPressed,
-                title = newListUiState.title,
+                title = state.title,
             )
         },
     ) { innerPadding ->
@@ -60,9 +58,9 @@ fun NewListScreen(
         ) {
             TitleTextField(
                 modifier = modifier,
-                value = newListUiState.title,
+                value = state.title,
                 onValueChange = { title ->
-                    viewModel.onTitleChange(title)
+                    action(NewListAction.OnTitleChange(title))
                 },
             )
 
@@ -74,21 +72,27 @@ fun NewListScreen(
             LazyColumn(
                 modifier = modifier.padding(top = 10.dp),
             ) {
-                items(newListUiState.productItems.size) { index ->
-                    val item = newListUiState.productItems[index]
+                items(state.productItems.size) { index ->
+                    val item = state.productItems[index]
 
                     if (item.isNameRedacted) {
                         TitleTextField(
                             modifier = modifier,
                             value = item.name,
                             onValueChange = { title ->
-                                viewModel.onTitleChange(title)
+                                action(NewListAction.OnTitleClick)
                             },
                         )
                     } else {
                         TaskElement(
                             name = item.name,
-                            onElementClick = { viewModel.redactItem(index) },
+                            onElementClick = {
+                                action(
+                                    NewListAction.OnTaskClick(
+                                        index,
+                                    ),
+                                )
+                            },
                             modifier = Modifier,
                             quantity = item.quantity,
                             quantityType = item.quantityType,
@@ -107,18 +111,18 @@ fun NewListScreen(
                                 .align(
                                     androidx.compose.ui.Alignment.CenterHorizontally,
                                 ).clickable {
-                                    viewModel.addNewItem()
+                                    action(NewListAction.OnAddNewProduct)
                                 },
                     )
                 }
             }
             Spacer(modifier.weight(1f))
-            if (newListUiState.bottomSheetState.isVisible) {
+            if (state.bottomSheetState.isVisible) {
                 AddNewItemBottomSheet(
                     onApproveClick = {},
                     onDecreeseClick = {},
                     onIncreeseClick = {},
-                    counter = newListUiState.bottomSheetState.quantity.toString(),
+                    counter = state.bottomSheetState.quantity.toString(),
                 )
             }
         }
@@ -140,6 +144,11 @@ fun NewListTopBar(
             painter = painterResource(id = R.drawable.arrow_back_ic),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
+            modifier =
+                Modifier
+                    .clickable {
+                        onBackPressed()
+                    },
         )
         Spacer(modifier = Modifier.padding(8.dp))
         Text(
@@ -171,7 +180,8 @@ private fun NewListScreenPreview() {
         NewListScreen(
             onNavigateToCurrentLists = {},
             onBackPressed = {},
-            viewModel = NewListViewModel(),
+            action = {},
+            state = NewListUIState(),
         )
     }
 }
