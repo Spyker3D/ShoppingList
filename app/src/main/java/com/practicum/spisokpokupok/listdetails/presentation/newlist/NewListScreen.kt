@@ -1,12 +1,12 @@
 package com.practicum.spisokpokupok.navigation
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListViewModel
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.AddNewItemBottomSheet
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.EditableTextField
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.TaskElement
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
@@ -44,7 +45,6 @@ fun NewListScreen(
             NewListTopBar(
                 onNavigateToCurrentLists = onNavigateToCurrentLists,
                 onBackPressed = onBackPressed,
-                onDoneClicked = {},
                 title = newListUiState.title,
             )
         },
@@ -53,10 +53,13 @@ fun NewListScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(
+                        top = innerPadding.calculateTopPadding(),
+                        bottom = innerPadding.calculateBottomPadding(),
+                    ).padding(horizontal = 16.dp),
         ) {
             TitleTextField(
-                modifier = Modifier.padding(16.dp),
+                modifier = modifier,
                 value = newListUiState.title,
                 onValueChange = { title ->
                     viewModel.onTitleChange(title)
@@ -69,19 +72,14 @@ fun NewListScreen(
                         .padding(bottom = 20.dp),
             )
             LazyColumn(
-                modifier = Modifier.padding(16.dp),
+                modifier = modifier.padding(top = 10.dp),
             ) {
                 items(newListUiState.productItems.size) { index ->
                     val item = newListUiState.productItems[index]
-                    Box(
-                        modifier =
-                            Modifier.clickable {
-                                viewModel.redactItem(index)
-                            },
-                    )
+
                     if (item.isNameRedacted) {
                         TitleTextField(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = modifier,
                             value = item.name,
                             onValueChange = { title ->
                                 viewModel.onTitleChange(title)
@@ -90,7 +88,7 @@ fun NewListScreen(
                     } else {
                         TaskElement(
                             name = item.name,
-                            onElementClick = {},
+                            onElementClick = { viewModel.redactItem(index) },
                             modifier = Modifier,
                             quantity = item.quantity,
                             quantityType = item.quantityType,
@@ -114,24 +112,36 @@ fun NewListScreen(
                     )
                 }
             }
+            Spacer(modifier.weight(1f))
+            if (newListUiState.bottomSheetState.isVisible) {
+                AddNewItemBottomSheet(
+                    onApproveClick = {},
+                    onDecreeseClick = {},
+                    onIncreeseClick = {},
+                    counter = newListUiState.bottomSheetState.quantity.toString(),
+                )
+            }
         }
     }
 }
 
 @Composable
 fun NewListTopBar(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.height(76.dp),
     onNavigateToCurrentLists: () -> Unit,
     onBackPressed: () -> Unit,
-    onDoneClicked: () -> Unit,
     title: String,
 ) {
-    Row {
+    Row(
+        modifier = modifier.padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_navigate_back),
+            painter = painterResource(id = R.drawable.arrow_back_ic),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
         )
+        Spacer(modifier = Modifier.padding(8.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
@@ -176,9 +186,12 @@ fun AddItem(modifier: Modifier) {
         Icon(
             painter = painterResource(id = R.drawable.plus_ic),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurface,
+            tint = MaterialTheme.colorScheme.primary,
         )
         Spacer(modifier = Modifier.padding(8.dp))
-        Text(text = "Добавить продукт")
+        Text(
+            text = "Добавить продукт",
+            color = MaterialTheme.colorScheme.primary,
+        )
     }
 }

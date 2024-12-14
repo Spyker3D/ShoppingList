@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 
 data class NewListUIState(
     val title: String = "Новый список",
+    val bottomSheetState: BottomSheetState = BottomSheetState(),
     val productItems: List<NewListItemUiState> =
         mutableListOf(
             NewListItemUiState(
@@ -24,6 +25,12 @@ data class NewListUIState(
                 quantityType = "кг",
             ),
         ),
+)
+
+data class BottomSheetState(
+    val isVisible: Boolean = false,
+    val quantity: Int = 1,
+    val quantityType: String = "уп",
 )
 
 data class NewListItemUiState(
@@ -60,6 +67,10 @@ class NewListViewModel : ViewModel() {
                     isNameRedacted = true,
                 )
             it.copy(
+                bottomSheetState =
+                    it.bottomSheetState.copy(
+                        isVisible = true,
+                    ),
                 productItems = productItems,
             )
         }
