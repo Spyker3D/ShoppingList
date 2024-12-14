@@ -42,7 +42,6 @@ import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.ui.theme.blue
 import com.practicum.spisokpokupok.ui.theme.cyan
 
-
 @Composable
 fun CurrentPurchasesListScreen(
     modifier: Modifier = Modifier,
@@ -59,12 +58,13 @@ fun CurrentPurchasesListScreen(
         },
         content = { paddingValues ->
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = paddingValues.calculateTopPadding(),
-                        bottom = paddingValues.calculateBottomPadding()
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = paddingValues.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding(),
+                        ),
             ) {
                 if (shoppingList.isNotEmpty()) {
                     Box(
@@ -93,13 +93,14 @@ fun CurrentPurchasesListScreen(
 
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     if (shoppingList.isNotEmpty()) {
                         Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
                         ) {
                             PurchasesListSwipe(
                                 listOfPurchases = shoppingList,
@@ -112,16 +113,16 @@ fun CurrentPurchasesListScreen(
                         }
                     } else {
                         Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp)
-                                .background(Color.Transparent),
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp)
+                                    .background(Color.Transparent),
                             contentAlignment = Alignment.Center,
-
-                            ) {
+                        ) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text(
                                     modifier = Modifier.padding(bottom = 16.dp),
@@ -129,19 +130,20 @@ fun CurrentPurchasesListScreen(
                                     fontSize = 22.sp,
                                     color = MaterialTheme.colorScheme.onTertiary,
                                     textAlign = TextAlign.Center,
-                                    fontFamily = FontFamily(Font(R.font.sf_pro_display_regular))
+                                    fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
                                 )
                                 Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.End),
-                                    contentAlignment = Alignment.CenterEnd
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .align(Alignment.End),
+                                    contentAlignment = Alignment.CenterEnd,
                                 ) {
                                     Icon(
                                         modifier = Modifier.padding(end = 32.dp),
                                         painter = painterResource(id = R.drawable.ic_new_list_arrow),
                                         tint = blue,
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             }
@@ -152,7 +154,7 @@ fun CurrentPurchasesListScreen(
         },
         bottomBar = {
             BottomBar(onNavigateToNewList = onNavigateToNewList)
-        }
+        },
     )
 }
 
@@ -160,52 +162,57 @@ fun CurrentPurchasesListScreen(
 @Composable
 private fun TopBar(modifier: Modifier, purchasesList: List<PurchaseListUi>) {
     LargeTopAppBar(
-        modifier = modifier
-            .padding(top = 0.dp)
-            .wrapContentHeight(),
+        modifier =
+            modifier
+                .padding(top = 0.dp)
+                .wrapContentHeight(),
         title = {
             Text(
                 modifier = Modifier.padding(horizontal = 0.dp),
-                text = if (purchasesList.isNotEmpty()) {
-                    "Все ваши списки"
-                } else {
-                    "Все ваши списки здесь"
-                },
+                text =
+                    if (purchasesList.isNotEmpty()) {
+                        "Все ваши списки"
+                    } else {
+                        "Все ваши списки здесь"
+                    },
                 fontSize = 44.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium,
-                lineHeight = 44.sp
+                lineHeight = 44.sp,
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onTertiary
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.onTertiary,
+            ),
     )
 }
 
 @Composable
 private fun BottomBar(onNavigateToNewList: () -> Unit) {
     BottomAppBar(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .height(164.dp),
-        containerColor = MaterialTheme.colorScheme.surface
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp)
+                .height(164.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_back),
                     tint = cyan,
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 Text(
                     modifier = Modifier.width(200.dp),
@@ -214,19 +221,20 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     lineHeight = 16.sp,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_forward),
                     tint = cyan,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
             Icon(
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .size(48.dp)
-                    .clickable { onNavigateToNewList() },
+                modifier =
+                    Modifier
+                        .padding(bottom = 24.dp)
+                        .size(48.dp)
+                        .clickable { onNavigateToNewList() },
                 painter = painterResource(id = R.drawable.ic_add),
                 tint = cyan,
                 contentDescription = null,
