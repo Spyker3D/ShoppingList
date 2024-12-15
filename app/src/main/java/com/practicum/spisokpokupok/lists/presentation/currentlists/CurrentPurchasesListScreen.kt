@@ -22,8 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
@@ -82,7 +79,7 @@ fun CurrentPurchasesListScreen(
                         Icon(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .padding(bottom = 48.dp)
+                                .padding(bottom = 0.dp)
                                 .size(250.dp),
                             painter = painterResource(id = R.drawable.img_bags),
                             contentDescription = null,
@@ -100,6 +97,7 @@ fun CurrentPurchasesListScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
+                                .padding(top = 24.dp)
                         ) {
                             PurchasesListSwipe(
                                 listOfPurchases = shoppingList,
@@ -117,7 +115,6 @@ fun CurrentPurchasesListScreen(
                                 .padding(horizontal = 16.dp)
                                 .background(Color.Transparent),
                             contentAlignment = Alignment.Center,
-
                             ) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -189,7 +186,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
     BottomAppBar(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .height(164.dp),
+            .height(192.dp),
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
@@ -198,7 +195,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp, top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
