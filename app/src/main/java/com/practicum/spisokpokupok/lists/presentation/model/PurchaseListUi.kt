@@ -5,5 +5,5 @@ data class PurchaseListUi(
     val name: String,
     val isCompleted: Boolean = false,
     val isAttached: Boolean = false,
-    val isOptionsRevealed: Boolean = false
+    val isOptionsRevealed: Boolean = false,
 )

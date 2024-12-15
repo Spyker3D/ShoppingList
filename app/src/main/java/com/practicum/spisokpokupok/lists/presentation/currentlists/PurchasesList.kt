@@ -60,6 +60,7 @@ fun PurchasesListSwipe(
 //                    listOfPurchases.toMutableList()[index] =
 //                        purchase.copy(isOptionsRevealed = true)  // по индексу - как достать . toTypedArray?
                     // как сделать признак, чтобы при раскрытии признак "Видны ли иконки" становился true
+
                 },
                 onCollapsed = {
 //                    listOfPurchases.toMutableList()[index] = purchase.copy(isOptionsRevealed = false)

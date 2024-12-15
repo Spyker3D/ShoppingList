@@ -1,5 +1,8 @@
 package com.practicum.spisokpokupok.lists.presentation.currentlists
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
@@ -12,6 +15,7 @@ import com.practicum.spisokpokupok.lists.presentation.mapper.toPresentation
 import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,6 +31,10 @@ constructor(
     private val deleteFromActualListsUseCase: DeleteFromActualListsUseCase,
     private val updateFavoriteStatusUseCase: UpdateFavoriteStatusUseCase
 ) : ViewModel() {
+
+    var state by mutableStateOf(MviState())
+        private set
+
     private var listId = ""
     private val _listStream = getActualListsUseCase()
     val listStream: StateFlow<List<PurchaseListUi>> =
@@ -59,6 +67,24 @@ constructor(
             updateFavoriteStatusUseCase(listId = listId, isFavorite = isFavorite)
         }
     }
+
+//    private fun loadShoppingList {
+//        state.shoppingList?.let {  }
+//    }
+//
+//    // Function to handle swipe reveal
+//    fun revealItem(id: String) {
+//        _purchasesList.value = _purchasesList.value.map {
+//            it.copy(isOptionsRevealed = it.id == id)
+//        }
+//    }
+//
+//    // Function to reset reveal on action
+//    fun resetReveal() {
+//        _purchasesList.value = _purchasesList.value.map {
+//            it.copy(isOptionsRevealed = false)
+//        }
+//    }
 
     init {   // для тестирования списков !ПОТОМ УДАЛИТЬ!
         repeat(5) { index ->
