@@ -1,4 +1,4 @@
-package com.practicum.spisokpokupok.lists.domain.usecases
+package com.practicum.spisokpokupok.listdetails.domain.usecases
 
 import com.practicum.spisokpokupok.lists.domain.repository.ShoppingListRepository
 import javax.inject.Inject
@@ -8,5 +8,6 @@ class CreateListUseCase
     constructor(
         private val shoppingListRepository: ShoppingListRepository,
     ) {
+
         suspend operator fun invoke(listName: String) = shoppingListRepository.createList(listName)
     }

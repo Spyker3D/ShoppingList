@@ -9,8 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -28,27 +26,32 @@ import com.practicum.buyinglist.R
 fun EditableTextField(
     modifier: Modifier = Modifier,
     index: Int,
-    value: String = "",
+    value: String,
     onValueChange: (String) -> Unit,
 ) {
-    EnhancedTextFieldExample()
+    EnhancedTextFieldExample(
+        text = value,
+        onValueChange = onValueChange,
+    )
 }
 
 @Composable
-fun EnhancedTextFieldExample() {
-    val text = remember { mutableStateOf("") }
+fun EnhancedTextFieldExample(
+    text: String,
+    onValueChange: (String) -> Unit,
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     TextField(
         modifier =
             Modifier
                 .fillMaxWidth(),
-        value = text.value,
-        onValueChange = { text.value = it },
+        value = text,
+        onValueChange = {onValueChange(it) },
         label = { Text("Label") },
         placeholder = { Text("Enter text") },
         trailingIcon = {
-            IconButton(onClick = { text.value = "" }) {
+            IconButton(onClick = { onValueChange("") }) {
                 Icon(
                     painter =
                         painterResource(id = R.drawable.ic_close),
@@ -56,8 +59,8 @@ fun EnhancedTextFieldExample() {
                 )
             }
         },
-        isError = text.value.length > 10,
-        visualTransformation = if (text.value.length > 10) PasswordVisualTransformation() else VisualTransformation.None,
+        isError = text.length > 10,
+        visualTransformation = if (text.length > 10) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions =
             KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
@@ -91,5 +94,6 @@ fun EditableTextFieldPreview() {
     EditableTextField(
         index = 0,
         onValueChange = {},
+        value = "",
     )
 }

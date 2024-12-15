@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,21 +17,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.buyinglist.R
+import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 @Composable
 fun AddNewItemBottomSheet(
-    modifier: Modifier = Modifier,
+    quantityType: QuantityType,
     counter: String,
-    onIncreeseClick: () -> Unit,
+    onQuantityTypeChange: (QuantityType) -> Unit,
+    onEncreeseClick: () -> Unit,
     onDecreeseClick: () -> Unit,
-    onApproveClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column {
         Spacer(
             modifier = Modifier.padding(vertical = 4.dp),
         )
-        QuantityTypeChips()
+        QuantityTypeChips(
+            selectedOption = quantityType,
+            onOptionSelected = { onQuantityTypeChange(it) },
+        )
         Spacer(
             modifier = Modifier.padding(vertical = 20.dp),
         )
@@ -48,7 +51,7 @@ fun AddNewItemBottomSheet(
                 contentDescription = "",
                 modifier =
                     modifier.clickable {
-                        onDecreeseClick
+                        onDecreeseClick()
                     },
             )
             Text(text = counter)
@@ -58,24 +61,9 @@ fun AddNewItemBottomSheet(
                 contentDescription = "",
                 modifier =
                     modifier.clickable {
-                        onIncreeseClick
+                        onEncreeseClick()
                     },
             )
-        }
-
-        Spacer(modifier = modifier.padding(top = 32.dp))
-        Button(
-            colors =
-                ButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                ),
-            modifier = modifier.fillMaxWidth(),
-            onClick = onApproveClick,
-        ) {
-            Text("Готово")
         }
     }
 }
@@ -87,8 +75,9 @@ private fun AddNewItemBottomPreview(modifier: Modifier = Modifier.fillMaxWidth()
         AddNewItemBottomSheet(
             counter = "1",
             onDecreeseClick = {},
-            onIncreeseClick = {},
-            onApproveClick = {},
+            onQuantityTypeChange = {},
+            quantityType = QuantityType.PIECE,
+            onEncreeseClick = {},
         )
     }
 }

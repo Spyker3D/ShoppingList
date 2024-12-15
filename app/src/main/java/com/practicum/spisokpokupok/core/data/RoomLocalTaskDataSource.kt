@@ -3,65 +3,77 @@ package com.practicum.spisokpokupok.core.data
 import com.practicum.spisokpokupok.core.data.roomdb.dao.GoodDao
 import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingTaskDao
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
-import com.practicum.spisokpokupok.core.data.roomdb.mapper.quantityTypeToString
 import com.practicum.spisokpokupok.core.data.roomdb.mapper.toLocal
 import com.practicum.spisokpokupok.listdetails.data.repository.LocalTaskDataSource
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
+import com.practicum.spisokpokupok.listdetails.domain.model.quantityTypeToString
+import javax.inject.Inject
 
-class RoomLocalTaskDataSource(
-    private val shoppingTaskDao: ShoppingTaskDao,
-    private val goodDao: GoodDao,
-) : LocalTaskDataSource {
-    override suspend fun createTask(
-        task: Task,
-        shoppingListId: String,
-    ) {
-        goodDao.upsert(
-            LocalGood(
-                name = task.goodName,
-                id = 0,
-            ),
-        )
-        val goodId = goodDao.getGoodIdByName(task.goodName)
-        shoppingTaskDao.upsert(
-            task.toLocal(
-                shoppingListId = shoppingListId,
-                localGoodId = goodId.toString(),
-            ),
-        )
-    }
+class RoomLocalTaskDataSource
+    @Inject
+    constructor(
+        private val shoppingTaskDao: ShoppingTaskDao,
+        private val goodDao: GoodDao,
+    ) : LocalTaskDataSource {
+        override suspend fun createTask(
+            task: Task,
+            shoppingListId: String,
+        ) {
+            goodDao.upsert(
+                LocalGood(
+                    name = task.goodName,
+                    id = 0,
+                ),
+            )
+            val goodId = goodDao.getGoodIdByName(task.goodName)
+            shoppingTaskDao.upsert(
+                task.toLocal(
+                    shoppingListId = shoppingListId,
+                    localGoodId = goodId.toString(),
+                ),
+            )
+        }
 
-    override suspend fun updateCompleted(
-        taskId: String,
-        isCompleted: Boolean,
-    ) {
-        shoppingTaskDao.updateCompleted(taskId, isCompleted)
-    }
+        override suspend fun updateCompleted(
+            taskId: String,
+            isCompleted: Boolean,
+        ) {
+            shoppingTaskDao.updateCompleted(taskId, isCompleted)
+        }
 
-    override suspend fun deleteTask(taskId: String) {
-        shoppingTaskDao.deleteTask(taskId)
-    }
+        override suspend fun createTasks(
+            tasks: List<Task>,
+            shoppingListId: String,
+        ) {
+            tasks.forEach { task ->
+                createTask(task, shoppingListId)
+            }
+        }
 
-    override suspend fun updateTask(
-        id: String,
-        goodName: String,
-        quantity: Int,
-        quantityType: QuantityType,
-        position: Int,
-    ) {
-        goodDao.upsert(
-            LocalGood(
-                name = goodName,
-                id = 0,
-            ),
-        )
-        shoppingTaskDao.updateTask(
-            taskId = id,
-            goodId = goodDao.getGoodIdByName(goodName).toString(),
-            quantity = quantity,
-            quantityType = quantityTypeToString(quantityType),
-            position = position,
-        )
+        override suspend fun deleteTask(taskId: String) {
+            shoppingTaskDao.deleteTask(taskId)
+        }
+
+        override suspend fun updateTask(
+            id: String,
+            goodName: String,
+            quantity: Int,
+            quantityType: QuantityType,
+            position: Int,
+        ) {
+            goodDao.upsert(
+                LocalGood(
+                    name = goodName,
+                    id = 0,
+                ),
+            )
+            shoppingTaskDao.updateTask(
+                taskId = id,
+                goodId = goodDao.getGoodIdByName(goodName).toString(),
+                quantity = quantity,
+                quantityType = quantityTypeToString(quantityType),
+                position = position,
+            )
+        }
     }
-}

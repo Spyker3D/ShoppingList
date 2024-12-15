@@ -21,3 +21,30 @@ enum class QuantityType {
     PIECE,
     UNKNOWN,
 }
+
+fun quantityTypeFromString(quantityType: String): QuantityType =
+    when (quantityType) {
+        KILOGRAM -> QuantityType.KILOGRAM
+        LITRE -> QuantityType.LITRE
+        PACK -> QuantityType.PACK
+        PIECE -> QuantityType.PIECE
+        else -> QuantityType.UNKNOWN
+    }
+
+fun quantityTypeToString(quantityType: QuantityType): String =
+    when (quantityType) {
+        QuantityType.KILOGRAM -> {
+            KILOGRAM
+        }
+
+        QuantityType.LITRE -> LITRE
+        QuantityType.PACK -> PACK
+        QuantityType.PIECE -> PIECE
+        QuantityType.UNKNOWN -> UNKNOWN
+    }
+
+private const val KILOGRAM = "KILOGRAM"
+private const val LITRE = "LITRE"
+private const val PACK = "PACK"
+private const val PIECE = "PIECE"
+private const val UNKNOWN = "UNKNOWN"

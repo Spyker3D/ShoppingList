@@ -13,5 +13,5 @@ data class LocalShoppingTask(
     val quantityType: String,
     val isCompleted: Boolean,
     val position: Int,
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: String,
 )

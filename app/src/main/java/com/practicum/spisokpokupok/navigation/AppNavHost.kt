@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.CurrentLIstEditScreenViewModel
 import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.CurrentListEditScreen
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListScreen
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListViewModel
 import com.practicum.spisokpokupok.lists.presentation.HorizontalPagerScreen
 import kotlinx.serialization.Serializable
@@ -19,26 +20,34 @@ import kotlinx.serialization.Serializable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = HorizontalPager(targetPage = 0),
+        startDestination = HorizontalPagerRoute(targetPage = 0),
     ) {
-        composable<HorizontalPager> {
-            val args = it.toRoute<HorizontalPager>()
+        composable<HorizontalPagerRoute> {
+            val args = it.toRoute<HorizontalPagerRoute>()
             HorizontalPagerScreen(
                 initialPage = args.targetPage,
-                onNavigateToNewList = { navController.navigate(route = NewList) },
-                onItemCurrentClicked = { id -> navController.navigate(route = CurrentListEdit(id = id)) },
+                onNavigateToNewList = { navController.navigate(route = NewListRoute) },
+                onItemCurrentClicked = { id ->
+                    navController.navigate(
+                        route =
+                            CurrentListEditRoute(
+                                id = id,
+                            ),
+                    )
+                },
                 onItemCompletedClicked = { id -> navController.navigate(route = CompletedListEdit(id = id)) },
             )
         }
 
-        composable<NewList> {
+        composable<NewListRoute> {
             val viewModel: NewListViewModel = hiltViewModel()
             val state by viewModel.uiState.collectAsStateWithLifecycle()
+
             NewListScreen(
                 onNavigateToCurrentLists = {
                     navController.navigate(
                         route =
-                            HorizontalPager(
+                            HorizontalPagerRoute(
                                 targetPage = 0,
                             ),
                     )
@@ -49,28 +58,28 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             )
         }
 
-        composable<CurrentListEdit> {
-            val list = it.toRoute<CurrentListEdit>()
+        composable<CurrentListEditRoute> {
+            val arguments = it.toRoute<CurrentListEditRoute>()
             val viewModel: CurrentLIstEditScreenViewModel = hiltViewModel(it)
 
             CurrentListEditScreen(
                 onNavigateToCompletedList = {
                     navController.navigate(
                         route =
-                            HorizontalPager(
+                            HorizontalPagerRoute(
                                 targetPage = 1,
                             ),
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
-                listId = list.id,
+                listId = arguments.id,
             )
         }
 
         composable<CompletedListEdit> {
             val args = it.toRoute<CompletedListEdit>()
             CompletedListEditScreen(
-                onNavigateToCurrentPurchasesListScreen = { navController.navigate(route = CurrentPurchasesList) },
+                onNavigateToCurrentPurchasesListScreen = { navController.navigate(route = CurrentPurchasesListRoute) },
                 onBackPressed = { navController.popBackStack() },
                 args = args,
             )
@@ -79,21 +88,21 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
 }
 
 @Serializable
-data class HorizontalPager(
+data class HorizontalPagerRoute(
     val targetPage: Int = 0,
 )
 
 @Serializable
-object CurrentPurchasesList
+object CurrentPurchasesListRoute
 
 @Serializable
-object CompletedPurchasesList
+object CompletedPurchasesListRoute
 
 @Serializable
-object NewList
+object NewListRoute
 
 @Serializable
-data class CurrentListEdit(
+data class CurrentListEditRoute(
     val id: String,
 )
 
