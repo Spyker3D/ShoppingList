@@ -14,6 +14,10 @@ interface LocalTaskDataSource {
         isCompleted: Boolean,
     )
 
+    suspend fun createTasks(
+        tasks: List<Task>,
+        shoppingListId: String,
+    )
     suspend fun deleteTask(taskId: String)
 
     suspend fun updateTask(

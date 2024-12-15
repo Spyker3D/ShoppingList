@@ -9,19 +9,25 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 @Composable
-fun QuantityTypeChips(modifier: Modifier = Modifier) {
-    val options = listOf("кг", "л", "уп", "шт")
-    var selectedOption by remember { mutableStateOf(options[0]) }
+fun QuantityTypeChips(
+    modifier: Modifier = Modifier,
+    selectedOption: QuantityType,
+    onOptionSelected: (QuantityType) -> Unit,
+) {
+    val options: List<QuantityType> =
+        listOf(
+            QuantityType.KILOGRAM,
+            QuantityType.LITRE,
+            QuantityType.PACK,
+            QuantityType.PIECE,
+        )
 
     Column(modifier = modifier.fillMaxWidth()) {
         SingleChoiceSegmentedButtonRow(
@@ -29,16 +35,28 @@ fun QuantityTypeChips(modifier: Modifier = Modifier) {
         ) {
             options.forEachIndexed { index, option ->
                 SegmentedButton(
-                    modifier = Modifier.height(36.dp).width(200.dp),
+                    modifier =
+                        Modifier
+                            .height(36.dp)
+                            .width(200.dp),
                     selected = selectedOption == option,
-                    onClick = { selectedOption = option },
+                    onClick = { onOptionSelected(option) },
                     shape =
                         SegmentedButtonDefaults.itemShape(
                             index = index,
                             count = options.size,
                         ),
                 ) {
-                    Text(text = option)
+                    Text(
+                        text =
+                            when (option) {
+                                QuantityType.PIECE -> "шт"
+                                QuantityType.KILOGRAM -> "кг"
+                                QuantityType.LITRE -> "л"
+                                QuantityType.PACK -> "уп"
+                                QuantityType.UNKNOWN -> "ед"
+                            },
+                    )
                 }
             }
         }
@@ -49,6 +67,9 @@ fun QuantityTypeChips(modifier: Modifier = Modifier) {
 @Composable
 fun SegmentedButtonExamplePreview() {
     ToDoListTheme {
-        QuantityTypeChips(modifier = Modifier)
+        QuantityTypeChips(
+            selectedOption = QuantityType.PIECE,
+            onOptionSelected = {},
+        )
     }
 }
