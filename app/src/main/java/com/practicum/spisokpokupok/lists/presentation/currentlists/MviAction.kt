@@ -1,6 +1,7 @@
 package com.practicum.spisokpokupok.lists.presentation.currentlists
 
 interface MviAction {  // enum?
+    data object LoadList: MviAction
     data object DeleteItem: MviAction
     data object MakeItemFavorite: MviAction
     data object ClickItem : MviAction

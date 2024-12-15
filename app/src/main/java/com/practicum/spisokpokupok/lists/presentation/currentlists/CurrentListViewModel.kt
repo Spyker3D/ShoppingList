@@ -14,6 +14,8 @@ import com.practicum.spisokpokupok.lists.domain.usecases.UpdateFavoriteStatusUse
 import com.practicum.spisokpokupok.lists.presentation.mapper.toPresentation
 import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
@@ -34,6 +36,12 @@ constructor(
 
     var state by mutableStateOf(MviState())
         private set
+//
+//    val actionsFlow: SharedFlow<MviAction> = MutableSharedFlow<MviAction>().map {
+//        when (it) {
+//            MviAction.LoadList -> state.copy(getActualListsUseCase())
+//        }
+//    }
 
     private var listId = ""
     private val _listStream = getActualListsUseCase()

@@ -9,5 +9,4 @@ fun ShoppingList.toPresentation() =
         name = name,
         isCompleted = isCompleted,
         isAttached = isFavorite,
-        isOptionsRevealed = false
     )

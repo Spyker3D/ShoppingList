@@ -63,17 +63,14 @@ fun CompletedPurchasesListScreen(
                 id = "123",
                 name = "Продукты",
                 isAttached = true,
-                isOptionsRevealed = false
             ),
             PurchaseListUi(
                 id = "111",
                 name = "Канцтовары",
-                isOptionsRevealed = false
             ),
             PurchaseListUi(
                 id = "11100",
                 name = "Еда для животных",
-                isOptionsRevealed = false
             ),
         )
     }

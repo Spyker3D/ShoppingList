@@ -20,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -32,7 +34,9 @@ import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.utils.ActionIcon
+import com.practicum.spisokpokupok.utils.SwipeState
 import com.practicum.spisokpokupok.utils.SwipeableRightItem
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -42,7 +46,6 @@ fun PurchasesListSwipe(
     onClickListener: (String) -> Unit,
     onFavoriteItemListener: ((String, Boolean) -> Unit)? = null
 ) {
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
@@ -54,22 +57,17 @@ fun PurchasesListSwipe(
         itemsIndexed(
             items = listOfPurchases,
         ) { index, purchase ->
+            val swipeState = remember { SwipeState() }
+            val scope = rememberCoroutineScope()
             SwipeableRightItem(
-                isRevealed = purchase.isOptionsRevealed,
-                onExpanded = {
-//                    listOfPurchases.toMutableList()[index] =
-//                        purchase.copy(isOptionsRevealed = true)  // по индексу - как достать . toTypedArray?
-                    // как сделать признак, чтобы при раскрытии признак "Видны ли иконки" становился true
-
-                },
-                onCollapsed = {
-//                    listOfPurchases.toMutableList()[index] = purchase.copy(isOptionsRevealed = false)
-                    // как сделать признак, чтобы при сворачивании признак "Видны ли иконки" становился false
-                },
+                swipeState = swipeState,
                 actions = {
                     ActionIcon(
                         onClick = {
                             onDeleteItemListener(purchase.id)
+                            scope.launch {
+                                swipeState.hide()
+                            }
                         },
                         backgroundColor = MaterialTheme.colorScheme.onError,
                         icon = painterResource(id = R.drawable.ic_delete_blue),
@@ -78,10 +76,9 @@ fun PurchasesListSwipe(
                     ActionIcon(
                         onClick = {
                             onFavoriteItemListener?.invoke(purchase.id, !purchase.isAttached)
-//                            listOfPurchases.toMutableList()[index] = purchase.copy(
-//                                isAttached = true, isOptionsRevealed = false
-//                            )
-                            // как сделать признак, чтобы при раскрытии признак "Видны ли иконки" становился false и иконки сворачивались
+                            scope.launch {
+                                swipeState.hide()
+                            }
                         },
                         backgroundColor = MaterialTheme.colorScheme.primary,
                         icon = painterResource(id = R.drawable.ic_blue_paperclip),
@@ -159,18 +156,14 @@ fun PurchasesListSwipePreview() {
                     id = "123",
                     name = "Продукты",
                     isAttached = true,
-                    isOptionsRevealed = false
                 ),
                 PurchaseListUi(
                     id = "111",
                     name = "Канцтовары",
-                    isOptionsRevealed = false
                 ),
                 PurchaseListUi(
                     id = "11100",
                     name = "Еда для животных",
-                    isOptionsRevealed = false
-
                 )
             ),
             onClickListener = {},
@@ -188,7 +181,6 @@ fun ItemPreviewSwipe() {
             purchaseList = PurchaseListUi(
                 id = "123",
                 name = "Продукты",
-                isOptionsRevealed = false
             ),
             onClickListener = {}
         )
