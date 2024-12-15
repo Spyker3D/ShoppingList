@@ -7,11 +7,8 @@ import com.practicum.spisokpokupok.lists.domain.usecases.DeleteFromActualListsUs
 import com.practicum.spisokpokupok.lists.domain.usecases.GetActualListsUseCase
 import com.practicum.spisokpokupok.lists.domain.usecases.MoveToActualListUseCase
 import com.practicum.spisokpokupok.lists.domain.usecases.UpdateFavoriteStatusUseCase
-import com.practicum.spisokpokupok.lists.presentation.mapper.toPresentation
-import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,19 +23,17 @@ constructor(
     private val deleteFromActualListsUseCase: DeleteFromActualListsUseCase,
     private val updateFavoriteStatusUseCase: UpdateFavoriteStatusUseCase
 ) : ViewModel() {
+
     private var listId = ""
     private val _listStream = getActualListsUseCase()
-    val listStream: StateFlow<List<PurchaseListUi>> =
-        _listStream.map { shoppingList ->
-            shoppingList.map { it.toPresentation() }
-        }
-            .stateIn(
-                scope = viewModelScope,
-                started =
-                kotlinx.coroutines.flow.SharingStarted
-                    .WhileSubscribed(5000),
-                initialValue = emptyList(),
-            )
+    val listStream: StateFlow<List<ShoppingList>> =
+        _listStream.stateIn(
+            scope = viewModelScope,
+            started =
+            kotlinx.coroutines.flow.SharingStarted
+                .WhileSubscribed(5000),
+            initialValue = emptyList(),
+        )
 
     fun addList(listName: String) {
         viewModelScope.launch {

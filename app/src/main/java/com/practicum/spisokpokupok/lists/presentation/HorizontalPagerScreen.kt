@@ -1,6 +1,5 @@
 package com.practicum.spisokpokupok.lists.presentation
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -8,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.practicum.spisokpokupok.lists.presentation.completedlists.CompletedListViewModel
 import com.practicum.spisokpokupok.lists.presentation.completedlists.CompletedPurchasesListScreen
 import com.practicum.spisokpokupok.lists.presentation.currentlists.CurrentListViewModel
 import com.practicum.spisokpokupok.lists.presentation.currentlists.CurrentPurchasesListScreen
@@ -23,6 +22,7 @@ fun HorizontalPagerScreen(
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage, pageCount = { 2 })
     val currentListViewModel: CurrentListViewModel = hiltViewModel()
+    val completedListViewModel: CompletedListViewModel = hiltViewModel()
 
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
@@ -42,6 +42,7 @@ fun HorizontalPagerScreen(
             }
 
             1 -> CompletedPurchasesListScreen(
+                completedShoppingList = completedListViewModel.listStream.collectAsState().value,
                 onNavigateToNewList = onNavigateToNewList,
                 onItemClicked = onItemCompletedClicked,
                 onDeleteItem = currentListViewModel::deleteList
