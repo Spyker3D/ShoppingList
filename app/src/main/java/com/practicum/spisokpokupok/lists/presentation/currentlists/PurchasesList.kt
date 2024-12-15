@@ -1,6 +1,5 @@
 package com.practicum.spisokpokupok.lists.presentation.currentlists
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -31,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
-import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
+import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.utils.ActionIcon
 import com.practicum.spisokpokupok.utils.SwipeState
@@ -41,7 +39,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PurchasesListSwipe(
-    listOfPurchases: List<PurchaseListUi>,
+    listOfPurchases: List<ShoppingList>,
     onDeleteItemListener: (String) -> Unit,
     onClickListener: (String) -> Unit,
     onFavoriteItemListener: ((String, Boolean) -> Unit)? = null
@@ -56,7 +54,7 @@ fun PurchasesListSwipe(
     ) {
         itemsIndexed(
             items = listOfPurchases,
-        ) { index, purchase ->
+        ) { _, purchase ->
             val swipeState = remember { SwipeState() }
             val scope = rememberCoroutineScope()
             SwipeableRightItem(
@@ -75,7 +73,7 @@ fun PurchasesListSwipe(
                     )
                     ActionIcon(
                         onClick = {
-                            onFavoriteItemListener?.invoke(purchase.id, !purchase.isAttached)
+                            onFavoriteItemListener?.invoke(purchase.id, !purchase.isFavorite)
                             scope.launch {
                                 swipeState.hide()
                             }
@@ -93,7 +91,7 @@ fun PurchasesListSwipe(
 }
 
 @Composable
-fun ItemCardSwipe(purchaseList: PurchaseListUi, onClickListener: (String) -> Unit) {
+fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit) {
     Row(
         modifier = Modifier
             .height(56.dp)
@@ -107,7 +105,7 @@ fun ItemCardSwipe(purchaseList: PurchaseListUi, onClickListener: (String) -> Uni
             modifier = Modifier.wrapContentSize(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (purchaseList.isAttached && !purchaseList.isCompleted) {
+            if (purchaseList.isFavorite && !purchaseList.isCompleted) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_paperclip),
                     contentDescription = null
@@ -126,7 +124,7 @@ fun ItemCardSwipe(purchaseList: PurchaseListUi, onClickListener: (String) -> Uni
                 text = purchaseList.name,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 fontSize = 16.sp,
-                color = if (purchaseList.isAttached) {
+                color = if (purchaseList.isFavorite) {
                     MaterialTheme.colorScheme.onSurface
                 } else {
                     MaterialTheme.colorScheme.onTertiary
@@ -152,16 +150,16 @@ fun PurchasesListSwipePreview() {
     ToDoListTheme {
         PurchasesListSwipe(
             listOfPurchases = mutableListOf(
-                PurchaseListUi(
+                ShoppingList(
                     id = "123",
                     name = "Продукты",
-                    isAttached = true,
+                    isFavorite = true,
                 ),
-                PurchaseListUi(
+                ShoppingList(
                     id = "111",
                     name = "Канцтовары",
                 ),
-                PurchaseListUi(
+                ShoppingList(
                     id = "11100",
                     name = "Еда для животных",
                 )
@@ -178,7 +176,7 @@ fun PurchasesListSwipePreview() {
 fun ItemPreviewSwipe() {
     ToDoListTheme {
         ItemCardSwipe(
-            purchaseList = PurchaseListUi(
+            purchaseList = ShoppingList(
                 id = "123",
                 name = "Продукты",
             ),

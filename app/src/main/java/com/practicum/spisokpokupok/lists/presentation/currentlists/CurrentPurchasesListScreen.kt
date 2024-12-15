@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.practicum.buyinglist.R
-import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
+import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.ui.theme.blue
 import com.practicum.spisokpokupok.ui.theme.cyan
@@ -48,7 +48,7 @@ fun CurrentPurchasesListScreen(
     modifier: Modifier = Modifier,
     onNavigateToNewList: () -> Unit,
     onItemClicked: (String) -> Unit,
-    shoppingList: List<PurchaseListUi>,
+    shoppingList: List<ShoppingList>,
     onDeleteItem: (String) -> Unit,
     onFavoriteItem: (String, Boolean) -> Unit
 ) {
@@ -158,7 +158,7 @@ fun CurrentPurchasesListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(modifier: Modifier, purchasesList: List<PurchaseListUi>) {
+private fun TopBar(modifier: Modifier, purchasesList: List<ShoppingList>) {
     LargeTopAppBar(
         modifier = modifier
             .padding(top = 0.dp)
@@ -247,20 +247,20 @@ fun CurrentPurchasesListScreenScaffoldPreview() {
                 println("Item $id marked as favorite: $isFavorite")
             },
             shoppingList = listOf(
-                PurchaseListUi(
+                ShoppingList(
                     id = "123",
                     name = "Продукты",
-                    isAttached = true,
+                    isFavorite = true,
                 ),
-                PurchaseListUi(
+                ShoppingList(
                     id = "111",
                     name = "Канцтовары",
                 ),
-                PurchaseListUi(
+                ShoppingList(
                     id = "11100",
                     name = "Еда для животных",
                 ),
-                PurchaseListUi(
+                ShoppingList(
                     id = "1111200",
                     name = "Еда для людей",
                 ),
