@@ -2,8 +2,7 @@ package com.practicum.spisokpokupok.lists.presentation.currentlists
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
-import com.practicum.spisokpokupok.lists.domain.usecases.CreateListUseCase
+import com.practicum.spisokpokupok.listdetails.domain.usecases.CreateListUseCase
 import com.practicum.spisokpokupok.lists.domain.usecases.DeleteFromActualListsUseCase
 import com.practicum.spisokpokupok.lists.domain.usecases.GetActualListsUseCase
 import com.practicum.spisokpokupok.lists.domain.usecases.MoveToActualListUseCase
