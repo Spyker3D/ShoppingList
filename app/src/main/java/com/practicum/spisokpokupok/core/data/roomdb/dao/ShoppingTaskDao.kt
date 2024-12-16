@@ -14,6 +14,9 @@ interface ShoppingTaskDao {
     @Query("SELECT * FROM shopping_task")
     fun observeAllWithGoods(): Flow<List<LocalShoppingTaskWithGood>>
 
+    @Query("SELECT * FROM shopping_task WHERE shoppingListId = :listId")
+    fun observeAllWithGoods(listId: String): Flow<List<LocalShoppingTaskWithGood>>
+
     @Upsert
     suspend fun upsert(task: LocalShoppingTask)
 

@@ -92,7 +92,7 @@ class NewListViewModel
                 is NewListAction.OnTaskClick -> redactItem(action.index)
                 is NewListAction.OnTitleChange -> changeTitle(action.title)
                 is NewListAction.OnDecreaseClick -> decreaseQuantity(action.position)
-                is NewListAction.OnEncreaseClick -> encreaseQuantity(action.position)
+                is NewListAction.OnIncreaseClick -> encreaseQuantity(action.position)
                 is NewListAction.OnQuantityTypeChange -> updateQuantityType(action.quantityType)
                 NewListAction.OnSaveList -> saveList()
                 NewListAction.OnSaveTask -> saveTask()

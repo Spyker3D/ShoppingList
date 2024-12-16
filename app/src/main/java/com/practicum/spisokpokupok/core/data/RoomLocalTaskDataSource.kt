@@ -3,11 +3,14 @@ package com.practicum.spisokpokupok.core.data
 import com.practicum.spisokpokupok.core.data.roomdb.dao.GoodDao
 import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingTaskDao
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
+import com.practicum.spisokpokupok.core.data.roomdb.mapper.toExternal
 import com.practicum.spisokpokupok.core.data.roomdb.mapper.toLocal
 import com.practicum.spisokpokupok.listdetails.data.repository.LocalTaskDataSource
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
 import com.practicum.spisokpokupok.listdetails.domain.model.quantityTypeToString
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RoomLocalTaskDataSource
@@ -34,6 +37,13 @@ class RoomLocalTaskDataSource
                 ),
             )
         }
+
+        override fun observeTasks(shoppingListId: String): Flow<List<Task>> =
+            shoppingTaskDao.observeAllWithGoods(shoppingListId).map { localShoppingTasks ->
+                localShoppingTasks.map { localShoppingTaskWithGood ->
+                    localShoppingTaskWithGood.toExternal()
+                }
+            }
 
         override suspend fun updateCompleted(
             taskId: String,

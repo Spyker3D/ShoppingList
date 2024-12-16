@@ -5,7 +5,7 @@ import com.practicum.spisokpokupok.listdetails.domain.model.Task
 import kotlinx.coroutines.flow.Flow
 
 interface ShoppingTaskRepository {
-    suspend fun getCurrentTasks(listId: String): Flow<List<Task>>
+    fun getCurrentTasks(listId: String): Flow<List<Task>>
 
     suspend fun createTask(
         shoppingListId: String,

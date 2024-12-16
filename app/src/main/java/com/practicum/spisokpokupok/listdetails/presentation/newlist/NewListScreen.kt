@@ -44,7 +44,6 @@ fun NewListScreen(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             NewListTopBar(
-                onNavigateToCurrentLists = onNavigateToCurrentLists,
                 onBackPressed = onBackPressed,
                 title = state.title,
             )
@@ -55,8 +54,24 @@ fun NewListScreen(
                 quantity = state.bottomSheetState.quantity.toString(),
                 quantityType = state.bottomSheetState.quantityType,
                 modifier = modifier,
-                action = action,
                 position = state.bottomSheetState.index,
+                onBottomButtonClick = {
+                    action(NewListAction.OnSaveList)
+                    onNavigateToCurrentLists()
+                },
+                onDecreeseClick = {
+                    action(NewListAction.OnDecreaseClick(it))
+                },
+                onEncreeseClick = {
+                    action(NewListAction.OnIncreaseClick(it))
+                },
+                onQuantityTypeChange = {
+                    action(NewListAction.OnQuantityTypeChange(it))
+                },
+                onSaveTask = {
+                    action(NewListAction.OnSaveTask)
+                },
+                bottomButtonTitle = "Сохранить список",
             )
         },
     ) { innerPadding ->
@@ -141,7 +156,12 @@ fun BottomBar(
     quantity: String,
     quantityType: QuantityType,
     modifier: Modifier,
-    action: (NewListAction) -> Unit,
+    bottomButtonTitle: String,
+    onBottomButtonClick: () -> Unit,
+    onDecreeseClick: (Int) -> Unit,
+    onEncreeseClick: (Int) -> Unit,
+    onQuantityTypeChange: (QuantityType) -> Unit,
+    onSaveTask: () -> Unit,
 ) {
     Column(
         modifier =
@@ -156,9 +176,9 @@ fun BottomBar(
                 quantityType = quantityType,
                 modifier = modifier,
                 counter = quantity,
-                onDecreeseClick = { action(NewListAction.OnDecreaseClick(position)) },
-                onEncreeseClick = { action(NewListAction.OnEncreaseClick(position)) },
-                onQuantityTypeChange = { action(NewListAction.OnQuantityTypeChange(it)) },
+                onDecreeseClick = { onDecreeseClick(position) },
+                onEncreeseClick = { onEncreeseClick(position) },
+                onQuantityTypeChange = onQuantityTypeChange,
             )
         }
         Spacer(
@@ -175,18 +195,16 @@ fun BottomBar(
             modifier = modifier.fillMaxWidth(),
             onClick = {
                 if (bottomSheetIsVisible) {
-                    action(NewListAction.OnSaveTask)
+                    onSaveTask()
                 } else {
-                    action(
-                        NewListAction.OnSaveList,
-                    )
+                    onBottomButtonClick()
                 }
             },
         ) {
             if (bottomSheetIsVisible) {
                 Text("Готово")
             } else {
-                Text("Сохранить список")
+                Text(bottomButtonTitle)
             }
         }
     }
@@ -195,7 +213,6 @@ fun BottomBar(
 @Composable
 fun NewListTopBar(
     modifier: Modifier = Modifier.height(76.dp),
-    onNavigateToCurrentLists: () -> Unit,
     onBackPressed: () -> Unit,
     title: String,
 ) {

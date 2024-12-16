@@ -19,9 +19,7 @@ class ShoppingTaskRepositoryImpl
         @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
         @ApplicationScope private val scope: CoroutineScope,
     ) : ShoppingTaskRepository {
-        override suspend fun getCurrentTasks(listId: String): Flow<List<Task>> {
-            TODO("Not yet implemented")
-        }
+        override fun getCurrentTasks(listId: String): Flow<List<Task>> = localTaskDataSource.observeTasks(listId)
 
         override suspend fun createTask(
             shoppingListId: String,

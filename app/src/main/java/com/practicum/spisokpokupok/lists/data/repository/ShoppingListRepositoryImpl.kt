@@ -56,6 +56,8 @@ class ShoppingListRepositoryImpl
             localDataSource.updateName(id, name)
         }
 
+        override suspend fun getListTitle(listId: String): String = localDataSource.getListTitle(listId)
+
         override suspend fun moveToActualLists(listId: String) {
             localDataSource.addActualList(listId)
         }
