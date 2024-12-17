@@ -16,48 +16,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CurrentListViewModel
-@Inject
-constructor(
-    private val createListUseCase: CreateListUseCase,
-    getActualListsUseCase: GetActualListsUseCase,
-    private val moveToActualListUseCase: MoveToActualListUseCase,
-    private val deleteFromActualListsUseCase: DeleteFromActualListsUseCase,
-    private val updateFavoriteStatusUseCase: UpdateFavoriteStatusUseCase
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val createListUseCase: CreateListUseCase,
+        getActualListsUseCase: GetActualListsUseCase,
+        private val moveToActualListUseCase: MoveToActualListUseCase,
+        private val deleteFromActualListsUseCase: DeleteFromActualListsUseCase,
+        private val updateFavoriteStatusUseCase: UpdateFavoriteStatusUseCase,
+    ) : ViewModel() {
+        private var listId = ""
+        private val _listStream = getActualListsUseCase()
+        val listStream: StateFlow<List<ShoppingList>> =
+            _listStream.stateIn(
+                scope = viewModelScope,
+                started =
+                    kotlinx.coroutines.flow.SharingStarted
+                        .WhileSubscribed(5000),
+                initialValue = emptyList(),
+            )
 
-    private var listId = ""
-    private val _listStream = getActualListsUseCase()
-    val listStream: StateFlow<List<ShoppingList>> =
-        _listStream.stateIn(
-            scope = viewModelScope,
-            started =
-            kotlinx.coroutines.flow.SharingStarted
-                .WhileSubscribed(5000),
-            initialValue = emptyList(),
-        )
+        fun addList(listName: String) {
+            viewModelScope.launch {
+                listId = createListUseCase(listName)
+                moveToActualListUseCase(listId)
+            }
+        }
 
-    fun addList(listName: String) {
-        viewModelScope.launch {
-            listId = createListUseCase(listName)
-            moveToActualListUseCase(listId)
+        fun deleteList(listId: String) {
+            viewModelScope.launch {
+                deleteFromActualListsUseCase(listId)
+            }
+        }
+
+        fun updateFavoriteStatus(
+            listId: String,
+            isFavorite: Boolean,
+        ) {
+            viewModelScope.launch {
+                updateFavoriteStatusUseCase(listId = listId, isFavorite = isFavorite)
+            }
+        }
+
+        init { // для тестирования списков !ПОТОМ УДАЛИТЬ!
+            repeat(5) { index ->
+                addList(listName = "Cписок $index")
+            }
         }
     }
-
-    fun deleteList(listId: String) {
-        viewModelScope.launch {
-            deleteFromActualListsUseCase(listId)
-        }
-    }
-
-    fun updateFavoriteStatus(listId: String, isFavorite: Boolean) {
-        viewModelScope.launch {
-            updateFavoriteStatusUseCase(listId = listId, isFavorite = isFavorite)
-        }
-    }
-
-    init {   // для тестирования списков !ПОТОМ УДАЛИТЬ!
-        repeat(5) { index ->
-            addList(listName = "Cписок $index")
-        }
-    }
-}

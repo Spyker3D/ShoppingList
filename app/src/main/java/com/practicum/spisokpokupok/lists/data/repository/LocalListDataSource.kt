@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface LocalListDataSource {
     suspend fun createList(shoppingList: ShoppingList)
 
+    suspend fun getListTitle(shoppingListId: String): String
+
     suspend fun updateName(
         name: String,
         shoppingListId: String,

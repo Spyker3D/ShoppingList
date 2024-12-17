@@ -61,6 +61,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable<CurrentListEditRoute> {
             val arguments = it.toRoute<CurrentListEditRoute>()
             val viewModel: CurrentLIstEditScreenViewModel = hiltViewModel(it)
+            val state by viewModel.uiState.collectAsStateWithLifecycle()
 
             CurrentListEditScreen(
                 onNavigateToCompletedList = {
@@ -72,10 +73,10 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
-                listId = arguments.id,
+                state = state,
+                action = viewModel::consumeAction,
             )
         }
-
         composable<CompletedListEdit> {
             val args = it.toRoute<CompletedListEdit>()
             CompletedListEditScreen(

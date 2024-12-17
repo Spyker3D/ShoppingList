@@ -13,6 +13,9 @@ interface ShoppingListDao {
     @Query("SELECT * FROM shopping_list")
     fun observeAll(): Flow<List<LocalShoppingList>>
 
+    @Query("SELECT name FROM shopping_list WHERE id = :shoppingListId")
+    suspend fun getListTitle(shoppingListId: String): String
+
     @Transaction
     @Query("SELECT * FROM actual_shopping_list")
     fun observeActualLists(): Flow<List<LocalActualShoppingListWithName>>
