@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.practicum.spisokpokupok.lists.presentation.completedlists.CompletedListViewModel
 import com.practicum.spisokpokupok.lists.presentation.completedlists.CompletedPurchasesListScreen
 import com.practicum.spisokpokupok.lists.presentation.currentlists.CurrentListViewModel
 import com.practicum.spisokpokupok.lists.presentation.currentlists.CurrentPurchasesListScreen
@@ -35,17 +35,19 @@ fun HorizontalPagerScreen(
                     onFavoriteItem = { id, isFavorite ->
                         currentListViewModel.updateFavoriteStatus(
                             listId = id,
-                            isFavorite = isFavorite
+                            isFavorite = isFavorite,
                         )
-                    }
+                    },
                 )
             }
 
-            1 -> CompletedPurchasesListScreen(
-                onNavigateToNewList = onNavigateToNewList,
-                onItemClicked = onItemCompletedClicked,
-                onDeleteItem = currentListViewModel::deleteList
-            )
+            1 ->
+                CompletedPurchasesListScreen(
+                    completedShoppingList = completedListViewModel.listStream.collectAsState().value,
+                    onNavigateToNewList = onNavigateToNewList,
+                    onItemClicked = onItemCompletedClicked,
+                    onDeleteItem = currentListViewModel::deleteList,
+                )
         }
     }
 }
