@@ -6,18 +6,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetActualListsUseCase
+class GetCompletedListsUseCase
 @Inject
 constructor(
     private val shoppingListRepository: ShoppingListRepository,
 ) {
     operator fun invoke(): Flow<List<ShoppingList>> {
         return shoppingListRepository.getCurrentLists().map { shoppingList ->
-            shoppingList.filter { !it.isCompleted }
-                .sortedWith(
-                    compareByDescending<ShoppingList> { it.isFavorite }
-                        .thenBy { it.name }
-                )
+            shoppingList
+                .filter { it.isCompleted }
+                .sortedBy { it.name }
         }
     }
 }

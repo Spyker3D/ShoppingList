@@ -22,8 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -36,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
-import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
+import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.lists.presentation.currentlists.PurchasesListSwipe
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.ui.theme.blue
@@ -46,35 +44,11 @@ import com.practicum.spisokpokupok.ui.theme.cyan
 @Composable
 fun CompletedPurchasesListScreen(
     modifier: Modifier = Modifier,
+    completedShoppingList: List<ShoppingList>,
     onNavigateToNewList: () -> Unit,
     onItemClicked: (String) -> Unit,
     onDeleteItem: (String) -> Unit
 ) {
-//    val purchasesList = remember {    // для тестирования UI без списков
-//        mutableStateListOf<PurchaseList>()
-//    }
-
-    val purchasesList = remember {
-        mutableStateListOf(
-            PurchaseListUi(
-                id = "123",
-                name = "Продукты",
-                isAttached = true,
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "111",
-                name = "Канцтовары",
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "11100",
-                name = "Еда для животных",
-                isOptionsRevealed = false
-            ),
-        )
-    }
-
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
@@ -106,7 +80,7 @@ fun CompletedPurchasesListScreen(
                         bottom = paddingValues.calculateBottomPadding()
                     )
             ) {
-                if (purchasesList.isNotEmpty()) {
+                if (completedShoppingList.isNotEmpty()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -122,7 +96,7 @@ fun CompletedPurchasesListScreen(
                         Icon(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .padding(bottom = 48.dp)
+                                .padding(bottom = 0.dp)
                                 .size(250.dp),
                             painter = painterResource(id = R.drawable.img_bags),
                             contentDescription = null,
@@ -134,14 +108,15 @@ fun CompletedPurchasesListScreen(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    if (purchasesList.isNotEmpty()) {
+                    if (completedShoppingList.isNotEmpty()) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
+                                .padding(top = 24.dp)
                         ) {
                             PurchasesListSwipe(
-                                listOfPurchases = purchasesList,
+                                listOfPurchases = completedShoppingList,
                                 onClickListener = onItemClicked,
                                 onDeleteItemListener = {
                                     onDeleteItem(it)
@@ -199,7 +174,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
     BottomAppBar(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .height(164.dp),
+            .height(192.dp),
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
@@ -208,7 +183,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp, top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -252,7 +227,26 @@ fun CompletedPurchasesListScreenPreview() {
         CompletedPurchasesListScreen(
             onNavigateToNewList = {},
             onItemClicked = {},
-            onDeleteItem = {}
+            onDeleteItem = {},
+            completedShoppingList = listOf(
+                ShoppingList(
+                    id = "123",
+                    name = "Продукты",
+                    isFavorite = true,
+                ),
+                ShoppingList(
+                    id = "111",
+                    name = "Канцтовары",
+                ),
+                ShoppingList(
+                    id = "11100",
+                    name = "Еда для животных",
+                ),
+                ShoppingList(
+                    id = "1111200",
+                    name = "Еда для людей",
+                ),
+            )
         )
     }
 }

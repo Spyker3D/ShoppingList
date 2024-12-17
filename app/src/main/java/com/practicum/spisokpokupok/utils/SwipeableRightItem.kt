@@ -28,28 +28,15 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SwipeableRightItem(
-    isRevealed: Boolean,
+    swipeState: SwipeState,
     actions: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
-    onExpanded: () -> Unit = {},
-    onCollapsed: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     var contextMenuWidth by remember {
         mutableFloatStateOf(0f)
     }
-    val offset = remember {
-        Animatable(initialValue = 0f)
-    }
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(key1 = isRevealed, contextMenuWidth) {
-        if(isRevealed) {
-            offset.animateTo(contextMenuWidth)
-        } else {
-            offset.animateTo(0f)
-        }
-    }
 
     Box(
         modifier = modifier
@@ -68,29 +55,27 @@ fun SwipeableRightItem(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .offset { IntOffset(offset.value.roundToInt(), 0) }
+                .offset { IntOffset(swipeState.offset.value.roundToInt(), 0) }
                 .pointerInput(contextMenuWidth) {
                     detectHorizontalDragGestures(
                         onHorizontalDrag = { _, dragAmount ->
                             scope.launch {
-                                val newOffset = (offset.value + dragAmount)
+                                val newOffset = (swipeState.offset.value + dragAmount)
                                     .coerceIn(0f, contextMenuWidth)
-                                offset.snapTo(newOffset)
+                                swipeState.offset.snapTo(newOffset)
                             }
                         },
                         onDragEnd = {
                             when {
-                                offset.value >= contextMenuWidth / 2f -> {
+                                swipeState.offset.value >= contextMenuWidth / 2f -> {
                                     scope.launch {
-                                        offset.animateTo(contextMenuWidth)
-                                        onExpanded()
+                                        swipeState.offset.animateTo(contextMenuWidth)
                                     }
                                 }
 
                                 else -> {
                                     scope.launch {
-                                        offset.animateTo(0f)
-                                        onCollapsed()
+                                        swipeState.offset.animateTo(0f)
                                     }
                                 }
                             }
@@ -100,5 +85,13 @@ fun SwipeableRightItem(
         ) {
             content()
         }
+    }
+}
+
+class SwipeState {
+    val offset = Animatable(initialValue = 0f)
+
+    suspend fun hide() {
+        offset.animateTo(0f)
     }
 }
