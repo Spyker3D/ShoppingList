@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
-import com.practicum.spisokpokupok.listdetails.domain.usecases.CompleteTaskUseCase
+import com.practicum.spisokpokupok.listdetails.domain.usecases.ChangeItemStatusUseCase
 import com.practicum.spisokpokupok.listdetails.domain.usecases.CreateTaskUseCase
 import com.practicum.spisokpokupok.listdetails.domain.usecases.DeleteTaskUseCase
 import com.practicum.spisokpokupok.listdetails.domain.usecases.GetListTitleUseCase
@@ -37,7 +37,7 @@ data class LIstEditUIState(
 )
 
 data class TaskUiState(
-    val position: Int = 0,
+    val position: Int,
     val id: String = "",
     val name: String = "",
     val isCompleted: Boolean = false,
@@ -56,7 +56,7 @@ class CurrentLIstEditScreenViewModel
         val getListTitleUseCase: GetListTitleUseCase,
         val deleteTaskUseCase: DeleteTaskUseCase,
         val updateTaskUseCase: UpdateTaskUseCase,
-        val completeTaskUseCase: CompleteTaskUseCase,
+        val changeItemStatusUseCase: ChangeItemStatusUseCase,
         val createTaskUseCase: CreateTaskUseCase,
     ) : ViewModel() {
         private val currentListEditRoute = handle.toRoute<CurrentListEditRoute>()
@@ -127,7 +127,9 @@ class CurrentLIstEditScreenViewModel
         fun consumeAction(action: ListEditAction) {
             when (action) {
                 ListEditAction.OnAddNewProduct -> addNewItem()
-                is ListEditAction.OnCheckClick -> completeItem(action.id)
+                is ListEditAction.OnCheckClick ->
+                    changeItemStatus(action.taskId)
+
                 ListEditAction.OnChooseAllItems -> completeAllItems()
                 is ListEditAction.OnDecreaseClick -> decreaseQuantity(action.position)
                 is ListEditAction.OnDeleteClick -> deleteItem(action.position)
@@ -142,6 +144,12 @@ class CurrentLIstEditScreenViewModel
                 is ListEditAction.OnTaskClick -> showBottomSheet(action.id)
                 is ListEditAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
                 ListEditAction.OnDeleteCompletedTasks -> deleteCompletedTasks()
+            }
+        }
+
+        private fun changeItemStatus(taskId: String) {
+            viewModelScope.launch {
+                changeItemStatusUseCase(taskId)
             }
         }
 
@@ -173,7 +181,6 @@ class CurrentLIstEditScreenViewModel
 
         private fun showBottomSheet(id: String) {
             val task = uiState.value.items.find { it.id == id }
-
             _bottomSheetState.update {
                 it.copy(
                     isVisible = true,
@@ -208,19 +215,30 @@ class CurrentLIstEditScreenViewModel
                     taskId = task.id,
                     taskName = task.name,
                 )
+                _bottomSheetState.update {
+                    it.copy(
+                        quantityType = quantityType,
+                    )
+                }
             }
         }
 
         private fun encreaseQuantity(position: Int) {
             viewModelScope.launch {
                 val task = uiState.value.items[position]
+                val newQuantity = task.quantity + 1
                 updateTaskUseCase(
-                    quantity = task.quantity + 1,
+                    quantity = newQuantity,
                     quantityType = task.quantityType,
                     position = task.position,
                     taskId = task.id,
                     taskName = task.name,
                 )
+                _bottomSheetState.update {
+                    it.copy(
+                        quantity = newQuantity,
+                    )
+                }
             }
         }
 
@@ -228,13 +246,19 @@ class CurrentLIstEditScreenViewModel
             viewModelScope.launch {
                 val task = uiState.value.items[position]
                 if (task.quantity > 1) {
+                    val newQuantity = task.quantity - 1
                     updateTaskUseCase(
-                        quantity = task.quantity - 1,
+                        quantity = newQuantity,
                         quantityType = task.quantityType,
                         position = task.position,
                         taskId = task.id,
                         taskName = task.name,
                     )
+                    _bottomSheetState.update {
+                        it.copy(
+                            quantity = newQuantity,
+                        )
+                    }
                 }
             }
         }
@@ -243,15 +267,15 @@ class CurrentLIstEditScreenViewModel
             viewModelScope.launch {
                 uiState.value.items.forEach {
                     if (!it.isCompleted) {
-                        completeTaskUseCase(it.id)
+                        changeItemStatus(it.id)
                     }
                 }
             }
         }
 
-        private fun completeItem(id: String) {
+        private fun completeItem(taskId: String) {
             viewModelScope.launch {
-                completeTaskUseCase(id)
+                changeItemStatus(taskId)
             }
         }
 
@@ -260,7 +284,7 @@ class CurrentLIstEditScreenViewModel
                 createTaskUseCase(
                     listId = listId,
                     quantity = 1,
-                    quantityType = QuantityType.UNKNOWN,
+                    quantityType = QuantityType.KILOGRAM,
                     taskName = "",
                     position = uiState.value.items.size,
                 )

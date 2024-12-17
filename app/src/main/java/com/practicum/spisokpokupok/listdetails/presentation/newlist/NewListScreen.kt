@@ -106,7 +106,7 @@ fun NewListScreen(
 
                     if (item.isNameRedacted) {
                         TitleTextField(
-                            modifier = modifier,
+                            modifier = modifier.height(56.dp),
                             value = item.name,
                             onValueChange = { title ->
                                 action(NewListAction.OnTaskNameChange(index, title))
@@ -240,7 +240,7 @@ fun NewListTopBar(
 
 @Composable
 fun TitleTextField(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.height(56.dp),
     value: String,
     onValueChange: (String) -> Unit,
 ) {

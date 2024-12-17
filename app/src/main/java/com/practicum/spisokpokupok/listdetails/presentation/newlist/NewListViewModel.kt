@@ -239,11 +239,11 @@ class NewListViewModel
 
         private fun saveList() {
             viewModelScope.launch {
+                val listId =
+                    createListUseCase(
+                        _title.value,
+                    )
                 _productItems.value.forEachIndexed { index, item ->
-                    val listId =
-                        createListUseCase(
-                            _title.value,
-                        )
                     createTaskUseCase(
                         listId,
                         item.name,

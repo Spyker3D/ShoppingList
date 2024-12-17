@@ -26,6 +26,7 @@ class RoomLocalListDataSource
     ) : LocalListDataSource {
         override suspend fun createList(shoppingList: ShoppingList) {
             shoppingListDao.upsert(shoppingList.toLocal())
+            shoppingListDao.addActualList(shoppingList.id, false)
         }
 
         override suspend fun getListTitle(shoppingListId: String): String = shoppingListDao.getListTitle(shoppingListId)

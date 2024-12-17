@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.practicum.buyinglist.R
 import com.practicum.buyinglist.R.drawable.ic_arrow_right
+import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.AddItem
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.BottomBar
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
@@ -99,14 +100,14 @@ fun CurrentListEditScreen(
 @Composable
 fun ChooseAllTasks(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    onCheckedChange: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row {
         Switch(
             checked = checked,
             onCheckedChange = {
-                onCheckedChange(!checked)
+                onCheckedChange()
             },
             colors =
                 SwitchDefaults.colors(
@@ -162,7 +163,7 @@ private fun TasksContent(
 @Composable
 private fun TaskItem(
     task: TaskUiState,
-    onCheckedChange: (Boolean) -> Unit,
+    onCheckedChange: () -> Unit,
     onTaskClick: (String) -> Unit,
 ) {
     Row(
@@ -187,7 +188,7 @@ private fun TaskItem(
             contentDescription = "checkbox",
             modifier =
                 Modifier.clickable {
-                    onCheckedChange(!task.isCompleted)
+                    onCheckedChange()
                 },
         )
         Column(
@@ -220,23 +221,23 @@ private fun TaskItem(
                 Text(
                     text =
                         when (task.quantityType) {
-                            com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.KILOGRAM -> {
+                            QuantityType.KILOGRAM -> {
                                 "кг"
                             }
 
-                            com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.LITRE -> {
+                            QuantityType.LITRE -> {
                                 "л"
                             }
 
-                            com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.PACK -> {
+                            QuantityType.PACK -> {
                                 "уп"
                             }
 
-                            com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.PIECE -> {
+                            QuantityType.PIECE -> {
                                 "шт"
                             }
 
-                            com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.UNKNOWN -> {
+                            QuantityType.UNKNOWN -> {
                                 ""
                             }
                         },
@@ -271,21 +272,24 @@ private fun TasksContentPreview() {
                             name = "Task 1",
                             isCompleted = false,
                             quantity = 2,
-                            quantityType = com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.KILOGRAM,
+                            quantityType = QuantityType.KILOGRAM,
+                            position = 1
                         ),
                         TaskUiState(
                             id = "2",
                             name = "Task 2",
                             isCompleted = true,
                             quantity = 3,
-                            quantityType = com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.LITRE,
+                            quantityType = QuantityType.LITRE,
+                            position = 2
                         ),
                         TaskUiState(
                             id = "3",
                             name = "Task 3",
                             isCompleted = false,
                             quantity = 4,
-                            quantityType = com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.PACK,
+                            quantityType = QuantityType.PACK,
+                            position = 3
                         ),
                     ),
                 onTaskClick = { },
@@ -323,6 +327,9 @@ private fun TaskItemPreview() {
                         id = "ID",
                         name = "Title",
                         isCompleted = false,
+                        quantity = 2,
+                        quantityType = QuantityType.KILOGRAM,
+                        position = 1
                     ),
                 onTaskClick = { },
                 onCheckedChange = { },
@@ -342,6 +349,9 @@ private fun TaskItemCompletedPreview() {
                         id = "ID",
                         name = "Title",
                         isCompleted = true,
+                        quantity = 2,
+                        quantityType = QuantityType.KILOGRAM,
+                        position = 1
                     ),
                 onTaskClick = { },
                 onCheckedChange = { },
@@ -369,21 +379,24 @@ private fun CurrentListEditScreenPreview() {
                                     name = "Task 1",
                                     isCompleted = false,
                                     quantity = 2,
-                                    quantityType = com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.KILOGRAM,
+                                    quantityType = QuantityType.KILOGRAM,
+                                    position = 1
                                 ),
                                 TaskUiState(
                                     id = "2",
                                     name = "Task 2",
                                     isCompleted = true,
                                     quantity = 3,
-                                    quantityType = com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.LITRE,
+                                    quantityType = QuantityType.LITRE,
+                                    position = 2
                                 ),
                                 TaskUiState(
                                     id = "3",
                                     name = "Task 3",
                                     isCompleted = false,
                                     quantity = 4,
-                                    quantityType = com.practicum.spisokpokupok.listdetails.domain.model.QuantityType.PACK,
+                                    quantityType = QuantityType.PACK,
+                                    position = 3
                                 ),
                             ),
                     ),

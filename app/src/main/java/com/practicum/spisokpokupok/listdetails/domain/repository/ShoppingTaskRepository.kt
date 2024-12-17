@@ -15,8 +15,6 @@ interface ShoppingTaskRepository {
         position: Int,
     ): String
 
-    suspend fun completeTask(taskId: String)
-
     suspend fun deleteTask(taskId: String)
 
     suspend fun updateTask(
@@ -26,4 +24,8 @@ interface ShoppingTaskRepository {
         quantityType: QuantityType,
         position: Int,
     )
+
+    suspend fun moveTaskToActual(taskId: String)
+
+    suspend fun changeItemStatus(taskId: String)
 }

@@ -22,8 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.presentation.model.PurchaseListUi
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
@@ -49,7 +46,7 @@ fun CurrentPurchasesListScreen(
     onItemClicked: (String) -> Unit,
     shoppingList: List<PurchaseListUi>,
     onDeleteItem: (String) -> Unit,
-    onFavoriteItem: (String, Boolean) -> Unit
+    onFavoriteItem: (String, Boolean) -> Unit,
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -68,25 +65,29 @@ fun CurrentPurchasesListScreen(
             ) {
                 if (shoppingList.isNotEmpty()) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        MaterialTheme.colorScheme.surface
-                                    )
-                                )
-                            )
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(
+                                    brush =
+                                        Brush.verticalGradient(
+                                            colors =
+                                                listOf(
+                                                    Color.Transparent,
+                                                    MaterialTheme.colorScheme.surface,
+                                                ),
+                                        ),
+                                ),
                     ) {
                         Icon(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(bottom = 48.dp)
-                                .size(250.dp),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = 48.dp)
+                                    .size(250.dp),
                             painter = painterResource(id = R.drawable.img_bags),
                             contentDescription = null,
-                            tint = Color.Unspecified
+                            tint = Color.Unspecified,
                         )
                     }
                 }
@@ -108,7 +109,7 @@ fun CurrentPurchasesListScreen(
                                 onDeleteItemListener = {
                                     onDeleteItem(it)
                                 },
-                                onFavoriteItemListener = onFavoriteItem
+                                onFavoriteItemListener = onFavoriteItem,
                             )
                         }
                     } else {
@@ -160,7 +161,10 @@ fun CurrentPurchasesListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(modifier: Modifier, purchasesList: List<PurchaseListUi>) {
+private fun TopBar(
+    modifier: Modifier,
+    purchasesList: List<PurchaseListUi>,
+) {
     LargeTopAppBar(
         modifier =
             modifier
@@ -254,28 +258,30 @@ fun CurrentPurchasesListScreenScaffoldPreview() {
             onFavoriteItem = { id, isFavorite ->
                 println("Item $id marked as favorite: $isFavorite")
             },
-            shoppingList = listOf(
-                PurchaseListUi(
-                id = "123",
-                name = "Продукты",
-                isAttached = true,
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "111",
-                name = "Канцтовары",
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "11100",
-                name = "Еда для животных",
-                isOptionsRevealed = false
-            ),
-            PurchaseListUi(
-                id = "1111200",
-                name = "Еда для людей",
-                isOptionsRevealed = false
-            ),)
+            shoppingList =
+                listOf(
+                    PurchaseListUi(
+                        id = "123",
+                        name = "Продукты",
+                        isAttached = true,
+                        isOptionsRevealed = false,
+                    ),
+                    PurchaseListUi(
+                        id = "111",
+                        name = "Канцтовары",
+                        isOptionsRevealed = false,
+                    ),
+                    PurchaseListUi(
+                        id = "11100",
+                        name = "Еда для животных",
+                        isOptionsRevealed = false,
+                    ),
+                    PurchaseListUi(
+                        id = "1111200",
+                        name = "Еда для людей",
+                        isOptionsRevealed = false,
+                    ),
+                ),
         )
     }
 }

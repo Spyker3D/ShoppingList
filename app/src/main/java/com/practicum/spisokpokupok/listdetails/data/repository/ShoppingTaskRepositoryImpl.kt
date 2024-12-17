@@ -46,10 +46,6 @@ class ShoppingTaskRepositoryImpl
             return taskId
         }
 
-        override suspend fun completeTask(taskId: String) {
-            localTaskDataSource.updateCompleted(taskId, true)
-        }
-
         override suspend fun deleteTask(taskId: String) {
             localTaskDataSource.deleteTask(taskId)
         }
@@ -67,7 +63,35 @@ class ShoppingTaskRepositoryImpl
                 quantity = quantity,
                 quantityType = quantityType,
                 position = position,
+                isCompleted = false,
             )
+        }
+
+        override suspend fun moveTaskToActual(taskId: String) {
+            localTaskDataSource.moveTaskToActual(taskId)
+        }
+
+        override suspend fun changeItemStatus(taskId: String) {
+            val task = localTaskDataSource.getTaskById(taskId)
+            if (task.isCompleted) {
+                localTaskDataSource.updateTask(
+                    id = taskId,
+                    goodName = task.goodName,
+                    quantity = task.quantity,
+                    quantityType = task.quantityType,
+                    position = task.position,
+                    isCompleted = false,
+                )
+            } else {
+                localTaskDataSource.updateTask(
+                    id = taskId,
+                    goodName = task.goodName,
+                    quantity = task.quantity,
+                    quantityType = task.quantityType,
+                    position = task.position,
+                    isCompleted = true,
+                )
+            }
         }
 
         private fun createTaskId(): String = UUID.randomUUID().toString()

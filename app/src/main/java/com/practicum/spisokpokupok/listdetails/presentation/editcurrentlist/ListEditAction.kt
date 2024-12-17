@@ -3,7 +3,6 @@ package com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 
 sealed interface ListEditAction {
-
     data class OnTaskClick(
         val id: String,
     ) : ListEditAction
@@ -34,7 +33,7 @@ sealed interface ListEditAction {
     ) : ListEditAction
 
     data class OnCheckClick(
-        val id: String,
+        val taskId: String,
     ) : ListEditAction
 
     class OnTaskNameChange(

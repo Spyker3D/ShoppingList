@@ -12,11 +12,6 @@ interface LocalTaskDataSource {
 
     fun observeTasks(shoppingListId: String): Flow<List<Task>>
 
-    suspend fun updateCompleted(
-        taskId: String,
-        isCompleted: Boolean,
-    )
-
     suspend fun createTasks(
         tasks: List<Task>,
         shoppingListId: String,
@@ -30,5 +25,11 @@ interface LocalTaskDataSource {
         quantity: Int,
         quantityType: QuantityType,
         position: Int,
+        isCompleted: Boolean,
     )
+
+    fun moveTaskToActual(taskId: String) {
+    }
+
+    suspend fun getTaskById(taskId: String): Task
 }
