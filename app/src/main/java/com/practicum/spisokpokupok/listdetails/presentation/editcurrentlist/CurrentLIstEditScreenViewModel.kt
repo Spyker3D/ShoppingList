@@ -65,6 +65,7 @@ class CurrentLIstEditScreenViewModel
         private val _bottomSheetState = MutableStateFlow(BottomSheetState())
         private val _isLoading = MutableStateFlow(false)
         private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
+        private val _allItemsChecked: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
         private val _tasksAsync =
             itemsStream
@@ -80,7 +81,8 @@ class CurrentLIstEditScreenViewModel
                 _userMessage,
                 _tasksAsync,
                 _bottomSheetState,
-            ) { isLoading, userMessage, tasksAsync, bottomSheetState ->
+                _allItemsChecked,
+            ) { isLoading, userMessage, tasksAsync, bottomSheetState, allItemsChecked ->
                 val title =
                     getListTitleUseCase(listId)
                 when (tasksAsync) {
@@ -94,6 +96,7 @@ class CurrentLIstEditScreenViewModel
 
                     is Async.Success -> {
                         LIstEditUIState(
+                            allItemsChecked = allItemsChecked,
                             title = title,
                             items =
                                 tasksAsync.data
@@ -106,7 +109,8 @@ class CurrentLIstEditScreenViewModel
                                             quantity = it.quantity,
                                             quantityType = it.quantityType,
                                         )
-                                    }.sortedBy { it.position },
+                                    }.sortedBy { it.position }
+                                    .sortedBy { it.isCompleted },
                             loading = isLoading,
                             userMessage = userMessage,
                             bottomSheetState = bottomSheetState,
@@ -149,7 +153,45 @@ class CurrentLIstEditScreenViewModel
 
         private fun changeItemStatus(taskId: String) {
             viewModelScope.launch {
-                changeItemStatusUseCase(taskId)
+                val task = uiState.value.items.find { it.id == taskId }
+                if (task?.isCompleted == true) {
+                    changeItemStatusUseCase(taskId)
+                    updateItemsPosition()
+                } else {
+                    changeItemStatusUseCase(taskId)
+                    changeActualTasksPosition()
+                }
+            }
+        }
+
+        private suspend fun changeActualTasksPosition() {
+            uiState.value.items.forEachIndexed { index, task ->
+                if (task.isCompleted) return@forEachIndexed
+                if (task.position != index) {
+                    updateTaskUseCase(
+                        quantity = task.quantity,
+                        quantityType = task.quantityType,
+                        position = index,
+                        taskId = task.id,
+                        taskName = task.name,
+                        completed = task.isCompleted,
+                    )
+                }
+            }
+        }
+
+        private suspend fun updateItemsPosition() {
+            uiState.value.items.forEachIndexed { index, task ->
+                if (task.position != index) {
+                    updateTaskUseCase(
+                        quantity = task.quantity,
+                        quantityType = task.quantityType,
+                        position = index,
+                        taskId = task.id,
+                        taskName = task.name,
+                        completed = task.isCompleted,
+                    )
+                }
             }
         }
 
@@ -175,6 +217,7 @@ class CurrentLIstEditScreenViewModel
                     position = task.position,
                     taskId = task.id,
                     taskName = title,
+                    completed = task.isCompleted,
                 )
             }
         }
@@ -214,6 +257,7 @@ class CurrentLIstEditScreenViewModel
                     position = task.position,
                     taskId = task.id,
                     taskName = task.name,
+                    completed = task.isCompleted,
                 )
                 _bottomSheetState.update {
                     it.copy(
@@ -233,6 +277,7 @@ class CurrentLIstEditScreenViewModel
                     position = task.position,
                     taskId = task.id,
                     taskName = task.name,
+                    completed = task.isCompleted,
                 )
                 _bottomSheetState.update {
                     it.copy(
@@ -253,6 +298,7 @@ class CurrentLIstEditScreenViewModel
                         position = task.position,
                         taskId = task.id,
                         taskName = task.name,
+                        completed = task.isCompleted,
                     )
                     _bottomSheetState.update {
                         it.copy(
@@ -264,18 +310,25 @@ class CurrentLIstEditScreenViewModel
         }
 
         private fun completeAllItems() {
-            viewModelScope.launch {
-                uiState.value.items.forEach {
-                    if (!it.isCompleted) {
-                        changeItemStatus(it.id)
+            _allItemsChecked.update {
+                it.not()
+            }
+            if (_allItemsChecked.value) {
+                viewModelScope.launch {
+                    uiState.value.items.forEach {
+                        if (!it.isCompleted) {
+                            changeItemStatus(it.id)
+                        }
                     }
                 }
-            }
-        }
-
-        private fun completeItem(taskId: String) {
-            viewModelScope.launch {
-                changeItemStatus(taskId)
+            } else {
+                viewModelScope.launch {
+                    uiState.value.items.forEach {
+                        if (it.isCompleted) {
+                            changeItemStatus(it.id)
+                        }
+                    }
+                }
             }
         }
 

@@ -2,40 +2,37 @@ package com.practicum.spisokpokupok.listdetails.presentation.newlist.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun EditableTextField(
-    modifier: Modifier,
-    index: Int,
+    onValueChange: (String) -> Unit,
     value: String,
-    onValueChange: (String) -> Unit,
-) {
-    EnhancedTextFieldExample(
-        modifier = modifier,
-        text = value,
-        onValueChange = onValueChange,
-    )
-}
-
-@Composable
-fun EnhancedTextFieldExample(
     modifier: Modifier = Modifier,
-    text: String,
-    onValueChange: (String) -> Unit,
+    label: String = "Название",
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    textStyle: TextStyle =
+        TextStyle(
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal,
+            color = MaterialTheme.colorScheme.onSurface,
+        ),
+    isValid: Boolean = true,
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     BasicTextField(
-        modifier =  modifier.fillMaxWidth(),
-        value = text,
-        onValueChange = onValueChange,
-        textStyle = MaterialTheme.typography.bodyMedium,
-        singleLine = true,
+        value = value,
+        onValueChange = { onValueChange(it) },
+        textStyle = textStyle,
+        keyboardActions = keyboardActions,
+        modifier =
+            Modifier
     )
 }
 
@@ -43,7 +40,6 @@ fun EnhancedTextFieldExample(
 @Composable
 fun EditableTextFieldPreview() {
     EditableTextField(
-        index = 0,
         onValueChange = {},
         value = "",
         modifier = Modifier,

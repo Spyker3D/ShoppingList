@@ -23,6 +23,7 @@ interface ShoppingTaskRepository {
         quantity: Int,
         quantityType: QuantityType,
         position: Int,
+        completed: Boolean,
     )
 
     suspend fun moveTaskToActual(taskId: String)

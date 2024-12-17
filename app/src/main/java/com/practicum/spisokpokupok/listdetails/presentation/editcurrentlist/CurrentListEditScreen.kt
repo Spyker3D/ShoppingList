@@ -4,11 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,16 +23,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.practicum.buyinglist.R
 import com.practicum.buyinglist.R.drawable.ic_arrow_right
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.AddItem
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.BottomBar
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.EditableTextField
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.utils.TaskDetailTopAppBar
 
@@ -82,8 +88,10 @@ fun CurrentListEditScreen(
                 onCheckedChange = { action(ListEditAction.OnChooseAllItems) },
                 modifier =
                     Modifier
+                        .height(56.dp)
+                        .fillMaxWidth()
                         .padding(paddingValues)
-                        .padding(vertical = dimensionResource(id = R.dimen.list_item_padding)),
+                        .padding(vertical = 28.dp),
             )
             TasksContent(
                 tasks = state.items,
@@ -103,21 +111,34 @@ fun ChooseAllTasks(
     onCheckedChange: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row {
-        Switch(
-            checked = checked,
-            onCheckedChange = {
-                onCheckedChange()
-            },
-            colors =
-                SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.primary,
-                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                    uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
-                ),
-        )
-        Text(text = stringResource(id = R.string.choose_all_tasks))
+    Column(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier =
+                Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
+                    .fillMaxWidth(),
+        ) {
+            Switch(
+                checked = checked,
+                onCheckedChange = {
+                    onCheckedChange()
+                },
+                colors =
+                    SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.secondaryContainer,
+                        checkedTrackColor = Color.Transparent,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.surface,
+                    ),
+            )
+            Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)))
+            Text(
+                text = stringResource(id = R.string.choose_all_tasks),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)),
+            )
+        }
     }
 }
 
@@ -140,8 +161,12 @@ private fun TasksContent(
             items(tasks) { task ->
                 TaskItem(
                     task = task,
-                    onTaskClick = onTaskClick,
                     onCheckedChange = { onTaskCheckedChange(task.id) },
+                    onTaskClick = onTaskClick,
+                )
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    thickness = 1.dp,
                 )
             }
             item {
@@ -162,6 +187,8 @@ private fun TasksContent(
 
 @Composable
 private fun TaskItem(
+    isRedacted: Boolean = false,
+    onValueChange: (String) -> Unit = {},
     task: TaskUiState,
     onCheckedChange: () -> Unit,
     onTaskClick: (String) -> Unit,
@@ -195,21 +222,34 @@ private fun TaskItem(
             modifier =
                 Modifier.weight(1f),
         ) {
-            Text(
-                text = task.name,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier =
-                    Modifier.padding(
-                        start = dimensionResource(id = R.dimen.horizontal_margin),
-                    ),
-                textDecoration =
-                    if (task.isCompleted) {
-                        TextDecoration.LineThrough
-                    } else {
-                        null
-                    },
-            )
-            Row {
+            if (isRedacted) {
+                EditableTextField(
+                    value = task.name,
+                    onValueChange = { onValueChange(it) },
+                    modifier =
+                        Modifier.padding(
+                            start = dimensionResource(id = R.dimen.horizontal_margin),
+                        ),
+                )
+            } else {
+                Text(
+                    text = task.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier =
+                        Modifier.padding(
+                            start = dimensionResource(id = R.dimen.horizontal_margin),
+                        ),
+                    textDecoration =
+                        if (task.isCompleted) {
+                            TextDecoration.LineThrough
+                        } else {
+                            null
+                        },
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text(
                     text = task.quantity.toString(),
                     style = MaterialTheme.typography.bodySmall,
@@ -243,9 +283,7 @@ private fun TaskItem(
                         },
                     style = MaterialTheme.typography.bodySmall,
                     modifier =
-                        Modifier.padding(
-                            start = dimensionResource(id = R.dimen.horizontal_margin),
-                        ),
+                        Modifier.padding(horizontal = 4.dp),
                 )
             }
         }
@@ -273,7 +311,7 @@ private fun TasksContentPreview() {
                             isCompleted = false,
                             quantity = 2,
                             quantityType = QuantityType.KILOGRAM,
-                            position = 1
+                            position = 1,
                         ),
                         TaskUiState(
                             id = "2",
@@ -281,7 +319,7 @@ private fun TasksContentPreview() {
                             isCompleted = true,
                             quantity = 3,
                             quantityType = QuantityType.LITRE,
-                            position = 2
+                            position = 2,
                         ),
                         TaskUiState(
                             id = "3",
@@ -289,7 +327,7 @@ private fun TasksContentPreview() {
                             isCompleted = false,
                             quantity = 4,
                             quantityType = QuantityType.PACK,
-                            position = 3
+                            position = 3,
                         ),
                     ),
                 onTaskClick = { },
@@ -329,10 +367,10 @@ private fun TaskItemPreview() {
                         isCompleted = false,
                         quantity = 2,
                         quantityType = QuantityType.KILOGRAM,
-                        position = 1
+                        position = 1,
                     ),
-                onTaskClick = { },
                 onCheckedChange = { },
+                onTaskClick = { },
             )
         }
     }
@@ -351,10 +389,10 @@ private fun TaskItemCompletedPreview() {
                         isCompleted = true,
                         quantity = 2,
                         quantityType = QuantityType.KILOGRAM,
-                        position = 1
+                        position = 1,
                     ),
-                onTaskClick = { },
                 onCheckedChange = { },
+                onTaskClick = { },
             )
         }
     }
@@ -380,7 +418,7 @@ private fun CurrentListEditScreenPreview() {
                                     isCompleted = false,
                                     quantity = 2,
                                     quantityType = QuantityType.KILOGRAM,
-                                    position = 1
+                                    position = 1,
                                 ),
                                 TaskUiState(
                                     id = "2",
@@ -388,7 +426,7 @@ private fun CurrentListEditScreenPreview() {
                                     isCompleted = true,
                                     quantity = 3,
                                     quantityType = QuantityType.LITRE,
-                                    position = 2
+                                    position = 2,
                                 ),
                                 TaskUiState(
                                     id = "3",
@@ -396,7 +434,7 @@ private fun CurrentListEditScreenPreview() {
                                     isCompleted = false,
                                     quantity = 4,
                                     quantityType = QuantityType.PACK,
-                                    position = 3
+                                    position = 3,
                                 ),
                             ),
                     ),

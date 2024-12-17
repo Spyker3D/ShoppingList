@@ -56,6 +56,7 @@ class ShoppingTaskRepositoryImpl
             quantity: Int,
             quantityType: QuantityType,
             position: Int,
+            completed: Boolean,
         ) {
             localTaskDataSource.updateTask(
                 id = taskId,
@@ -63,7 +64,7 @@ class ShoppingTaskRepositoryImpl
                 quantity = quantity,
                 quantityType = quantityType,
                 position = position,
-                isCompleted = false,
+                isCompleted = completed,
             )
         }
 

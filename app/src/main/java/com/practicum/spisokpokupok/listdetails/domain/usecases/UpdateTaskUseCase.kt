@@ -15,6 +15,7 @@ class UpdateTaskUseCase
             quantity: Int,
             quantityType: QuantityType,
             position: Int,
+            completed: Boolean,
         ) {
             taskRepository.updateTask(
                 taskId = taskId,
@@ -22,6 +23,7 @@ class UpdateTaskUseCase
                 quantity = quantity,
                 quantityType = quantityType,
                 position = position,
+                completed = completed,
             )
         }
     }

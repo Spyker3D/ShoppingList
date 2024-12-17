@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
-import com.practicum.spisokpokupok.listdetails.domain.model.quantityTypeToString
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.AddNewItemBottomSheet
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.EditableTextField
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.TaskElement
@@ -84,14 +83,13 @@ fun NewListScreen(
                         bottom = innerPadding.calculateBottomPadding(),
                     ).padding(horizontal = 16.dp),
         ) {
-            TitleTextField(
-                modifier = modifier,
+            EditableTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = state.title,
-                onValueChange = { title ->
-                    action(NewListAction.OnTitleChange(title))
+                onValueChange = {
+                    action(NewListAction.OnTitleChange(it))
                 },
             )
-
             Spacer(
                 modifier = Modifier.padding(bottom = 20.dp),
             )
@@ -104,29 +102,29 @@ fun NewListScreen(
                 items(state.productItems.size) { index ->
                     val item = state.productItems[index]
 
-                    if (item.isNameRedacted) {
-                        TitleTextField(
-                            modifier = modifier.height(56.dp),
-                            value = item.name,
-                            onValueChange = { title ->
-                                action(NewListAction.OnTaskNameChange(index, title))
-                            },
-                        )
-                    } else {
-                        TaskElement(
-                            name = item.name,
-                            onElementClick = {
-                                action(
-                                    NewListAction.OnTaskClick(
-                                        index,
-                                    ),
-                                )
-                            },
-                            modifier = Modifier,
-                            quantity = item.quantity.toString(),
-                            quantityType = quantityTypeToString(item.quantityType),
-                        )
-                    }
+                    TaskElement(
+                        isRedacted = item.isNameRedacted,
+                        name = item.name,
+                        onElementClick = {
+                            action(
+                                NewListAction.OnTaskClick(
+                                    index,
+                                ),
+                            )
+                        },
+                        modifier = Modifier,
+                        quantity = item.quantity.toString(),
+                        quantityType = item.quantityType,
+                        onValueChange = {
+                            action(
+                                NewListAction.OnTaskNameChange(
+                                    index,
+                                    it,
+                                ),
+                            )
+                        },
+                    )
+
                     HorizontalDivider(
                         color = MaterialTheme.colorScheme.onSurface,
                         thickness = 1.dp,
@@ -236,20 +234,6 @@ fun NewListTopBar(
             color = MaterialTheme.colorScheme.onSurface,
         )
     }
-}
-
-@Composable
-fun TitleTextField(
-    modifier: Modifier = Modifier.height(56.dp),
-    value: String,
-    onValueChange: (String) -> Unit,
-) {
-    EditableTextField(
-        modifier = modifier,
-        index = 0,
-        value = value,
-        onValueChange = onValueChange,
-    )
 }
 
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)

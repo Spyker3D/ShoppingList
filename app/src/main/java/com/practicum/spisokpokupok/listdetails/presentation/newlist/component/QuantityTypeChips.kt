@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -35,6 +36,12 @@ fun QuantityTypeChips(
         ) {
             options.forEachIndexed { index, option ->
                 SegmentedButton(
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContainerColor = MaterialTheme.colorScheme.surface,
+                        activeContentColor = MaterialTheme.colorScheme.onSurface,
+                        inactiveContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        inactiveContentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
                     modifier =
                         Modifier
                             .height(36.dp)
