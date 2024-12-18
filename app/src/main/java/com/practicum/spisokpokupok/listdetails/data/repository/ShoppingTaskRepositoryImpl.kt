@@ -5,7 +5,6 @@ import com.practicum.spisokpokupok.di.DefaultDispatcher
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
 import com.practicum.spisokpokupok.listdetails.domain.repository.ShoppingTaskRepository
-import com.practicum.spisokpokupok.lists.data.repository.LocalListDataSource
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
