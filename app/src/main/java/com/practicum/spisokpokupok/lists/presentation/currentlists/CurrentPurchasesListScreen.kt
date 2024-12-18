@@ -40,8 +40,6 @@ import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
-import com.practicum.spisokpokupok.ui.theme.blue
-import com.practicum.spisokpokupok.ui.theme.cyan
 
 
 @Composable

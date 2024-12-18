@@ -15,7 +15,7 @@ constructor(
         return shoppingListRepository.getCurrentLists().map { shoppingList ->
             shoppingList.sortedWith(
                 compareByDescending<ShoppingList> { it.isFavorite }
-                    .thenBy { it.name }
+                    .thenBy { it.name.lowercase() }
             )
         }
     }
