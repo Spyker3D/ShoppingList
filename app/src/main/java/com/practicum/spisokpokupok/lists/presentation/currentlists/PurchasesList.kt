@@ -100,7 +100,8 @@ fun PurchasesListSwipe(
 @Composable
 fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit) {
     Column(
-        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
