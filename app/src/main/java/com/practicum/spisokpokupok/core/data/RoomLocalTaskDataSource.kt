@@ -10,7 +10,8 @@ import com.practicum.spisokpokupok.core.data.roomdb.mapper.toLocal
 import com.practicum.spisokpokupok.listdetails.data.repository.LocalTaskDataSource
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
-import com.practicum.spisokpokupok.listdetails.domain.model.quantityTypeToString
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import javax.inject.Inject
 
@@ -40,12 +41,12 @@ class RoomLocalTaskDataSource
             )
         }
 
-        override suspend fun updateCompleted(
-            taskId: String,
-            isCompleted: Boolean,
-        ) {
-            shoppingTaskDao.updateCompleted(taskId, isCompleted)
-        }
+        override fun observeTasks(shoppingListId: String): Flow<List<Task>> =
+            shoppingTaskDao.observeAllWithGoods(shoppingListId).map { localShoppingTasks ->
+                localShoppingTasks.map { localShoppingTaskWithGood ->
+                    localShoppingTaskWithGood.toExternal()
+                }
+            }
 
         override suspend fun createTasks(
             tasks: List<Task>,
@@ -66,6 +67,7 @@ class RoomLocalTaskDataSource
             quantity: Int,
             quantityType: QuantityType,
             position: Int,
+            isCompleted: Boolean,
         ) {
             goodDao.upsert(
                 LocalGood(
@@ -73,13 +75,18 @@ class RoomLocalTaskDataSource
                     id = 0,
                 ),
             )
-            shoppingTaskDao.updateTask(
-                taskId = id,
-                goodId = goodDao.getGoodIdByName(goodName).toString(),
-                quantity = quantity,
-                quantityType = quantityTypeToString(quantityType),
-                position = position,
-            )
+            val goodId = goodDao.getGoodIdByName(goodName)
+            shoppingTaskDao.updateTaskGoodId(id, goodId.toString())
+            shoppingTaskDao.updateTaskQuantity(id, quantity)
+            shoppingTaskDao.updateTaskQuantityType(id, quantityType.name)
+            shoppingTaskDao.updateTaskPosition(id, position)
+            shoppingTaskDao.updateTaskStatus(id, isCompleted)
+        }
+
+        override suspend fun getTaskById(taskId: String): Task {
+            shoppingTaskDao.getTaskById(taskId).let {
+                return it[0].toExternal()
+            }
         }
 
         override suspend fun getShoppingTasksWithGoods(shoppingListId: String): List<Task> =

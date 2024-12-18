@@ -35,18 +35,19 @@ fun HorizontalPagerScreen(
                     onFavoriteItem = { id, isFavorite ->
                         currentListViewModel.updateFavoriteStatus(
                             listId = id,
-                            isFavorite = isFavorite
+                            isFavorite = isFavorite,
                         )
-                    }
+                    },
                 )
             }
 
-            1 -> CompletedPurchasesListScreen(
-                completedShoppingList = completedListViewModel.listStream.collectAsState().value,
-                onNavigateToNewList = onNavigateToNewList,
-                onItemClicked = onItemCompletedClicked,
-                onDeleteItem = currentListViewModel::deleteList
-            )
+            1 ->
+                CompletedPurchasesListScreen(
+                    completedShoppingList = completedListViewModel.listStream.collectAsState().value,
+                    onNavigateToNewList = onNavigateToNewList,
+                    onItemClicked = onItemCompletedClicked,
+                    onDeleteItem = currentListViewModel::deleteList,
+                )
         }
     }
 }

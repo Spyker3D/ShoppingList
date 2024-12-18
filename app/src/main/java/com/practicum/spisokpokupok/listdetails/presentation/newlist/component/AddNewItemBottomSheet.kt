@@ -28,6 +28,7 @@ fun AddNewItemBottomSheet(
     onEncreeseClick: () -> Unit,
     onDecreeseClick: () -> Unit,
     modifier: Modifier = Modifier,
+
 ) {
     Column {
         Spacer(

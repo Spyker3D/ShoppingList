@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SpisokPokupok</string>
+    <string name="menu_back">меню назад</string>
+    <string name="menu_sort_task">сортировка списка</string>
+    <string name="loading_error">Ошибка во время загрузки покупки</string>
+    <string name="tasks_are_completed">Всё куплено</string>
+    <string name="choose_all_tasks">Выделить все продукты</string>
 </resources>

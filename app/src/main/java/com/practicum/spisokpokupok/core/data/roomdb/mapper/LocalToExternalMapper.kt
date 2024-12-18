@@ -23,7 +23,7 @@ fun List<LocalActualShoppingListWithName>.toExternalList() =
 
 fun LocalShoppingTaskWithGood.toExternal() =
     Task(
-        id = localShoppingTask.id.toString(),
+        id = localShoppingTask.id,
         goodName = good.name,
         quantity = localShoppingTask.quantity,
         quantityType = localShoppingTask.quantityType.let(::quantityTypeFromString),

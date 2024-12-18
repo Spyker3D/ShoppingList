@@ -21,9 +21,7 @@ class ShoppingTaskRepositoryImpl
         @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
         @ApplicationScope private val scope: CoroutineScope,
     ) : ShoppingTaskRepository {
-        override suspend fun getCurrentTasks(listId: String): Flow<List<Task>> {
-            TODO("Not yet implemented")
-        }
+        override fun getCurrentTasks(listId: String): Flow<List<Task>> = localTaskDataSource.observeTasks(listId)
 
         override suspend fun createTask(
             shoppingListId: String,
@@ -50,10 +48,6 @@ class ShoppingTaskRepositoryImpl
             return taskId
         }
 
-        override suspend fun completeTask(taskId: String) {
-            localTaskDataSource.updateCompleted(taskId, true)
-        }
-
         override suspend fun deleteTask(taskId: String) {
             localTaskDataSource.deleteTask(taskId)
         }
@@ -64,6 +58,7 @@ class ShoppingTaskRepositoryImpl
             quantity: Int,
             quantityType: QuantityType,
             position: Int,
+            completed: Boolean,
         ) {
             localTaskDataSource.updateTask(
                 id = taskId,
@@ -71,7 +66,35 @@ class ShoppingTaskRepositoryImpl
                 quantity = quantity,
                 quantityType = quantityType,
                 position = position,
+                isCompleted = completed,
             )
+        }
+
+        override suspend fun moveTaskToActual(taskId: String) {
+            localTaskDataSource.moveTaskToActual(taskId)
+        }
+
+        override suspend fun changeItemStatus(taskId: String) {
+            val task = localTaskDataSource.getTaskById(taskId)
+            if (task.isCompleted) {
+                localTaskDataSource.updateTask(
+                    id = taskId,
+                    goodName = task.goodName,
+                    quantity = task.quantity,
+                    quantityType = task.quantityType,
+                    position = task.position,
+                    isCompleted = false,
+                )
+            } else {
+                localTaskDataSource.updateTask(
+                    id = taskId,
+                    goodName = task.goodName,
+                    quantity = task.quantity,
+                    quantityType = task.quantityType,
+                    position = task.position,
+                    isCompleted = true,
+                )
+            }
         }
 
         override suspend fun getShoppingTasksWithGoods(shoppingListId: String): List<Task> =

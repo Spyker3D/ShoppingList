@@ -17,6 +17,8 @@ interface ShoppingListRepository {
         name: String,
     )
 
+    suspend fun getListTitle(listId: String): String
+
     suspend fun moveToActualLists(listId: String)
 
     fun getCompletedLists(): Flow<List<ShoppingList>>

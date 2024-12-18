@@ -6,7 +6,7 @@ import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import kotlinx.coroutines.flow.Flow
 
 interface ShoppingTaskRepository {
-    suspend fun getCurrentTasks(listId: String): Flow<List<Task>>
+    fun getCurrentTasks(listId: String): Flow<List<Task>>
 
     suspend fun createTask(
         shoppingListId: String,
@@ -16,8 +16,6 @@ interface ShoppingTaskRepository {
         position: Int,
     ): String
 
-    suspend fun completeTask(taskId: String)
-
     suspend fun deleteTask(taskId: String)
 
     suspend fun updateTask(
@@ -26,7 +24,12 @@ interface ShoppingTaskRepository {
         quantity: Int,
         quantityType: QuantityType,
         position: Int,
+        completed: Boolean,
     )
+
+    suspend fun moveTaskToActual(taskId: String)
+
+    suspend fun changeItemStatus(taskId: String)
 
     suspend fun getShoppingTasksWithGoods(shoppingListId: String): List<Task>
 

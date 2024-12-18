@@ -23,7 +23,7 @@ sealed interface NewListAction {
         val quantityType: QuantityType,
     ) : NewListAction
 
-    data class OnEncreaseClick(
+    data class OnIncreaseClick(
         val position: Int,
     ) : NewListAction
 
