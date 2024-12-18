@@ -36,6 +36,8 @@ sealed interface ListEditAction {
         val taskId: String,
     ) : ListEditAction
 
+    data object CompleteList : ListEditAction
+
     class OnTaskNameChange(
         val index: Int,
         val title: String,

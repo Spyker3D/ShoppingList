@@ -21,8 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.AddNewItemBottomSheet
@@ -32,11 +36,11 @@ import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 @Composable
 fun NewListScreen(
-    modifier: Modifier = Modifier,
     onNavigateToCurrentLists: () -> Unit,
     onBackPressed: () -> Unit,
     action: (NewListAction) -> Unit,
     state: NewListUIState,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
@@ -83,12 +87,34 @@ fun NewListScreen(
                         bottom = innerPadding.calculateBottomPadding(),
                     ).padding(horizontal = 16.dp),
         ) {
-            EditableTextField(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                value = state.title,
-                onValueChange = {
-                    action(NewListAction.OnTitleChange(it))
-                },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+            ) {
+                EditableTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.title,
+                    textStyle =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        ),
+                    onValueChange = {
+                        action(NewListAction.OnTitleChange(it))
+                    },
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_close),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.onSurface,
+                thickness = 2.dp,
             )
             Spacer(
                 modifier = Modifier.padding(bottom = 20.dp),
@@ -101,7 +127,6 @@ fun NewListScreen(
             ) {
                 items(state.productItems.size) { index ->
                     val item = state.productItems[index]
-
                     TaskElement(
                         isRedacted = item.isNameRedacted,
                         name = item.name,

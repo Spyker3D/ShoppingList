@@ -8,6 +8,7 @@ import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
 import com.practicum.spisokpokupok.listdetails.domain.usecases.ChangeItemStatusUseCase
+import com.practicum.spisokpokupok.listdetails.domain.usecases.CompleteListUseCase
 import com.practicum.spisokpokupok.listdetails.domain.usecases.CreateTaskUseCase
 import com.practicum.spisokpokupok.listdetails.domain.usecases.DeleteTaskUseCase
 import com.practicum.spisokpokupok.listdetails.domain.usecases.GetListTitleUseCase
@@ -58,6 +59,7 @@ class CurrentLIstEditScreenViewModel
         val updateTaskUseCase: UpdateTaskUseCase,
         val changeItemStatusUseCase: ChangeItemStatusUseCase,
         val createTaskUseCase: CreateTaskUseCase,
+        val completeListUseCase: CompleteListUseCase,
     ) : ViewModel() {
         private val currentListEditRoute = handle.toRoute<CurrentListEditRoute>()
         private val listId = currentListEditRoute.id
@@ -96,7 +98,7 @@ class CurrentLIstEditScreenViewModel
 
                     is Async.Success -> {
                         LIstEditUIState(
-                            allItemsChecked = allItemsChecked,
+                            allItemsChecked = checkAllItemsAreChecked(),
                             title = title,
                             items =
                                 tasksAsync.data
@@ -128,6 +130,13 @@ class CurrentLIstEditScreenViewModel
                     ),
             )
 
+        private fun checkAllItemsAreChecked(): Boolean {
+            uiState.value.items.forEach {
+                if (!it.isCompleted) return false
+            }
+            return true
+        }
+
         fun consumeAction(action: ListEditAction) {
             when (action) {
                 ListEditAction.OnAddNewProduct -> addNewItem()
@@ -148,40 +157,26 @@ class CurrentLIstEditScreenViewModel
                 is ListEditAction.OnTaskClick -> showBottomSheet(action.id)
                 is ListEditAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
                 ListEditAction.OnDeleteCompletedTasks -> deleteCompletedTasks()
+                ListEditAction.CompleteList -> moveListToCompletedLists()
+            }
+        }
+
+        private fun moveListToCompletedLists() {
+            viewModelScope.launch {
+                completeListUseCase(listId)
             }
         }
 
         private fun changeItemStatus(taskId: String) {
             viewModelScope.launch {
-                val task = uiState.value.items.find { it.id == taskId }
-                if (task?.isCompleted == true) {
-                    changeItemStatusUseCase(taskId)
-                    updateItemsPosition()
-                } else {
-                    changeItemStatusUseCase(taskId)
-                    changeActualTasksPosition()
-                }
-            }
-        }
-
-        private suspend fun changeActualTasksPosition() {
-            uiState.value.items.forEachIndexed { index, task ->
-                if (task.isCompleted) return@forEachIndexed
-                if (task.position != index) {
-                    updateTaskUseCase(
-                        quantity = task.quantity,
-                        quantityType = task.quantityType,
-                        position = index,
-                        taskId = task.id,
-                        taskName = task.name,
-                        completed = task.isCompleted,
-                    )
-                }
+                changeItemStatusUseCase(taskId)
+                updateItemsPosition()
             }
         }
 
         private suspend fun updateItemsPosition() {
             uiState.value.items.forEachIndexed { index, task ->
+                if (task.isCompleted) return@forEachIndexed
                 if (task.position != index) {
                     updateTaskUseCase(
                         quantity = task.quantity,
@@ -310,22 +305,19 @@ class CurrentLIstEditScreenViewModel
         }
 
         private fun completeAllItems() {
-            _allItemsChecked.update {
-                it.not()
-            }
             if (_allItemsChecked.value) {
                 viewModelScope.launch {
                     uiState.value.items.forEach {
-                        if (!it.isCompleted) {
-                            changeItemStatus(it.id)
+                        if (it.isCompleted) {
+                            changeItemStatusUseCase(it.id)
                         }
                     }
                 }
             } else {
                 viewModelScope.launch {
                     uiState.value.items.forEach {
-                        if (it.isCompleted) {
-                            changeItemStatus(it.id)
+                        if (!it.isCompleted) {
+                            changeItemStatusUseCase(it.id)
                         }
                     }
                 }

@@ -18,8 +18,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
 import com.practicum.buyinglist.R.drawable.ic_arrow_right
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
@@ -61,7 +65,12 @@ fun TaskElement(
                         Text(
                             text = name,
                             color = Black,
-                            style = MaterialTheme.typography.titleMedium,
+                            style =
+                                TextStyle(
+                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                ),
                             modifier = Modifier.alpha(0.5f),
                         )
                     }
@@ -72,6 +81,12 @@ fun TaskElement(
                     Text(
                         text = quantity,
                         color = Black,
+                        style =
+                            TextStyle(
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
                     )
                     Text(
                         text =
@@ -96,7 +111,12 @@ fun TaskElement(
                                     ""
                                 }
                             },
-                        style = MaterialTheme.typography.bodySmall,
+                        style =
+                            TextStyle(
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
                         modifier =
                             Modifier.padding(
                                 start = dimensionResource(id = R.dimen.horizontal_margin),
@@ -126,5 +146,4 @@ private fun TaskElementPreview() {
         isRedacted = false,
         onValueChange = {},
     )
-//
 }

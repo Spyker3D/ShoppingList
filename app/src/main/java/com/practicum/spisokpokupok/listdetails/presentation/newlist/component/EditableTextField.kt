@@ -1,9 +1,9 @@
 package com.practicum.spisokpokupok.listdetails.presentation.newlist.component
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -32,7 +32,18 @@ fun EditableTextField(
         textStyle = textStyle,
         keyboardActions = keyboardActions,
         modifier =
-            Modifier
+        Modifier,
+        singleLine = true,
+        decorationBox = { innerTextField ->
+            if (value.isEmpty()) {
+                Text(
+                    text = label,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = textStyle,
+                )
+            }
+            innerTextField()
+        },
     )
 }
 
