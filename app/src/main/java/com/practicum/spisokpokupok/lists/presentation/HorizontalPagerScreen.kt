@@ -47,6 +47,7 @@ fun HorizontalPagerScreen(
                     onNavigateToNewList = onNavigateToNewList,
                     onItemClicked = onItemCompletedClicked,
                     onDeleteItem = currentListViewModel::deleteList,
+                    isAllListsEmpty = completedListViewModel.isAllListsEmpty.collectAsState().value
                 )
         }
     }
