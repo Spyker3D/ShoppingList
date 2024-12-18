@@ -60,7 +60,8 @@ class ShoppingListRepositoryImpl
             localDataSource.addActualList(listId)
         }
 
-        override suspend fun getCompletedLists(): Flow<List<ShoppingList>> = localDataSource.observeCompletedLists()
+        override fun getCompletedLists(): Flow<List<ShoppingList>> =
+            localDataSource.observeCompletedLists()
 
         override suspend fun addToFavorite(listId: String) {
             localDataSource.addListToFavorite(listId)

@@ -12,10 +12,8 @@ constructor(
     private val shoppingListRepository: ShoppingListRepository,
 ) {
     operator fun invoke(): Flow<List<ShoppingList>> {
-        return shoppingListRepository.getCurrentLists().map { shoppingList ->
-            shoppingList
-                .filter { it.isCompleted }
-                .sortedBy { it.name }
+        return shoppingListRepository.getCompletedLists().map { shoppingList ->
+            shoppingList.sortedBy { it.name }
         }
     }
 }

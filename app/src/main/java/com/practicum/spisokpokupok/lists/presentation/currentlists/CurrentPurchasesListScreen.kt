@@ -1,11 +1,13 @@
 package com.practicum.spisokpokupok.lists.presentation.currentlists
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -49,113 +52,121 @@ fun CurrentPurchasesListScreen(
     onDeleteItem: (String) -> Unit,
     onFavoriteItem: (String, Boolean) -> Unit
 ) {
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        topBar = {
-            TopBar(modifier = modifier, purchasesList = shoppingList)
-        },
-        content = { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = paddingValues.calculateTopPadding(),
-                        bottom = paddingValues.calculateBottomPadding()
-                    )
-            ) {
-                if (shoppingList.isNotEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        MaterialTheme.colorScheme.surface
-                                    )
-                                )
-                            )
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(bottom = 0.dp)
-                                .size(250.dp),
-                            painter = painterResource(id = R.drawable.img_bags),
-                            contentDescription = null,
-                            tint = Color.Unspecified
+    Box(
+        modifier = modifier,
+        ) {
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.surface,
+            topBar = {
+                TopBar(purchasesList = shoppingList)
+            },
+            content = { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = paddingValues.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding()
                         )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     if (shoppingList.isNotEmpty()) {
                         Box(
                             modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .padding(top = 24.dp)
+                                .fillMaxSize()
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Transparent,
+                                            MaterialTheme.colorScheme.surface
+                                        )
+                                    )
+                                )
                         ) {
-                            PurchasesListSwipe(
-                                listOfPurchases = shoppingList,
-                                onClickListener = onItemClicked,
-                                onDeleteItemListener = {
-                                    onDeleteItem(it)
-                                },
-                                onFavoriteItemListener = onFavoriteItem
+                            Icon(
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = 0.dp)
+                                    .size(250.dp),
+                                painter = painterResource(id = R.drawable.img_bags),
+                                contentDescription = null,
+                                tint = Color.Unspecified
                             )
                         }
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp)
-                                .background(Color.Transparent),
-                            contentAlignment = Alignment.Center,
+                    }
+
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (shoppingList.isNotEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .padding(top = 24.dp)
                             ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    modifier = Modifier.padding(bottom = 16.dp),
-                                    text = "У вас еще нет списков покупок. Самое время создать первый!",
-                                    fontSize = 22.sp,
-                                    color = MaterialTheme.colorScheme.onTertiary,
-                                    textAlign = TextAlign.Center,
-                                    fontFamily = FontFamily(Font(R.font.sf_pro_display_regular))
+                                PurchasesListSwipe(
+                                    isCompletedListsScreen = false,
+                                    listOfPurchases = shoppingList,
+                                    onClickListener = onItemClicked,
+                                    onDeleteItemListener = {
+                                        onDeleteItem(it)
+                                    },
+                                    onFavoriteItemListener = onFavoriteItem
                                 )
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.End),
-                                    contentAlignment = Alignment.CenterEnd
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp)
+                                    .background(Color.Transparent),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Icon(
-                                        modifier = Modifier.padding(end = 32.dp),
-                                        painter = painterResource(id = R.drawable.ic_new_list_arrow),
-                                        tint = blue,
-                                        contentDescription = null
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 16.dp),
+                                        text = "У вас еще нет списков покупок. Самое время создать первый!",
+                                        fontSize = 22.sp,
+                                        color = MaterialTheme.colorScheme.onTertiary,
+                                        textAlign = TextAlign.Center,
+                                        fontFamily = FontFamily(Font(R.font.sf_pro_display_regular))
                                     )
                                 }
                             }
                         }
                     }
                 }
+            },
+            bottomBar = {
+                BottomBar(onNavigateToNewList = onNavigateToNewList)
             }
-        },
-        bottomBar = {
-            BottomBar(onNavigateToNewList = onNavigateToNewList)
+        )
+        if (shoppingList.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.End
+            ) {
+                Spacer(modifier = Modifier.weight(1.5f))
+                Image(
+                    modifier = Modifier
+                        .weight(1f).padding(end = 36.dp),
+                    painter = painterResource(id = R.drawable.ic_new_list_arrow),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillHeight
+                )
+                Spacer(modifier = Modifier.weight(0.37f))
+            }
         }
-    )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(modifier: Modifier, purchasesList: List<ShoppingList>) {
+private fun TopBar(modifier: Modifier = Modifier, purchasesList: List<ShoppingList>) {
     LargeTopAppBar(
         modifier = modifier
             .padding(top = 0.dp)

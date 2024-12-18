@@ -1,6 +1,7 @@
 package com.practicum.spisokpokupok.core.data.roomdb.mapper
 
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalActualShoppingListWithName
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingList
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingListWithName
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTaskWithGood
@@ -17,7 +18,8 @@ fun LocalActualShoppingListWithName.toExternal() =
         isCompleted = false,
     )
 
-fun List<LocalActualShoppingListWithName>.toExternalList() = map(LocalActualShoppingListWithName::toExternal)
+fun List<LocalActualShoppingListWithName>.toExternalList() =
+    map(LocalActualShoppingListWithName::toExternal)
 
 fun LocalShoppingTaskWithGood.toExternal() =
     Task(
@@ -44,3 +46,7 @@ fun LocalCompletedShoppingListWithName.toExternal() =
         isFavorite = false,
         isCompleted = true,
     )
+
+fun List<LocalCompletedShoppingListWithName>.toExternalCompletedList() =
+    map(LocalCompletedShoppingListWithName::toExternal)
+

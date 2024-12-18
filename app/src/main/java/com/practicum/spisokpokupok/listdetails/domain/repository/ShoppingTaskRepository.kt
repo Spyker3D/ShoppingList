@@ -2,6 +2,7 @@ package com.practicum.spisokpokupok.listdetails.domain.repository
 
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
+import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import kotlinx.coroutines.flow.Flow
 
 interface ShoppingTaskRepository {
@@ -26,4 +27,10 @@ interface ShoppingTaskRepository {
         quantityType: QuantityType,
         position: Int,
     )
+
+    suspend fun getShoppingTasksWithGoods(shoppingListId: String): List<Task>
+
+    suspend fun getCompletedListById(shoppingListId: String): ShoppingList
+
+    suspend fun deleteCompletedList(completedShoppingListId: String)
 }

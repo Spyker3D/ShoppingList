@@ -2,6 +2,7 @@ package com.practicum.spisokpokupok.listdetails.data.repository
 
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
+import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 
 interface LocalTaskDataSource {
     suspend fun createTask(
@@ -27,4 +28,10 @@ interface LocalTaskDataSource {
         quantityType: QuantityType,
         position: Int,
     )
+
+    suspend fun getShoppingTasksWithGoods(shoppingListId: String): List<Task>
+
+    suspend fun getCompletedListById(shoppingListId: String): ShoppingList
+
+    suspend fun deleteCompletedList(completedShoppingListId: String)
 }

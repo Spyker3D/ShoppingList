@@ -19,7 +19,7 @@ interface ShoppingListRepository {
 
     suspend fun moveToActualLists(listId: String)
 
-    suspend fun getCompletedLists(): Flow<List<ShoppingList>>
+    fun getCompletedLists(): Flow<List<ShoppingList>>
 
     suspend fun addToFavorite(listId: String)
 
