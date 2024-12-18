@@ -2,15 +2,13 @@ package com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -36,7 +34,7 @@ import com.practicum.buyinglist.R.drawable.ic_arrow_right
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.AddItem
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.BottomBar
-import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.EditableTextField
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.NewTaskEditableTextField
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.utils.TaskDetailTopAppBar
 
@@ -87,18 +85,24 @@ fun CurrentListEditScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.surface,
+        modifier = modifier,
     ) { paddingValues ->
-        Column {
-            ChooseAllTasks(
-                checked = state.allItemsChecked,
-                onCheckedChange = { action(ListEditAction.OnChooseAllItems) },
-                modifier =
-                    Modifier
-                        .height(56.dp)
-                        .fillMaxWidth()
-                        .padding(paddingValues)
-                        .padding(vertical = 28.dp),
-            )
+        Column(
+            modifier = modifier.padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Row(
+                modifier = modifier.fillMaxWidth(),
+            ) {
+                ChooseAllTasks(
+                    checked = state.allItemsChecked,
+                    onCheckedChange = {
+                        action(ListEditAction.OnChooseAllItems)
+                    },
+                    modifier = modifier,
+                    title = stringResource(R.string.choose_all_tasks),
+                )
+            }
             TasksContent(
                 tasks = state.items,
                 onTaskClick = { action(ListEditAction.OnTaskClick(it)) },
@@ -115,44 +119,33 @@ fun CurrentListEditScreen(
 fun ChooseAllTasks(
     checked: Boolean,
     onCheckedChange: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
+    title: String = "",
 ) {
-    Column(modifier = modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
-            modifier =
-                Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin)),
-        ) {
-            Box(
-                modifier = Modifier.width(32.dp),
-            ) {
-                Switch(
-                    modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)),
-                    checked = checked,
-                    onCheckedChange = {
-                        onCheckedChange()
-                    },
-                    colors =
-                        SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.surface,
-                            checkedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
-                            uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
-                            uncheckedTrackColor = MaterialTheme.colorScheme.surface,
-                        ),
-                )
-            }
-
-            Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)))
-
-            Text(
-                text = stringResource(id = R.string.choose_all_tasks),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)),
-            )
-        }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+        modifier = modifier,
+    ) {
+        Switch(
+            checked = checked,
+            onCheckedChange = {
+                onCheckedChange()
+            },
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.surface,
+                    checkedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surface,
+                ),
+        )
+        Spacer(modifier = Modifier.padding(4.dp))
+        Text(
+            title,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
     }
 }
 
@@ -237,13 +230,16 @@ private fun TaskItem(
                 Modifier.weight(1f),
         ) {
             if (isRedacted) {
-                EditableTextField(
+                NewTaskEditableTextField(
                     value = task.name,
                     onValueChange = { onValueChange(it) },
+                    isError = false,
+                    errorMessage = "",
                     modifier =
                         Modifier.padding(
                             start = dimensionResource(id = R.dimen.horizontal_margin),
                         ),
+
                 )
             } else {
                 Text(

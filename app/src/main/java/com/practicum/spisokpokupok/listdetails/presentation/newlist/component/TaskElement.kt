@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,17 +40,21 @@ fun TaskElement(
     onElementClick: () -> Unit,
     modifier: Modifier,
 ) {
-    Column {
+    Column(
+        modifier = modifier.height(72.dp),
+    ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier =
                 modifier
-                    .height(48.dp)
+                    .height(71.dp)
                     .fillMaxWidth()
                     .clickable { onElementClick() },
         ) {
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center,
+            ) {
                 Box(
                     modifier =
                         Modifier.padding(
@@ -56,72 +62,77 @@ fun TaskElement(
                         ),
                 ) {
                     if (isRedacted) {
-                        EditableTextField(
+                        NewTaskEditableTextField(
                             value = name,
                             onValueChange = onValueChange,
                             modifier = Modifier.height(56.dp),
+                            isError = false,
+                            errorMessage = "",
                         )
                     } else {
-                        Text(
-                            text = name,
-                            color = Black,
-                            style =
-                                TextStyle(
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                ),
-                            modifier = Modifier.alpha(0.5f),
-                        )
+                        Column {
+                            Text(
+                                text = name,
+                                color = Black,
+                                style =
+                                    TextStyle(
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    ),
+                                modifier = Modifier.alpha(0.5f),
+                            )
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = quantity,
+                                    color = Black,
+                                    style =
+                                        TextStyle(
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            fontSize = 14.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                        ),
+                                )
+                                Text(
+                                    text =
+                                        when (quantityType) {
+                                            QuantityType.KILOGRAM -> {
+                                                "кг"
+                                            }
+
+                                            QuantityType.LITRE -> {
+                                                "л"
+                                            }
+
+                                            QuantityType.PACK -> {
+                                                "уп"
+                                            }
+
+                                            QuantityType.PIECE -> {
+                                                "шт"
+                                            }
+
+                                            QuantityType.UNKNOWN -> {
+                                                ""
+                                            }
+                                        },
+                                    style =
+                                        TextStyle(
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            fontSize = 14.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                        ),
+                                    modifier =
+                                        Modifier.padding(
+                                            start = 4.dp,
+                                        ),
+                                )
+                            }
+                        }
                     }
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = quantity,
-                        color = Black,
-                        style =
-                            TextStyle(
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            ),
-                    )
-                    Text(
-                        text =
-                            when (quantityType) {
-                                QuantityType.KILOGRAM -> {
-                                    "кг"
-                                }
-
-                                QuantityType.LITRE -> {
-                                    "л"
-                                }
-
-                                QuantityType.PACK -> {
-                                    "уп"
-                                }
-
-                                QuantityType.PIECE -> {
-                                    "шт"
-                                }
-
-                                QuantityType.UNKNOWN -> {
-                                    ""
-                                }
-                            },
-                        style =
-                            TextStyle(
-                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            ),
-                        modifier =
-                            Modifier.padding(
-                                start = dimensionResource(id = R.dimen.horizontal_margin),
-                            ),
-                    )
                 }
             }
             Icon(
@@ -131,10 +142,17 @@ fun TaskElement(
                 modifier = Modifier.alpha(0.5f),
             )
         }
+        Spacer(
+            modifier = Modifier.weight(1f),
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.onSurface,
+            thickness = 1.dp,
+        )
     }
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun TaskElementPreview() {
     TaskElement(

@@ -43,6 +43,7 @@ data class TaskUiState(
     val name: String = "",
     val isCompleted: Boolean = false,
     val isNameError: Boolean = false,
+    val errorNameMessage: String = "",
     val isNameRedacted: Boolean = false,
     val quantity: Int = 1,
     val quantityType: QuantityType = QuantityType.UNKNOWN,
