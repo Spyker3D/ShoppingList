@@ -48,7 +48,7 @@ fun NewListScreen(
         topBar = {
             NewListTopBar(
                 onBackPressed = onBackPressed,
-                title = state.title,
+                title = state.titleState.title,
             )
         },
         bottomBar = {
@@ -87,30 +87,10 @@ fun NewListScreen(
                         bottom = innerPadding.calculateBottomPadding(),
                     ).padding(horizontal = 16.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
-            ) {
-                EditableTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = state.title,
-                    textStyle =
-                        TextStyle(
-                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        ),
-                    onValueChange = {
-                        action(NewListAction.OnTitleChange(it))
-                    },
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+            NewListTitle(
+                state = state,
+                action = action,
+            )
 
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.onSurface,
@@ -168,6 +148,40 @@ fun NewListScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun NewListTitle(
+    action: (NewListAction) -> Unit,
+    state: NewListUIState,
+    modifier: Modifier = Modifier,
+) {
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+        ) {
+            EditableTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = state.titleState.title,
+                textStyle =
+                    TextStyle(
+                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
+                onValueChange = {
+                    action(NewListAction.OnTitleChange(it))
+                },
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
         }
     }
 }

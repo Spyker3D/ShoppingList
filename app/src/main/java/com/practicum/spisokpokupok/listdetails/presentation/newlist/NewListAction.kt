@@ -4,6 +4,8 @@ import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 
 sealed interface NewListAction {
     data object OnTitleClick : NewListAction
+    data object OnDeleteTitleClick : NewListAction
+    data object OnAcceptTitleClick : NewListAction
 
     data class OnTaskClick(
         val index: Int,

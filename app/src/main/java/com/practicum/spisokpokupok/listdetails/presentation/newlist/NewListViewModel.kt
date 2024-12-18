@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class NewListUIState(
-    val title: String = "",
+    val titleState: TitleState = TitleState(),
     val bottomSheetState: BottomSheetState = BottomSheetState(),
     val productItems: List<NewListItemUiState> = emptyList(),
 )
@@ -29,11 +29,18 @@ data class BottomSheetState(
 )
 
 data class NewListItemUiState(
-    val name: String = "",
+    val label: String = "Продукт",
+    val name: String = "Новый список",
     val quantity: Int = 1,
     val quantityType: QuantityType = QuantityType.UNKNOWN,
     val isNameError: Boolean = false,
     val isNameRedacted: Boolean = false,
+)
+
+data class TitleState(
+    val title: String = "",
+    val isTitleError: Boolean = false,
+    val isTitleRedacted: Boolean = false,
 )
 
 @HiltViewModel
@@ -44,20 +51,12 @@ class NewListViewModel
         private val createListUseCase: CreateListUseCase,
     ) : ViewModel() {
         private val _bottomSheetState = MutableStateFlow(BottomSheetState())
-        private val _title = MutableStateFlow("Новый список")
+        private val _title = MutableStateFlow(TitleState())
         private val _productItems =
             MutableStateFlow(
                 listOf(
-                    NewListItemUiState(
-                        name = "Молоко",
-                        quantity = 1,
-                        quantityType = QuantityType.LITRE,
-                    ),
-                    NewListItemUiState(
-                        name = "хлеб",
-                        quantity = 1,
-                        quantityType = QuantityType.PIECE,
-                    ),
+                    NewListItemUiState(),
+                    NewListItemUiState(),
                 ),
             )
 
@@ -72,9 +71,15 @@ class NewListViewModel
                 productItems,
                 ->
                 NewListUIState(
-                    title = title,
+                    titleState = title,
                     bottomSheetState = bottomSheetState,
-                    productItems = productItems,
+                    productItems =
+                        productItems.mapIndexed { index, state ->
+                            state.copy(
+                                label = "Продукт $(index+1)",
+                                isNameRedacted = false,
+                            )
+                        },
                 )
             }.stateIn(
                 initialValue =
@@ -87,7 +92,7 @@ class NewListViewModel
 
         fun consumeAction(action: NewListAction) {
             when (action) {
-                NewListAction.OnTitleClick -> showBottomSheet()
+                NewListAction.OnTitleClick -> redactTitle()
                 NewListAction.OnAddNewProduct -> addNewItem()
                 is NewListAction.OnTaskClick -> redactItem(action.index)
                 is NewListAction.OnTitleChange -> changeTitle(action.title)
@@ -97,6 +102,33 @@ class NewListViewModel
                 NewListAction.OnSaveList -> saveList()
                 NewListAction.OnSaveTask -> saveTask()
                 is NewListAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
+                NewListAction.OnAcceptTitleClick -> acceptTitle()
+                NewListAction.OnDeleteTitleClick -> emptyTitle()
+            }
+        }
+
+        private fun emptyTitle() {
+            _title.update {
+                it.copy(
+                    title = "",
+                    isTitleError = true,
+                )
+            }
+        }
+
+        private fun redactTitle() {
+            _title.update {
+                it.copy(
+                    isTitleRedacted = true,
+                )
+            }
+        }
+
+        private fun acceptTitle() {
+            _title.update {
+                it.copy(
+                    isTitleRedacted = false,
+                )
             }
         }
 
@@ -188,7 +220,9 @@ class NewListViewModel
         private fun changeTitle(title: String) {
             closeBottomSheet()
             _title.update {
-                title
+                it.copy(
+                    title = title,
+                )
             }
         }
 
@@ -241,7 +275,7 @@ class NewListViewModel
             viewModelScope.launch {
                 val listId =
                     createListUseCase(
-                        _title.value,
+                        _title.value.title,
                     )
                 _productItems.value.forEachIndexed { index, item ->
                     createTaskUseCase(
