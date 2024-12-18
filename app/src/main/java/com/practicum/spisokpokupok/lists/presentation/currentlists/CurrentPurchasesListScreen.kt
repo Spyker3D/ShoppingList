@@ -3,6 +3,7 @@ package com.practicum.spisokpokupok.lists.presentation.currentlists
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,7 +55,7 @@ fun CurrentPurchasesListScreen(
 ) {
     Box(
         modifier = modifier,
-        ) {
+    ) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
@@ -87,7 +88,13 @@ fun CurrentPurchasesListScreen(
                                     .align(Alignment.BottomCenter)
                                     .padding(bottom = 0.dp)
                                     .size(250.dp),
-                                painter = painterResource(id = R.drawable.img_bags),
+                                painter = painterResource(
+                                    id = if (isSystemInDarkTheme()) {
+                                        R.drawable.ic_bags_dark
+                                    } else {
+                                        R.drawable.ic_bags
+                                    }
+                                ),
                                 contentDescription = null,
                                 tint = Color.Unspecified
                             )
@@ -153,7 +160,8 @@ fun CurrentPurchasesListScreen(
                 Spacer(modifier = Modifier.weight(1.5f))
                 Image(
                     modifier = Modifier
-                        .weight(1f).padding(end = 36.dp),
+                        .weight(1f)
+                        .padding(end = 36.dp),
                     painter = painterResource(id = R.drawable.ic_new_list_arrow),
                     contentDescription = null,
                     contentScale = ContentScale.FillHeight
@@ -186,8 +194,7 @@ private fun TopBar(modifier: Modifier = Modifier, purchasesList: List<ShoppingLi
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onTertiary
+            containerColor = MaterialTheme.colorScheme.surface,
         )
     )
 }
@@ -212,7 +219,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_back),
-                    tint = cyan,
+                    tint = MaterialTheme.colorScheme.inversePrimary,
                     contentDescription = null
                 )
                 Text(
@@ -226,7 +233,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_forward),
-                    tint = cyan,
+                    tint = MaterialTheme.colorScheme.inversePrimary,
                     contentDescription = null
                 )
             }
@@ -236,7 +243,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
                     .size(48.dp)
                     .clickable { onNavigateToNewList() },
                 painter = painterResource(id = R.drawable.ic_add),
-                tint = cyan,
+                tint = MaterialTheme.colorScheme.inversePrimary,
                 contentDescription = null,
             )
         }

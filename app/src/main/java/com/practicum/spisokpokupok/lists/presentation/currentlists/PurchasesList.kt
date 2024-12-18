@@ -3,6 +3,7 @@ package com.practicum.spisokpokupok.lists.presentation.currentlists
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -81,7 +82,7 @@ fun PurchasesListSwipe(
                                     swipeState.hide()
                                 }
                             },
-                            backgroundColor = MaterialTheme.colorScheme.primary,
+                            backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
                             icon = painterResource(id = R.drawable.ic_blue_paperclip),
                             modifier = Modifier.fillMaxHeight()
                         )
@@ -98,57 +99,60 @@ fun PurchasesListSwipe(
 
 @Composable
 fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit) {
-    Row(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .height(56.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clickable { onClickListener(purchaseList.id) },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
     ) {
         Row(
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier
+                .height(56.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clickable { onClickListener(purchaseList.id) },
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (purchaseList.isFavorite && !purchaseList.isCompleted) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_paperclip),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-            }
-            if (purchaseList.isCompleted) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_check),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-            }
-            Text(
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = purchaseList.name,
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                fontSize = 16.sp,
-                color = if (purchaseList.isFavorite) {
-                    MaterialTheme.colorScheme.onSurface
-                } else {
-                    MaterialTheme.colorScheme.onTertiary
+            Row(
+                modifier = Modifier.wrapContentSize(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (purchaseList.isFavorite && !purchaseList.isCompleted) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_paperclip),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 8.dp))
                 }
+                if (purchaseList.isCompleted) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_check),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                }
+                Text(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    text = purchaseList.name,
+                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                    fontSize = 16.sp,
+                    color = if (purchaseList.isFavorite) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onTertiary
+                    }
+                )
+            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_right),
+                contentDescription = null
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_right),
-            contentDescription = null
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = 0.5.dp
         )
     }
-    HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth(),
-        color = MaterialTheme.colorScheme.outlineVariant,
-        thickness = 0.5.dp
-    )
 }
 
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
