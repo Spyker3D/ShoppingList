@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.practicum.spisokpokupok.listdetails.presentation.editcompletedlist.CompletedListEditScreen
+import com.practicum.spisokpokupok.listdetails.presentation.editcompletedlist.EditCompletedListViewModel
 import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.CurrentLIstEditScreenViewModel
 import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.CurrentListEditScreen
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListScreen
@@ -30,12 +32,18 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 onItemCurrentClicked = { id ->
                     navController.navigate(
                         route =
-                            CurrentListEditRoute(
-                                id = id,
-                            ),
+                        CurrentListEditRoute(
+                            id = id,
+                        ),
                     )
                 },
-                onItemCompletedClicked = { id -> navController.navigate(route = CompletedListEdit(id = id)) },
+                onItemCompletedClicked = { id ->
+                    navController.navigate(
+                        route = CompletedListEditRoute(
+                            id = id
+                        )
+                    )
+                },
             )
         }
 
@@ -46,10 +54,9 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             NewListScreen(
                 onNavigateToCurrentLists = {
                     navController.navigate(
-                        route =
-                            HorizontalPagerRoute(
-                                targetPage = 0,
-                            ),
+                        route = HorizontalPagerRoute(
+                            targetPage = 0,
+                        ),
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
@@ -66,10 +73,9 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             CurrentListEditScreen(
                 onNavigateToCompletedList = {
                     navController.navigate(
-                        route =
-                            HorizontalPagerRoute(
-                                targetPage = 1,
-                            ),
+                        route = HorizontalPagerRoute(
+                            targetPage = 1,
+                        ),
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
@@ -77,12 +83,27 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 action = viewModel::consumeAction,
             )
         }
-        composable<CompletedListEdit> {
-            val args = it.toRoute<CompletedListEdit>()
+
+        composable<CompletedListEditRoute> {
+            val args = it.toRoute<CompletedListEditRoute>()
+            val viewModel: EditCompletedListViewModel = hiltViewModel(it)
+            viewModel.getListOfItemsById(args.id)
+
             CompletedListEditScreen(
-                onNavigateToCurrentPurchasesListScreen = { navController.navigate(route = CurrentPurchasesListRoute) },
+                listId = args.id,
+                onNavigateToCurrentLists = {
+                    navController.navigate(
+                        route = HorizontalPagerRoute(
+                            targetPage = 0,
+                        ),
+                    )
+                },
                 onBackPressed = { navController.popBackStack() },
-                args = args,
+                getListOfTasks = viewModel::getListOfItemsById,
+                getCompletedListById = viewModel::getListName,
+                listOfItems = viewModel.listOfItems,
+                listName = viewModel.listName,
+                moveFromCompletedToActualList = viewModel::moveFromCompletedToActualLists
             )
         }
     }
@@ -94,12 +115,6 @@ data class HorizontalPagerRoute(
 )
 
 @Serializable
-object CurrentPurchasesListRoute
-
-@Serializable
-object CompletedPurchasesListRoute
-
-@Serializable
 object NewListRoute
 
 @Serializable
@@ -108,6 +123,6 @@ data class CurrentListEditRoute(
 )
 
 @Serializable
-data class CompletedListEdit(
+data class CompletedListEditRoute(
     val id: String,
 )

@@ -13,11 +13,10 @@ constructor(
 ) {
     operator fun invoke(): Flow<List<ShoppingList>> {
         return shoppingListRepository.getCurrentLists().map { shoppingList ->
-            shoppingList.filter { !it.isCompleted }
-                .sortedWith(
-                    compareByDescending<ShoppingList> { it.isFavorite }
-                        .thenBy { it.name }
-                )
+            shoppingList.sortedWith(
+                compareByDescending<ShoppingList> { it.isFavorite }
+                    .thenBy { it.name }
+            )
         }
     }
 }

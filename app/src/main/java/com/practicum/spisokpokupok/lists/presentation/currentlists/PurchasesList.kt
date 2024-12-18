@@ -1,5 +1,6 @@
 package com.practicum.spisokpokupok.lists.presentation.currentlists
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,6 +40,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PurchasesListSwipe(
+    isCompletedListsScreen: Boolean,
     listOfPurchases: List<ShoppingList>,
     onDeleteItemListener: (String) -> Unit,
     onClickListener: (String) -> Unit,
@@ -55,35 +57,39 @@ fun PurchasesListSwipe(
         itemsIndexed(
             items = listOfPurchases,
         ) { _, purchase ->
-            val swipeState = remember { SwipeState() }
-            val scope = rememberCoroutineScope()
-            SwipeableRightItem(
-                swipeState = swipeState,
-                actions = {
-                    ActionIcon(
-                        onClick = {
-                            onDeleteItemListener(purchase.id)
-                            scope.launch {
-                                swipeState.hide()
-                            }
-                        },
-                        backgroundColor = MaterialTheme.colorScheme.onError,
-                        icon = painterResource(id = R.drawable.ic_delete_blue),
-                        modifier = Modifier.fillMaxHeight()
-                    )
-                    ActionIcon(
-                        onClick = {
-                            onFavoriteItemListener?.invoke(purchase.id, !purchase.isFavorite)
-                            scope.launch {
-                                swipeState.hide()
-                            }
-                        },
-                        backgroundColor = MaterialTheme.colorScheme.primary,
-                        icon = painterResource(id = R.drawable.ic_blue_paperclip),
-                        modifier = Modifier.fillMaxHeight()
-                    )
+            if (!isCompletedListsScreen) {
+                val swipeState = remember { SwipeState() }
+                val scope = rememberCoroutineScope()
+                SwipeableRightItem(
+                    swipeState = swipeState,
+                    actions = {
+                        ActionIcon(
+                            onClick = {
+                                onDeleteItemListener(purchase.id)
+                                scope.launch {
+                                    swipeState.hide()
+                                }
+                            },
+                            backgroundColor = MaterialTheme.colorScheme.onError,
+                            icon = painterResource(id = R.drawable.ic_delete_blue),
+                            modifier = Modifier.fillMaxHeight()
+                        )
+                        ActionIcon(
+                            onClick = {
+                                onFavoriteItemListener?.invoke(purchase.id, !purchase.isFavorite)
+                                scope.launch {
+                                    swipeState.hide()
+                                }
+                            },
+                            backgroundColor = MaterialTheme.colorScheme.primary,
+                            icon = painterResource(id = R.drawable.ic_blue_paperclip),
+                            modifier = Modifier.fillMaxHeight()
+                        )
+                    }
+                ) {
+                    ItemCardSwipe(purchase, onClickListener)
                 }
-            ) {
+            } else {
                 ItemCardSwipe(purchase, onClickListener)
             }
         }
@@ -94,6 +100,7 @@ fun PurchasesListSwipe(
 fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit) {
     Row(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
             .height(56.dp)
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
@@ -166,7 +173,8 @@ fun PurchasesListSwipePreview() {
             ),
             onClickListener = {},
             onDeleteItemListener = {},
-            onFavoriteItemListener = null
+            onFavoriteItemListener = null,
+            isCompletedListsScreen = false
         )
     }
 }
