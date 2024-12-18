@@ -155,7 +155,7 @@ class CurrentLIstEditScreenViewModel
                     )
 
                 ListEditAction.OnSaveTask -> closeBottomSheet()
-                is ListEditAction.OnTaskClick -> showBottomSheet(action.id)
+                is ListEditAction.OnTaskClick -> showBottomSheet(action.index)
                 is ListEditAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
                 ListEditAction.OnDeleteCompletedTasks -> deleteCompletedTasks()
                 ListEditAction.CompleteList -> moveListToCompletedLists()
@@ -218,8 +218,8 @@ class CurrentLIstEditScreenViewModel
             }
         }
 
-        private fun showBottomSheet(id: String) {
-            val task = uiState.value.items.find { it.id == id }
+        private fun showBottomSheet(index: Int) {
+            val task = uiState.value.items[index]
             _bottomSheetState.update {
                 it.copy(
                     isVisible = true,

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -86,6 +85,7 @@ fun NewListScreen(
             NewListTitle(
                 state = state,
                 action = action,
+                modifier = modifier,
             )
             LazyColumn(
                 modifier =
@@ -148,7 +148,10 @@ fun NewListTitle(
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
         ) {
             TitleEditableTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier.fillMaxWidth().clickable {
+                        action(NewListAction.OnTitleClick)
+                    },
                 value = state.titleState.title,
                 onValueChange = {
                     action(NewListAction.OnTitleChange(it))

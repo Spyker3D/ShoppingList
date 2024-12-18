@@ -1,5 +1,6 @@
 package com.practicum.spisokpokupok.listdetails.presentation.newlist.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,7 +43,7 @@ fun TitleEditableTextField(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            if (!isRedacted) {
+            if (!isRedacted && value.isEmpty()) {
                 Column(
                     modifier =
                         Modifier
@@ -93,6 +94,9 @@ fun TitleEditableTextField(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.clickable {
+                    onValueChange("")
+                }
             )
         }
         if (isError) {

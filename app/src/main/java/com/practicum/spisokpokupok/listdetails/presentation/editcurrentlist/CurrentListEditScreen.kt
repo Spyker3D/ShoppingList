@@ -153,7 +153,7 @@ fun ChooseAllTasks(
 private fun TasksContent(
     loading: Boolean,
     tasks: List<TaskUiState>,
-    onTaskClick: (String) -> Unit,
+    onTaskClick: (Int) -> Unit,
     onTaskCheckedChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     onAddNewProduct: () -> Unit,
@@ -169,7 +169,7 @@ private fun TasksContent(
                 TaskItem(
                     task = task,
                     onCheckedChange = { onTaskCheckedChange(task.id) },
-                    onTaskClick = onTaskClick,
+                    onTaskClick = { onTaskClick(tasks.indexOf(task)) },
                 )
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onSurface,
@@ -198,7 +198,7 @@ private fun TaskItem(
     onValueChange: (String) -> Unit = {},
     task: TaskUiState,
     onCheckedChange: () -> Unit,
-    onTaskClick: (String) -> Unit,
+    onTaskClick: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -208,7 +208,7 @@ private fun TaskItem(
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                     vertical = dimensionResource(id = R.dimen.list_item_padding),
-                ).clickable { onTaskClick(task.id) },
+                ).clickable { onTaskClick() },
     ) {
         Image(
             painter =
@@ -239,7 +239,6 @@ private fun TaskItem(
                         Modifier.padding(
                             start = dimensionResource(id = R.dimen.horizontal_margin),
                         ),
-
                 )
             } else {
                 Text(

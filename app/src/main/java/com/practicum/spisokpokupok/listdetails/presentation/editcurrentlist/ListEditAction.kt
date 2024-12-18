@@ -4,7 +4,7 @@ import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 
 sealed interface ListEditAction {
     data class OnTaskClick(
-        val id: String,
+        val index: Int,
     ) : ListEditAction
 
     data object OnAddNewProduct : ListEditAction
