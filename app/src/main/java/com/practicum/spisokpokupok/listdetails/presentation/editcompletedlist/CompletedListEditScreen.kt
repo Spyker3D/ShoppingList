@@ -84,15 +84,6 @@ fun CompletedListEditScreen(
                         task = item
                     )
                 }
-                item {
-                    AddItem(
-                        modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally)
-                            .clickable { /* добавить addNewItem */ },
-                    )
-                }
             }
         }
     }
