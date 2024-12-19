@@ -40,7 +40,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 onItemCompletedClicked = { id ->
                     navController.navigate(
                         route = CompletedListEditRoute(
-                            id = id
+                            listId = id
                         )
                     )
                 },
@@ -87,10 +87,9 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable<CompletedListEditRoute> {
             val args = it.toRoute<CompletedListEditRoute>()
             val viewModel: EditCompletedListViewModel = hiltViewModel(it)
-            viewModel.getListOfItemsById(args.id)
 
             CompletedListEditScreen(
-                listId = args.id,
+                listId = args.listId,
                 onNavigateToCurrentLists = {
                     navController.navigate(
                         route = HorizontalPagerRoute(
@@ -99,8 +98,6 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
-                getListOfTasks = viewModel::getListOfItemsById,
-                getCompletedListById = viewModel::getListName,
                 listOfItems = viewModel.listOfItems,
                 listName = viewModel.listName,
                 moveFromCompletedToActualList = viewModel::moveFromCompletedToActualLists
@@ -124,5 +121,5 @@ data class CurrentListEditRoute(
 
 @Serializable
 data class CompletedListEditRoute(
-    val id: String,
+    val listId: String,
 )

@@ -1,9 +1,7 @@
 package com.practicum.spisokpokupok.lists.presentation.completedlists
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.spisokpokupok.listdetails.domain.usecases.CompleteListUseCase
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.lists.domain.usecases.GetActualListsUseCase
 import com.practicum.spisokpokupok.lists.domain.usecases.GetCompletedListsUseCase
@@ -19,7 +17,7 @@ class CompletedListViewModel @Inject
 constructor(
     getCompletedListsUseCase: GetCompletedListsUseCase,
     getActualListsUseCase: GetActualListsUseCase,
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _listStream = getCompletedListsUseCase()
     val listStream: StateFlow<List<ShoppingList>> =
