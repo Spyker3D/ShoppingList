@@ -33,7 +33,7 @@ sealed interface ListEditAction {
     ) : ListEditAction
 
     data class OnCheckClick(
-        val taskId: String,
+        val index: Int,
     ) : ListEditAction
 
     data object CompleteList : ListEditAction
@@ -41,5 +41,9 @@ sealed interface ListEditAction {
     class OnTaskNameChange(
         val index: Int,
         val title: String,
+    ) : ListEditAction
+
+    data class OnClearTaskNameClick(
+        val index: Int,
     ) : ListEditAction
 }

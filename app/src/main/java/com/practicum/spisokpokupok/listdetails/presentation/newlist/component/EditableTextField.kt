@@ -15,8 +15,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -43,7 +46,8 @@ fun TitleEditableTextField(
     Column {
         Row(
             modifier =
-                modifier.height(76.dp),
+                modifier
+                    .height(76.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -139,10 +143,17 @@ fun NewTaskEditableTextField(
     value: String,
     modifier: Modifier = Modifier,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    onClearClick: () -> Unit,
 ) {
     Column {
+        val focusRequester = remember { FocusRequester() }
         Row(
-            modifier = modifier.height(if (isError) 76.dp else 56.dp),
+            modifier =
+                modifier
+                    .height(76.dp)
+                    .clickable {
+                        focusRequester.requestFocus()
+                    },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -165,13 +176,20 @@ fun NewTaskEditableTextField(
                     },
                 keyboardActions = keyboardActions,
                 modifier =
-                    Modifier.padding(horizontal = 16.dp),
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .focusRequester(focusRequester),
                 singleLine = true,
             )
             Icon(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.onSurface,
+                modifier =
+                    Modifier
+                        .clickable {
+                            onClearClick()
+                        },
             )
         }
 
@@ -225,5 +243,7 @@ fun NewTaskEditableTextFieldPreview() {
         modifier = Modifier.fillMaxWidth(),
         errorMessage = "ffsdfadsfasdf",
         isError = true,
+        onClearClick = {},
+        keyboardActions = KeyboardActions.Default,
     )
 }

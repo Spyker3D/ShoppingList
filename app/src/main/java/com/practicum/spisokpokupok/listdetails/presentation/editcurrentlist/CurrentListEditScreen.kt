@@ -82,13 +82,14 @@ fun CurrentListEditScreen(
                     action(ListEditAction.OnSaveTask)
                 },
                 bottomButtonTitle = stringResource(R.string.tasks_are_completed),
+                isConfirmButtonActive = state.allItemsChecked,
             )
         },
         containerColor = MaterialTheme.colorScheme.surface,
         modifier = modifier,
     ) { paddingValues ->
         Column(
-            modifier = modifier.padding(paddingValues),
+            modifier = modifier.padding(paddingValues).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
@@ -110,6 +111,7 @@ fun CurrentListEditScreen(
                 modifier = Modifier.padding(paddingValues),
                 loading = state.loading,
                 onAddNewProduct = { action(ListEditAction.OnAddNewProduct) },
+                onClearClick = { action(ListEditAction.OnClearTaskNameClick(it)) },
             )
         }
     }
@@ -154,9 +156,10 @@ private fun TasksContent(
     loading: Boolean,
     tasks: List<TaskUiState>,
     onTaskClick: (Int) -> Unit,
-    onTaskCheckedChange: (String) -> Unit,
+    onTaskCheckedChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     onAddNewProduct: () -> Unit,
+    onClearClick: (Int) -> Unit,
 ) {
     Column(
         modifier =
@@ -168,8 +171,11 @@ private fun TasksContent(
             items(tasks) { task ->
                 TaskItem(
                     task = task,
-                    onCheckedChange = { onTaskCheckedChange(task.id) },
+                    onCheckedChange = { onTaskCheckedChange(tasks.indexOf(task)) },
                     onTaskClick = { onTaskClick(tasks.indexOf(task)) },
+                    onClearClick = {
+                        onClearClick(tasks.indexOf(task))
+                    },
                 )
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onSurface,
@@ -199,6 +205,7 @@ private fun TaskItem(
     task: TaskUiState,
     onCheckedChange: () -> Unit,
     onTaskClick: () -> Unit,
+    onClearClick: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -239,6 +246,9 @@ private fun TaskItem(
                         Modifier.padding(
                             start = dimensionResource(id = R.dimen.horizontal_margin),
                         ),
+                    onClearClick = {
+                        onClearClick()
+                    },
                 )
             } else {
                 Text(
@@ -342,6 +352,7 @@ private fun TasksContentPreview() {
                 onTaskClick = { },
                 onTaskCheckedChange = {},
                 onAddNewProduct = { },
+                onClearClick = {},
             )
         }
     }
@@ -358,6 +369,7 @@ private fun TasksContentEmptyPreview() {
                 onTaskClick = { },
                 onTaskCheckedChange = {},
                 onAddNewProduct = { },
+                onClearClick = {},
             )
         }
     }
@@ -380,6 +392,7 @@ private fun TaskItemPreview() {
                     ),
                 onCheckedChange = { },
                 onTaskClick = { },
+                onClearClick = {},
             )
         }
     }
@@ -402,6 +415,7 @@ private fun TaskItemCompletedPreview() {
                     ),
                 onCheckedChange = { },
                 onTaskClick = { },
+                onClearClick = {},
             )
         }
     }

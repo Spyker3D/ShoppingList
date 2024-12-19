@@ -69,7 +69,6 @@ class CurrentLIstEditScreenViewModel
         private val _isLoading = MutableStateFlow(false)
         private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
         private val _allItemsChecked: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
         private val _tasksAsync =
             itemsStream
                 .map {
@@ -99,7 +98,7 @@ class CurrentLIstEditScreenViewModel
 
                     is Async.Success -> {
                         LIstEditUIState(
-                            allItemsChecked = checkAllItemsAreChecked(),
+                            allItemsChecked = allItemsChecked,
                             title = title,
                             items =
                                 tasksAsync.data
@@ -131,18 +130,11 @@ class CurrentLIstEditScreenViewModel
                     ),
             )
 
-        private fun checkAllItemsAreChecked(): Boolean {
-            uiState.value.items.forEach {
-                if (!it.isCompleted) return false
-            }
-            return true
-        }
-
         fun consumeAction(action: ListEditAction) {
             when (action) {
                 ListEditAction.OnAddNewProduct -> addNewItem()
                 is ListEditAction.OnCheckClick ->
-                    changeItemStatus(action.taskId)
+                    changeItemStatus(action.index)
 
                 ListEditAction.OnChooseAllItems -> completeAllItems()
                 is ListEditAction.OnDecreaseClick -> decreaseQuantity(action.position)
@@ -159,7 +151,11 @@ class CurrentLIstEditScreenViewModel
                 is ListEditAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
                 ListEditAction.OnDeleteCompletedTasks -> deleteCompletedTasks()
                 ListEditAction.CompleteList -> moveListToCompletedLists()
+                is ListEditAction.OnClearTaskNameClick -> clearTaskName(action.index)
             }
+        }
+
+        private fun clearTaskName(index: Int) {
         }
 
         private fun moveListToCompletedLists() {
@@ -168,8 +164,9 @@ class CurrentLIstEditScreenViewModel
             }
         }
 
-        private fun changeItemStatus(taskId: String) {
+        private fun changeItemStatus(index: Int) {
             viewModelScope.launch {
+                val taskId = uiState.value.items[index].id
                 changeItemStatusUseCase(taskId)
                 updateItemsPosition()
             }
@@ -306,10 +303,13 @@ class CurrentLIstEditScreenViewModel
         }
 
         private fun completeAllItems() {
-            if (_allItemsChecked.value) {
+            if (uiState.value.items.any {
+                    !it.isCompleted
+                }
+            ) {
                 viewModelScope.launch {
                     uiState.value.items.forEach {
-                        if (it.isCompleted) {
+                        if (!it.isCompleted) {
                             changeItemStatusUseCase(it.id)
                         }
                     }
@@ -317,9 +317,7 @@ class CurrentLIstEditScreenViewModel
             } else {
                 viewModelScope.launch {
                     uiState.value.items.forEach {
-                        if (!it.isCompleted) {
-                            changeItemStatusUseCase(it.id)
-                        }
+                        changeItemStatusUseCase(it.id)
                     }
                 }
             }

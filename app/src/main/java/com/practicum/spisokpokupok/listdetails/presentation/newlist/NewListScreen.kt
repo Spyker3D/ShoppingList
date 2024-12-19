@@ -69,9 +69,10 @@ fun NewListScreen(
                     action(NewListAction.OnQuantityTypeChange(position, quantityType))
                 },
                 onSaveTask = {
-                    action(NewListAction.OnSaveTask)
+                    action(NewListAction.OnSaveTask(it))
                 },
                 bottomButtonTitle = "Сохранить список",
+                isConfirmButtonActive = state.isConfirmButtonActive,
             )
         },
     ) { innerPadding ->
@@ -98,26 +99,22 @@ fun NewListScreen(
                 items(state.productItems.size) { index ->
                     val item = state.productItems[index]
                     TaskElement(
-                        isRedacted = item.isNameRedacted,
                         name = item.name,
-                        onElementClick = {
-                            action(
-                                NewListAction.OnTaskClick(
-                                    index,
-                                ),
-                            )
-                        },
-                        modifier = Modifier,
                         quantity = item.quantity.toString(),
                         quantityType = item.quantityType,
-                        onValueChange = {
-                            action(
-                                NewListAction.OnTaskNameChange(
-                                    index,
-                                    it,
-                                ),
-                            )
+                        isRedacted = item.isNameRedacted,
+                        onElementClick = {
+                            action(NewListAction.OnTaskClick(index))
                         },
+                        onValueChange = {
+                            action(NewListAction.OnTaskNameChange(index, it))
+                        },
+                        modifier = modifier.height(76.dp).fillMaxWidth(),
+                        onClearClick = {
+                            action(NewListAction.OnClearTaskNameClick(index))
+                        },
+                        isError = item.isNameError,
+                        errorMesage = item.errorName,
                     )
                 }
                 item {
@@ -196,7 +193,8 @@ fun BottomBar(
     onDecreeseClick: (Int) -> Unit,
     onEncreeseClick: (Int) -> Unit,
     onQuantityTypeChange: (Int, QuantityType) -> Unit,
-    onSaveTask: () -> Unit,
+    onSaveTask: (Int) -> Unit,
+    isConfirmButtonActive: Boolean,
 ) {
     Column(
         modifier =
@@ -220,6 +218,7 @@ fun BottomBar(
             modifier = Modifier.padding(vertical = 32.dp),
         )
         Button(
+            enabled = if (bottomSheetIsVisible) true else isConfirmButtonActive,
             colors =
                 ButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -230,7 +229,7 @@ fun BottomBar(
             modifier = modifier.fillMaxWidth(),
             onClick = {
                 if (bottomSheetIsVisible) {
-                    onSaveTask()
+                    onSaveTask(position)
                 } else {
                     onBottomButtonClick()
                 }
@@ -281,7 +280,15 @@ private fun NewListScreenPreview() {
             onNavigateToCurrentLists = {},
             onBackPressed = {},
             action = {},
-            state = NewListUIState(),
+            state =
+                NewListUIState(
+                    productItems =
+                        listOf(
+                            NewListItemUiState(),
+                            NewListItemUiState(),
+                        ),
+                    isConfirmButtonActive = true,
+                ),
         )
     }
 }

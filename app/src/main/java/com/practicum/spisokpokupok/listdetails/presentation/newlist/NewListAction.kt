@@ -19,7 +19,9 @@ sealed interface NewListAction {
         val title: String,
     ) : NewListAction
 
-    data object OnSaveTask : NewListAction
+    data class OnSaveTask(
+        val index: Int,
+    ) : NewListAction
 
     data object OnSaveList : NewListAction
 
@@ -42,4 +44,8 @@ sealed interface NewListAction {
     ) : NewListAction
 
     data object SaveTitle : NewListAction
+
+    data class OnClearTaskNameClick(
+        val index: Int,
+    ) : NewListAction
 }

@@ -20,6 +20,7 @@ data class NewListUIState(
     val titleState: TitleState = TitleState(),
     val bottomSheetState: BottomSheetState = BottomSheetState(),
     val productItems: List<NewListItemUiState> = emptyList(),
+    val isConfirmButtonActive: Boolean,
 )
 
 data class BottomSheetState(
@@ -34,6 +35,7 @@ data class NewListItemUiState(
     val quantity: Int = 1,
     val quantityType: QuantityType = QuantityType.UNKNOWN,
     val isNameError: Boolean = false,
+    val errorName: String = "",
     val isNameRedacted: Boolean = false,
 )
 
@@ -61,21 +63,30 @@ class NewListViewModel
                     NewListItemUiState(),
                 ),
             )
-
+        private val _isConfirmButtonActive =
+            MutableStateFlow(
+                _productItems.value.any {
+                    it.name.isNotEmpty()
+                } &&
+                    _title.value.titleOnTop.isNotEmpty(),
+            )
         val uiState: StateFlow<NewListUIState> =
             combine(
                 _bottomSheetState,
                 _title,
                 _productItems,
+                _isConfirmButtonActive,
             ) {
                 bottomSheetState,
                 title,
                 productItems,
+                isConfirmButtonActive,
                 ->
                 NewListUIState(
                     titleState = title,
                     bottomSheetState = bottomSheetState,
                     productItems = productItems,
+                    isConfirmButtonActive = isConfirmButtonActive,
                 )
             }.onStart {
                 _productItems.update {
@@ -89,7 +100,9 @@ class NewListViewModel
                 }
             }.stateIn(
                 initialValue =
-                    NewListUIState(),
+                    NewListUIState(
+                        isConfirmButtonActive = _isConfirmButtonActive.value,
+                    ),
                 scope = viewModelScope,
                 started =
                     SharingStarted
@@ -111,11 +124,26 @@ class NewListViewModel
                     )
 
                 NewListAction.OnSaveList -> saveList()
-                NewListAction.OnSaveTask -> saveTask()
+                is NewListAction.OnSaveTask -> saveTask(action.index)
                 is NewListAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
                 NewListAction.OnAcceptTitleClick -> acceptTitle()
                 NewListAction.OnDeleteTitleClick -> emptyTitle()
                 NewListAction.SaveTitle -> saveTitle()
+                is NewListAction.OnClearTaskNameClick -> clearTaskName(action.index)
+            }
+        }
+
+        private fun clearTaskName(index: Int) {
+            _productItems.update {
+                val productItems = it.toMutableList()
+                productItems[index] =
+                    productItems[index].copy(
+                        name = "",
+                        isNameRedacted = true,
+                        isNameError = true,
+                        errorName = "Вы не ввели название",
+                    )
+                productItems
             }
         }
 
@@ -172,17 +200,28 @@ class NewListViewModel
 
         private fun changeTaskName(
             index: Int,
-            title: String,
+            name: String,
         ) {
-            _productItems.update {
-                it.mapIndexed { position, item ->
-                    if (position == index) {
-                        item.copy(
-                            name = title,
+            if (name.isEmpty()) {
+                _productItems.update {
+                    val productItems = it.toMutableList()
+                    productItems[index] =
+                        productItems[index].copy(
+                            name = "",
+                            isNameError = true,
+                            errorName = "Вы не ввели название",
                         )
-                    } else {
-                        item
-                    }
+                    productItems
+                }
+            } else {
+                _productItems.update {
+                    val productItems = it.toMutableList()
+                    productItems[index] =
+                        productItems[index].copy(
+                            name = name,
+                            isNameError = false,
+                        )
+                    productItems
                 }
             }
         }
@@ -206,8 +245,29 @@ class NewListViewModel
             }
         }
 
-        private fun saveTask() {
+        private fun saveTask(index: Int) {
             closeBottomSheet()
+            if (_productItems.value[index].name.isEmpty()) {
+                _productItems.update {
+                    val productItems = it.toMutableList()
+                    productItems[index] =
+                        productItems[index].copy(
+                            isNameError = true,
+                            isNameRedacted = true,
+                            errorName = "Вы не ввели название",
+                        )
+                    productItems
+                }
+                return
+            }
+            _productItems.update {
+                val productItems = it.toMutableList()
+                productItems[index] =
+                    productItems[index].copy(
+                        isNameRedacted = false,
+                    )
+                productItems
+            }
         }
 
         private fun encreaseQuantity(position: Int) {
@@ -323,23 +383,52 @@ class NewListViewModel
                         name = "",
                         quantity = 1,
                         quantityType = QuantityType.PACK,
+                        isNameRedacted = true,
                     )
             }
         }
 
         private fun saveList() {
-            viewModelScope.launch {
-                val listId =
-                    createListUseCase(
-                        _title.value.title,
+            if (_title.value.title.isEmpty()) {
+                _title.update {
+                    it.copy(
+                        isError = true,
+                        errorMessage = "Вы не ввели название",
                     )
-                _productItems.value.forEachIndexed { index, item ->
-                    createTaskUseCase(
-                        listId,
-                        item.name,
-                        item.quantity,
-                        item.quantityType,
-                        index,
+                }
+                return
+            }
+            for (item in _productItems.value) {
+                if (item.name.isEmpty()) {
+                    val productItems = _productItems.value.toMutableList()
+                    productItems[productItems.indexOf(item)] =
+                        item.copy(
+                            isNameError = true,
+                            errorName = "Вы не ввели название",
+                        )
+                    _productItems.update {
+                        productItems
+                    }
+                    return
+                }
+                viewModelScope.launch {
+                    val listId =
+                        createListUseCase(
+                            _title.value.title,
+                        )
+                    _productItems.value.forEachIndexed { index, item ->
+                        createTaskUseCase(
+                            listId,
+                            item.name,
+                            item.quantity,
+                            item.quantityType,
+                            index,
+                        )
+                    }
+                }
+                _bottomSheetState.update {
+                    it.copy(
+                        isVisible = false,
                     )
                 }
             }

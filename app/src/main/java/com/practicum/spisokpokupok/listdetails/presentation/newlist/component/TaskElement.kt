@@ -31,10 +31,13 @@ fun TaskElement(
     onValueChange: (String) -> Unit,
     isRedacted: Boolean,
     name: String,
+    errorMesage: String,
+    isError: Boolean,
     quantity: String,
     quantityType: QuantityType,
     onElementClick: () -> Unit,
     modifier: Modifier,
+    onClearClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.height(72.dp),
@@ -55,54 +58,59 @@ fun TaskElement(
                     NewTaskEditableTextField(
                         value = name,
                         onValueChange = onValueChange,
-                        modifier = Modifier.height(56.dp),
-                        isError = false,
-                        errorMessage = "",
+                        modifier = Modifier.height(76.dp).fillMaxWidth(),
+                        isError = isError,
+                        errorMessage = errorMesage,
+                        onClearClick = onClearClick,
                     )
                 } else {
-                    Column(
-                        modifier = Modifier.height(72.dp),
-                    ) {
-                        Text(
-                            text = name,
-                            style =
-                                TextStyle(
-                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                ),
-                            modifier = Modifier.alpha(0.5f),
-                        )
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                    Column {
+                        Column(
+                            modifier = Modifier.height(72.dp),
+                            verticalArrangement = Arrangement.Center,
                         ) {
                             Text(
-                                text = quantity,
+                                text = name,
                                 style =
                                     TextStyle(
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        fontSize = 14.sp,
+                                        fontSize = 16.sp,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     ),
+                                modifier = Modifier.alpha(0.5f),
                             )
-                            Text(
-                                text = quantityType.abbreviation,
-                                style =
-                                    TextStyle(
-                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        fontSize = 14.sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                    ),
-                                modifier =
-                                    Modifier.padding(
-                                        start = 4.dp,
-                                    ),
-                            )
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = quantity,
+                                    style =
+                                        TextStyle(
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            fontSize = 14.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                        ),
+                                )
+                                Text(
+                                    text = quantityType.abbreviation,
+                                    style =
+                                        TextStyle(
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            fontSize = 14.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                        ),
+                                    modifier =
+                                        Modifier.padding(
+                                            start = 4.dp,
+                                        ),
+                                )
+                            }
                         }
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.onSurface,
                             thickness = 1.dp,
+                            modifier = Modifier,
                         )
                     }
                 }
@@ -128,5 +136,8 @@ private fun TaskElementPreview() {
         quantityType = QuantityType.PIECE,
         isRedacted = false,
         onValueChange = {},
+        onClearClick = {},
+        isError = false,
+        errorMesage = "",
     )
 }
