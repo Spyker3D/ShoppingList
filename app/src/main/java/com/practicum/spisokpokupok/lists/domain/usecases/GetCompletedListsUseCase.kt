@@ -13,7 +13,7 @@ constructor(
 ) {
     operator fun invoke(): Flow<List<ShoppingList>> {
         return shoppingListRepository.getCompletedLists().map { shoppingList ->
-            shoppingList.sortedBy { it.name }
+            shoppingList.sortedBy { it.name.lowercase() }
         }
     }
 }

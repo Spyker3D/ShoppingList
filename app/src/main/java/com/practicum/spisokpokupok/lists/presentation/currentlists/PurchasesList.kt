@@ -82,7 +82,7 @@ fun PurchasesListSwipe(
                                     swipeState.hide()
                                 }
                             },
-                            backgroundColor = MaterialTheme.colorScheme.primary,
+                            backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
                             icon = painterResource(id = R.drawable.ic_blue_paperclip),
                             modifier = Modifier.fillMaxHeight()
                         )

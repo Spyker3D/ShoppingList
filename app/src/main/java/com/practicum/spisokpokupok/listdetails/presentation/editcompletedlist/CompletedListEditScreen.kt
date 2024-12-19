@@ -42,12 +42,8 @@ fun CompletedListEditScreen(
     onBackPressed: () -> Unit,
     listOfItems: List<Task>,
     listName: String,
-    getListOfTasks: (String) -> Unit,
-    getCompletedListById: (String) -> Unit,
     moveFromCompletedToActualList: (String) -> Unit
 ) {
-    getListOfTasks(listId)
-    getCompletedListById(listId)
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surface,
@@ -195,9 +191,7 @@ fun CompletedListEditScreenPreview() {
                     position = 1,
                 ),
             ),
-            getListOfTasks = { },
             listName = "Корм для собак",
-            getCompletedListById = { },
             moveFromCompletedToActualList = { }
         )
     }
