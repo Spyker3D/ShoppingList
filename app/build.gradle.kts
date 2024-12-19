@@ -13,10 +13,30 @@ android {
 
     defaultConfig {
         applicationId = "com.practicum.buyinglist"
-        minSdk = 26
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        minSdk =
+            libs.versions.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.targetSdk
+                .get()
+                .toInt()
+
+        val major =
+            libs.versions.major
+                .get()
+                .toInt()
+        val minor =
+            libs.versions.minor
+                .get()
+                .toInt()
+        val patch =
+            libs.versions.patch
+                .get()
+                .toInt()
+
+        versionCode = major * 10000 + minor * 100 + patch
+        versionName = "$major.$minor.$patch"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
