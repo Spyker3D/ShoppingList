@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +30,7 @@ import com.practicum.buyinglist.R
 @Composable
 fun TitleEditableTextField(
     onValueChange: (String) -> Unit,
+    onClearClick: () -> Unit,
     topLabel: String,
     isError: Boolean,
     errorMessage: String,
@@ -39,7 +42,8 @@ fun TitleEditableTextField(
 ) {
     Column {
         Row(
-            modifier = modifier.height(76.dp),
+            modifier =
+                modifier.height(76.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -84,9 +88,14 @@ fun TitleEditableTextField(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                        ),
                     keyboardActions = keyboardActions,
                     modifier =
-                        Modifier.padding(horizontal = 16.dp),
+                        Modifier
+                            .padding(horizontal = 16.dp),
                     singleLine = true,
                 )
             }
@@ -94,9 +103,10 @@ fun TitleEditableTextField(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.clickable {
-                    onValueChange("")
-                }
+                modifier =
+                    Modifier.clickable {
+                        onClearClick()
+                    },
             )
         }
         if (isError) {
@@ -201,6 +211,8 @@ fun EditableTextFieldPreview() {
         topLabel = "Введите название списка",
         isRedacted = false,
         isError = false,
+        onClearClick = {},
+        keyboardActions = KeyboardActions.Default,
     )
 }
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,7 +45,7 @@ fun NewListScreen(
         topBar = {
             NewListTopBar(
                 onBackPressed = onBackPressed,
-                title = state.titleState.title,
+                title = state.titleState.titleOnTop,
             )
         },
         bottomBar = {
@@ -63,8 +65,8 @@ fun NewListScreen(
                 onEncreeseClick = {
                     action(NewListAction.OnIncreaseClick(it))
                 },
-                onQuantityTypeChange = {
-                    action(NewListAction.OnQuantityTypeChange(it))
+                onQuantityTypeChange = { position, quantityType ->
+                    action(NewListAction.OnQuantityTypeChange(position, quantityType))
                 },
                 onSaveTask = {
                     action(NewListAction.OnSaveTask)
@@ -147,11 +149,14 @@ fun NewListTitle(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
         ) {
+            val focusManager = LocalFocusManager.current
             TitleEditableTextField(
                 modifier =
-                    Modifier.fillMaxWidth().clickable {
-                        action(NewListAction.OnTitleClick)
-                    },
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            action(NewListAction.OnTitleClick)
+                        },
                 value = state.titleState.title,
                 onValueChange = {
                     action(NewListAction.OnTitleChange(it))
@@ -161,6 +166,14 @@ fun NewListTitle(
                 isRedacted = state.titleState.isRedacted,
                 isError = state.titleState.isError,
                 errorMessage = state.titleState.errorMessage,
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            action(NewListAction.SaveTitle)
+                        },
+                    ),
+                onClearClick = { action(NewListAction.OnDeleteTitleClick) },
             )
             Icon(
                 painter = painterResource(id = R.drawable.ic_close),
@@ -182,7 +195,7 @@ fun BottomBar(
     onBottomButtonClick: () -> Unit,
     onDecreeseClick: (Int) -> Unit,
     onEncreeseClick: (Int) -> Unit,
-    onQuantityTypeChange: (QuantityType) -> Unit,
+    onQuantityTypeChange: (Int, QuantityType) -> Unit,
     onSaveTask: () -> Unit,
 ) {
     Column(
@@ -200,7 +213,7 @@ fun BottomBar(
                 counter = quantity,
                 onDecreeseClick = { onDecreeseClick(position) },
                 onEncreeseClick = { onEncreeseClick(position) },
-                onQuantityTypeChange = onQuantityTypeChange,
+                onQuantityTypeChange = { onQuantityTypeChange(position, it) },
             )
         }
         Spacer(

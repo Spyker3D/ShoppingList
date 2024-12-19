@@ -2,10 +2,8 @@ package com.practicum.spisokpokupok.listdetails.presentation.newlist.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,8 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -55,83 +51,59 @@ fun TaskElement(
             Column(
                 verticalArrangement = Arrangement.Center,
             ) {
-                Box(
-                    modifier =
-                        Modifier.padding(
-                            start = dimensionResource(id = R.dimen.horizontal_margin),
-                        ),
-                ) {
-                    if (isRedacted) {
-                        NewTaskEditableTextField(
-                            value = name,
-                            onValueChange = onValueChange,
-                            modifier = Modifier.height(56.dp),
-                            isError = false,
-                            errorMessage = "",
+                if (isRedacted) {
+                    NewTaskEditableTextField(
+                        value = name,
+                        onValueChange = onValueChange,
+                        modifier = Modifier.height(56.dp),
+                        isError = false,
+                        errorMessage = "",
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier.height(72.dp),
+                    ) {
+                        Text(
+                            text = name,
+                            style =
+                                TextStyle(
+                                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                ),
+                            modifier = Modifier.alpha(0.5f),
                         )
-                    } else {
-                        Column {
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             Text(
-                                text = name,
-                                color = Black,
+                                text = quantity,
                                 style =
                                     TextStyle(
                                         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        fontSize = 16.sp,
+                                        fontSize = 14.sp,
                                         color = MaterialTheme.colorScheme.onSurface,
                                     ),
-                                modifier = Modifier.alpha(0.5f),
                             )
-
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = quantity,
-                                    color = Black,
-                                    style =
-                                        TextStyle(
-                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                            fontSize = 14.sp,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        ),
-                                )
-                                Text(
-                                    text =
-                                        when (quantityType) {
-                                            QuantityType.KILOGRAM -> {
-                                                "кг"
-                                            }
-
-                                            QuantityType.LITRE -> {
-                                                "л"
-                                            }
-
-                                            QuantityType.PACK -> {
-                                                "уп"
-                                            }
-
-                                            QuantityType.PIECE -> {
-                                                "шт"
-                                            }
-
-                                            QuantityType.UNKNOWN -> {
-                                                ""
-                                            }
-                                        },
-                                    style =
-                                        TextStyle(
-                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                            fontSize = 14.sp,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        ),
-                                    modifier =
-                                        Modifier.padding(
-                                            start = 4.dp,
-                                        ),
-                                )
-                            }
+                            Text(
+                                text = quantityType.abbreviation,
+                                style =
+                                    TextStyle(
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        fontSize = 14.sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    ),
+                                modifier =
+                                    Modifier.padding(
+                                        start = 4.dp,
+                                    ),
+                            )
                         }
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            thickness = 1.dp,
+                        )
                     }
                 }
             }
@@ -142,13 +114,6 @@ fun TaskElement(
                 modifier = Modifier.alpha(0.5f),
             )
         }
-        Spacer(
-            modifier = Modifier.weight(1f),
-        )
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.onSurface,
-            thickness = 1.dp,
-        )
     }
 }
 

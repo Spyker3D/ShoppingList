@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -74,15 +75,18 @@ class NewListViewModel
                 NewListUIState(
                     titleState = title,
                     bottomSheetState = bottomSheetState,
-                    productItems =
-                        productItems.mapIndexed { index, state ->
-                            state.copy(
-                                name = "Продукт ${index + 1}",
-                                isNameRedacted = false,
-                                quantityType = QuantityType.KILOGRAM,
-                            )
-                        },
+                    productItems = productItems,
                 )
+            }.onStart {
+                _productItems.update {
+                    it.mapIndexed { index, item ->
+                        item.copy(
+                            name = "Продукт ${index + 1}",
+                            isNameRedacted = false,
+                            quantityType = QuantityType.KILOGRAM,
+                        )
+                    }
+                }
             }.stateIn(
                 initialValue =
                     NewListUIState(),
@@ -100,12 +104,33 @@ class NewListViewModel
                 is NewListAction.OnTitleChange -> changeTitle(action.title)
                 is NewListAction.OnDecreaseClick -> decreaseQuantity(action.position)
                 is NewListAction.OnIncreaseClick -> encreaseQuantity(action.position)
-                is NewListAction.OnQuantityTypeChange -> updateQuantityType(action.quantityType)
+                is NewListAction.OnQuantityTypeChange ->
+                    updateQuantityType(
+                        action.position,
+                        action.quantityType,
+                    )
+
                 NewListAction.OnSaveList -> saveList()
                 NewListAction.OnSaveTask -> saveTask()
                 is NewListAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
                 NewListAction.OnAcceptTitleClick -> acceptTitle()
                 NewListAction.OnDeleteTitleClick -> emptyTitle()
+                NewListAction.SaveTitle -> saveTitle()
+            }
+        }
+
+        private fun saveTitle() {
+            _title.update {
+                if (it.title.isEmpty()) {
+                    it.copy(
+                        isError = true,
+                        errorMessage = "Вы не ввели название",
+                    )
+                } else {
+                    it.copy(
+                        titleOnTop = it.title,
+                    )
+                }
             }
         }
 
@@ -114,6 +139,9 @@ class NewListViewModel
                 it.copy(
                     title = "",
                     isError = true,
+                    errorMessage = "Вы не ввели название",
+                    isRedacted = true,
+                    titleOnTop = "Новый список",
                 )
             }
         }
@@ -159,20 +187,17 @@ class NewListViewModel
             }
         }
 
-        private fun updateQuantityType(quantityType: QuantityType) {
+        private fun updateQuantityType(
+            position: Int,
+            quantityType: QuantityType,
+        ) {
             _productItems.update {
-                it.mapIndexed {
-                    position,
-                    item,
-                    ->
-                    if (position == _bottomSheetState.value.index) {
-                        item.copy(
-                            quantityType = quantityType,
-                        )
-                    } else {
-                        item
-                    }
-                }
+                val productItems = it.toMutableList()
+                productItems[position] =
+                    productItems[position].copy(
+                        quantityType = quantityType,
+                    )
+                productItems
             }
             _bottomSheetState.update {
                 it.copy(
@@ -213,9 +238,16 @@ class NewListViewModel
                 productItems
             }
             _bottomSheetState.update {
-                it.copy(
-                    quantity = it.quantity - 1,
-                )
+                if (it.quantity > 1) {
+                    it.copy(
+                        quantity = it.quantity - 1,
+                    )
+                } else {
+                    showBottomSheet()
+                    it.copy(
+                        quantity = it.quantity,
+                    )
+                }
             }
         }
 
@@ -232,6 +264,8 @@ class NewListViewModel
             _title.update {
                 it.copy(
                     title = title,
+                    isError = title.isEmpty(),
+                    errorMessage = if (title.isEmpty()) "Вы не ввели название" else "",
                 )
             }
         }

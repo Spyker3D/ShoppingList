@@ -75,8 +75,8 @@ fun CurrentListEditScreen(
                 onEncreeseClick = {
                     action(ListEditAction.OnEncreaseClick(it))
                 },
-                onQuantityTypeChange = {
-                    action(ListEditAction.OnQuantityTypeChange(state.bottomSheetState.index, it))
+                onQuantityTypeChange = { position, quantityType ->
+                    action(ListEditAction.OnQuantityTypeChange(position, quantityType))
                 },
                 onSaveTask = {
                     action(ListEditAction.OnSaveTask)
