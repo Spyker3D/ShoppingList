@@ -86,6 +86,11 @@ class NewListViewModel
                     isConfirmButtonActive = isConfirmButtonActive,
                 )
             }.onStart {
+                _title.update {
+                    it.copy(
+                        titleOnTop = "Новый список",
+                    )
+                }
                 _productItems.update {
                     it.mapIndexed { index, item ->
                         item.copy(
@@ -115,6 +120,7 @@ class NewListViewModel
                     changeTitle(action.title)
                     checkConfirmButton()
                 }
+
                 is NewListAction.OnDecreaseClick -> decreaseQuantity(action.position)
                 is NewListAction.OnIncreaseClick -> encreaseQuantity(action.position)
                 is NewListAction.OnQuantityTypeChange ->
@@ -128,10 +134,12 @@ class NewListViewModel
                     saveTask(action.index)
                     checkConfirmButton()
                 }
+
                 is NewListAction.OnTaskNameChange -> {
                     changeTaskName(action.index, action.title)
                     checkConfirmButton()
                 }
+
                 NewListAction.OnAcceptTitleClick -> acceptTitle()
                 NewListAction.OnDeleteTitleClick -> emptyTitle()
                 NewListAction.SaveTitle -> saveTitle()
@@ -223,6 +231,7 @@ class NewListViewModel
                         productItems[index].copy(
                             name = "",
                             isNameError = true,
+                            isNameRedacted = true,
                             errorName = "Вы не ввели название",
                         )
                     productItems
@@ -272,15 +281,17 @@ class NewListViewModel
                         )
                     productItems
                 }
-                return
-            }
-            _productItems.update {
-                val productItems = it.toMutableList()
-                productItems[index] =
-                    productItems[index].copy(
-                        isNameRedacted = false,
-                    )
-                productItems
+            } else {
+                _productItems.update {
+                    val productItems = it.toMutableList()
+                    productItems[index] =
+                        productItems[index].copy(
+                            isNameRedacted = false,
+                            isNameError = false,
+                            errorName = "",
+                        )
+                    productItems
+                }
             }
         }
 

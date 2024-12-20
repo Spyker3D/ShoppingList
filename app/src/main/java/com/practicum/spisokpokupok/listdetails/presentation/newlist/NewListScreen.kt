@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.AddNewItemBottomSheet
@@ -236,9 +237,19 @@ fun BottomBar(
             },
         ) {
             if (bottomSheetIsVisible) {
-                Text("Готово")
+                Text(
+                    text = "Готово",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    fontSize = 16.sp,
+                )
             } else {
-                Text(bottomButtonTitle)
+                Text(
+                    text = bottomButtonTitle,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    fontSize = 16.sp,
+                )
             }
         }
     }

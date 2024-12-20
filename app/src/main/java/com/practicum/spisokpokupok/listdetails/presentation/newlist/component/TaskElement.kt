@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -65,48 +66,61 @@ fun TaskElement(
                     )
                 } else {
                     Column {
-                        Column(
-                            modifier = Modifier.height(72.dp),
-                            verticalArrangement = Arrangement.Center,
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(
-                                text = name,
-                                style =
-                                    TextStyle(
-                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                        fontSize = 16.sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                    ),
-                                modifier = Modifier.alpha(0.5f),
-                            )
-
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
+                            Column(
+                                modifier = Modifier.height(72.dp),
+                                verticalArrangement = Arrangement.Center,
                             ) {
                                 Text(
-                                    text = quantity,
+                                    text = name,
                                     style =
                                         TextStyle(
                                             fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                            fontSize = 14.sp,
+                                            fontSize = 16.sp,
                                             color = MaterialTheme.colorScheme.onSurface,
                                         ),
+                                    modifier = Modifier.alpha(0.5f).padding(horizontal = 16.dp),
                                 )
-                                Text(
-                                    text = quantityType.abbreviation,
-                                    style =
-                                        TextStyle(
-                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                                            fontSize = 14.sp,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                        ),
-                                    modifier =
-                                        Modifier.padding(
-                                            start = 4.dp,
-                                        ),
-                                )
+
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                ) {
+                                    Text(
+                                        text = quantity,
+                                        style =
+                                            TextStyle(
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                            ),
+                                    )
+                                    Text(
+                                        text = quantityType.abbreviation,
+                                        style =
+                                            TextStyle(
+                                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                                fontSize = 14.sp,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                            ),
+                                        modifier =
+                                            Modifier.padding(
+                                                start = 4.dp,
+                                            ),
+                                    )
+                                }
                             }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_arrow_right),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.padding(end = 16.dp),
+                            )
                         }
+
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.onSurface,
                             thickness = 1.dp,

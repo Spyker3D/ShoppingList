@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,7 +42,11 @@ import com.practicum.spisokpokupok.listdetails.presentation.newlist.AddItem
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.BottomBar
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.NewTaskEditableTextField
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
+import com.practicum.spisokpokupok.utils.ActionIcon
+import com.practicum.spisokpokupok.utils.SwipeState
+import com.practicum.spisokpokupok.utils.SwipeableRightItem
 import com.practicum.spisokpokupok.utils.TaskDetailTopAppBar
+import kotlinx.coroutines.launch
 
 @Composable
 fun CurrentListEditScreen(
@@ -121,6 +128,7 @@ fun CurrentListEditScreen(
                 loading = state.loading,
                 onAddNewProduct = { action(ListEditAction.OnAddNewProduct) },
                 onClearClick = { action(ListEditAction.OnClearTaskNameClick(it)) },
+                onDeleteClick = { action(ListEditAction.OnDeleteClick(it)) },
             )
         }
     }
@@ -136,9 +144,10 @@ fun ChooseAllTasks(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
-        modifier = modifier,
+        modifier = modifier.padding(horizontal = 16.dp),
     ) {
         Switch(
+            modifier = modifier.padding(horizontal = 16.dp),
             checked = checked,
             onCheckedChange = {
                 onCheckedChange()
@@ -151,7 +160,6 @@ fun ChooseAllTasks(
                     uncheckedTrackColor = MaterialTheme.colorScheme.surface,
                 ),
         )
-        Spacer(modifier = Modifier.padding(4.dp))
         Text(
             title,
             style = MaterialTheme.typography.bodyMedium,
@@ -169,6 +177,7 @@ private fun TasksContent(
     modifier: Modifier = Modifier,
     onAddNewProduct: () -> Unit,
     onClearClick: (Int) -> Unit,
+    onDeleteClick: (Int) -> Unit,
 ) {
     Column(
         modifier =
@@ -178,14 +187,37 @@ private fun TasksContent(
     ) {
         LazyColumn {
             items(tasks) { task ->
-                TaskItem(
-                    task = task,
-                    onCheckedChange = { onTaskCheckedChange(tasks.indexOf(task)) },
-                    onTaskClick = { onTaskClick(tasks.indexOf(task)) },
-                    onClearClick = {
-                        onClearClick(tasks.indexOf(task))
+                val swipeState = remember { SwipeState() }
+                val scope = rememberCoroutineScope()
+                SwipeableRightItem(
+                    swipeState = swipeState,
+                    numberOfIcons = 1,
+                    actions = {
+                        Spacer(modifier = Modifier.padding(start = 4.dp))
+                        ActionIcon(
+                            onClick = {
+                                onDeleteClick(tasks.indexOf(task))
+                                scope.launch {
+                                    swipeState.hide()
+                                }
+                            },
+                            backgroundColor = MaterialTheme.colorScheme.onError,
+                            icon = painterResource(id = R.drawable.ic_delete_blue),
+                            modifier = Modifier.fillMaxHeight(),
+                        )
+                    },
+                    swipeableContent = {
+                        TaskItem(
+                            task = task,
+                            onCheckedChange = { onTaskCheckedChange(tasks.indexOf(task)) },
+                            onTaskClick = { onTaskClick(tasks.indexOf(task)) },
+                            onClearClick = {
+                                onClearClick(tasks.indexOf(task))
+                            },
+                        )
                     },
                 )
+
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onSurface,
                     thickness = 1.dp,
@@ -288,27 +320,7 @@ private fun TaskItem(
                 )
                 Text(
                     text =
-                        when (task.quantityType) {
-                            QuantityType.KILOGRAM -> {
-                                "кг"
-                            }
-
-                            QuantityType.LITRE -> {
-                                "л"
-                            }
-
-                            QuantityType.PACK -> {
-                                "уп"
-                            }
-
-                            QuantityType.PIECE -> {
-                                "шт"
-                            }
-
-                            QuantityType.UNKNOWN -> {
-                                ""
-                            }
-                        },
+                        task.quantityType.abbreviation,
                     style = MaterialTheme.typography.bodySmall,
                     modifier =
                         Modifier.padding(horizontal = 4.dp),
@@ -362,6 +374,7 @@ private fun TasksContentPreview() {
                 onTaskCheckedChange = {},
                 onAddNewProduct = { },
                 onClearClick = {},
+                onDeleteClick = {},
             )
         }
     }
@@ -379,6 +392,7 @@ private fun TasksContentEmptyPreview() {
                 onTaskCheckedChange = {},
                 onAddNewProduct = { },
                 onClearClick = {},
+                onDeleteClick = {},
             )
         }
     }

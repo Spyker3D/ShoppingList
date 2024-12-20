@@ -34,13 +34,15 @@ fun SwipeableRightItem(
     val maxSwipeDistance = iconWidth * numberOfIcons
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -48,35 +50,37 @@ fun SwipeableRightItem(
         }
         val density = LocalDensity.current
         Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(end = with(density) { -swipeState.offset.value.toDp() })
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures(
-                        onHorizontalDrag = { _, dragAmount ->
-                            scope.launch {
-                                val newOffset = (swipeState.offset.value + dragAmount)
-                                    .coerceIn(-maxSwipeDistance, 0f)
-                                swipeState.offset.snapTo(newOffset)
-                            }
-                        },
-                        onDragEnd = {
-                            when {
-                                swipeState.offset.value < -iconWidth -> {
-                                    scope.launch {
-                                        swipeState.offset.animateTo(-maxSwipeDistance)
-                                    }
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(end = with(density) { -swipeState.offset.value.toDp() })
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { _, dragAmount ->
+                                scope.launch {
+                                    val newOffset =
+                                        (swipeState.offset.value + dragAmount)
+                                            .coerceIn(-maxSwipeDistance, 0f)
+                                    swipeState.offset.snapTo(newOffset)
                                 }
+                            },
+                            onDragEnd = {
+                                when {
+                                    swipeState.offset.value < -iconWidth * numberOfIcons / 2 -> {
+                                        scope.launch {
+                                            swipeState.offset.animateTo(-maxSwipeDistance)
+                                        }
+                                    }
 
-                                else -> {
-                                    scope.launch {
-                                        swipeState.offset.animateTo(0f)
+                                    else -> {
+                                        scope.launch {
+                                            swipeState.offset.animateTo(0f)
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    )
-                }
+                            },
+                        )
+                    },
         ) {
             swipeableContent()
         }
