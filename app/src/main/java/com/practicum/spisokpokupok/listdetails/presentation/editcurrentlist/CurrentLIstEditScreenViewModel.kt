@@ -28,8 +28,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class SortType {
+    NONE,
+    BY_NAME_ASCENDING,
+    BY_NAME_DESCENDING,
+}
+
 data class LIstEditUIState(
     val title: String = "",
+    val sortType: SortType = SortType.NONE,
     val loading: Boolean = false,
     val allItemsChecked: Boolean = false,
     val bottomSheetState: BottomSheetState = BottomSheetState(),
@@ -65,6 +72,7 @@ class CurrentLIstEditScreenViewModel
         private val currentListEditRoute = handle.toRoute<CurrentListEditRoute>()
         private val listId = currentListEditRoute.id
         private val itemsStream = observeTasksUseCase(listId)
+        private val _sortType = MutableStateFlow(SortType.NONE)
         private val _bottomSheetState = MutableStateFlow(BottomSheetState())
         private val _isLoading = MutableStateFlow(false)
         private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
@@ -82,7 +90,8 @@ class CurrentLIstEditScreenViewModel
                 _userMessage,
                 _tasksAsync,
                 _bottomSheetState,
-            ) { isLoading, userMessage, tasksAsync, bottomSheetState ->
+                _sortType,
+            ) { isLoading, userMessage, tasksAsync, bottomSheetState, sortType ->
                 val title =
                     getListTitleUseCase(listId)
                 when (tasksAsync) {
@@ -96,6 +105,7 @@ class CurrentLIstEditScreenViewModel
 
                     is Async.Success -> {
                         LIstEditUIState(
+                            sortType = sortType,
                             allItemsChecked =
                                 tasksAsync.data.all {
                                     it.isCompleted
@@ -154,6 +164,47 @@ class CurrentLIstEditScreenViewModel
                 ListEditAction.OnDeleteCompletedTasks -> deleteCompletedTasks()
                 ListEditAction.CompleteList -> moveListToCompletedLists()
                 is ListEditAction.OnClearTaskNameClick -> clearTaskName(action.index)
+                ListEditAction.OnSortClick -> sortItemsByAlphabetically()
+            }
+        }
+
+        private fun sortItemsByAlphabetically() {
+            if ((uiState.value.sortType == SortType.BY_NAME_DESCENDING) ||
+                uiState.value.sortType == SortType.NONE
+            ) {
+                val sortedList = uiState.value.items.sortedBy { it.name }
+                viewModelScope.launch {
+                    sortedList.forEachIndexed { index, task ->
+                        updateTaskUseCase(
+                            quantity = task.quantity,
+                            quantityType = task.quantityType,
+                            position = index,
+                            taskId = task.id,
+                            taskName = task.name,
+                            completed = task.isCompleted,
+                        )
+                    }
+                }
+                _sortType.update {
+                    SortType.BY_NAME_ASCENDING
+                }
+            } else {
+                val sortedList = uiState.value.items.sortedByDescending { it.name }
+                viewModelScope.launch {
+                    sortedList.forEachIndexed { index, task ->
+                        updateTaskUseCase(
+                            quantity = task.quantity,
+                            quantityType = task.quantityType,
+                            position = index,
+                            taskId = task.id,
+                            taskName = task.name,
+                            completed = task.isCompleted,
+                        )
+                    }
+                }
+                _sortType.update {
+                    SortType.BY_NAME_DESCENDING
+                }
             }
         }
 

@@ -60,7 +60,7 @@ fun CurrentListEditScreen(
         topBar = {
             TaskDetailTopAppBar(
                 onBack = onBackPressed,
-                onSort = {},
+                onSort = { action(ListEditAction.OnSortClick) },
                 title = state.title,
             )
         },
@@ -186,10 +186,11 @@ private fun TasksContent(
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin)),
     ) {
         LazyColumn {
-            items(tasks) { task ->
+            items(tasks, key = { it.id }) { task ->
                 val swipeState = remember { SwipeState() }
                 val scope = rememberCoroutineScope()
                 SwipeableRightItem(
+                    modifier = Modifier.animateItem(),
                     swipeState = swipeState,
                     numberOfIcons = 1,
                     actions = {
