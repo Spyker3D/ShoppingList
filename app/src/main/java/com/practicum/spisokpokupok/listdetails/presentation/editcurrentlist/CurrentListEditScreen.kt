@@ -2,9 +2,11 @@ package com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,7 +37,7 @@ import com.practicum.buyinglist.R.drawable.ic_arrow_right
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.AddItem
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.BottomBar
-import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.EditableTextField
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.NewTaskEditableTextField
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.utils.TaskDetailTopAppBar
 
@@ -51,7 +53,7 @@ fun CurrentListEditScreen(
         topBar = {
             TaskDetailTopAppBar(
                 onBack = onBackPressed,
-                onSort = onNavigateToCompletedList,
+                onSort = {},
                 title = state.title,
             )
         },
@@ -63,7 +65,12 @@ fun CurrentListEditScreen(
                 modifier = modifier,
                 position = state.bottomSheetState.index,
                 onBottomButtonClick = {
-                    action(ListEditAction.OnDeleteCompletedTasks)
+                    if (state.allItemsChecked) {
+                        action(ListEditAction.CompleteList)
+                        onNavigateToCompletedList()
+                    } else {
+                        action(ListEditAction.OnDeleteCompletedTasks)
+                    }
                 },
                 onDecreeseClick = {
                     action(ListEditAction.OnDecreaseClick(it))
@@ -71,35 +78,49 @@ fun CurrentListEditScreen(
                 onEncreeseClick = {
                     action(ListEditAction.OnEncreaseClick(it))
                 },
-                onQuantityTypeChange = {
-                    action(ListEditAction.OnQuantityTypeChange(state.bottomSheetState.index, it))
+                onQuantityTypeChange = { position, quantityType ->
+                    action(ListEditAction.OnQuantityTypeChange(position, quantityType))
                 },
                 onSaveTask = {
                     action(ListEditAction.OnSaveTask)
                 },
                 bottomButtonTitle = stringResource(R.string.tasks_are_completed),
+                isConfirmButtonActive = state.allItemsChecked,
             )
         },
         containerColor = MaterialTheme.colorScheme.surface,
+        modifier = modifier,
     ) { paddingValues ->
-        Column {
-            ChooseAllTasks(
-                checked = state.allItemsChecked,
-                onCheckedChange = { action(ListEditAction.OnChooseAllItems) },
-                modifier =
-                    Modifier
-                        .height(56.dp)
-                        .fillMaxWidth()
-                        .padding(paddingValues)
-                        .padding(vertical = 28.dp),
-            )
+        Column(
+            modifier = modifier.padding(paddingValues).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Row(
+                modifier = modifier.fillMaxWidth(),
+            ) {
+                ChooseAllTasks(
+                    checked = state.allItemsChecked,
+                    onCheckedChange = {
+                        action(ListEditAction.OnChooseAllItems)
+                    },
+                    modifier = modifier.height(56.dp),
+                    title = stringResource(R.string.choose_all_tasks),
+                )
+            }
             TasksContent(
                 tasks = state.items,
                 onTaskClick = { action(ListEditAction.OnTaskClick(it)) },
                 onTaskCheckedChange = { action(ListEditAction.OnCheckClick(it)) },
-                modifier = Modifier.padding(paddingValues),
+                modifier =
+                    Modifier.padding(
+                        horizontal =
+                            paddingValues.calculateStartPadding(
+                                LocalLayoutDirection.current,
+                            ),
+                    ),
                 loading = state.loading,
                 onAddNewProduct = { action(ListEditAction.OnAddNewProduct) },
+                onClearClick = { action(ListEditAction.OnClearTaskNameClick(it)) },
             )
         }
     }
@@ -109,36 +130,33 @@ fun CurrentListEditScreen(
 fun ChooseAllTasks(
     checked: Boolean,
     onCheckedChange: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
+    title: String = "",
 ) {
-    Column(modifier = modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier =
-                Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
-                    .fillMaxWidth(),
-        ) {
-            Switch(
-                checked = checked,
-                onCheckedChange = {
-                    onCheckedChange()
-                },
-                colors =
-                    SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.secondaryContainer,
-                        checkedTrackColor = Color.Transparent,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.surface,
-                    ),
-            )
-            Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)))
-            Text(
-                text = stringResource(id = R.string.choose_all_tasks),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)),
-            )
-        }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+        modifier = modifier,
+    ) {
+        Switch(
+            checked = checked,
+            onCheckedChange = {
+                onCheckedChange()
+            },
+            colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.surface,
+                    checkedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surface,
+                ),
+        )
+        Spacer(modifier = Modifier.padding(4.dp))
+        Text(
+            title,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
     }
 }
 
@@ -146,10 +164,11 @@ fun ChooseAllTasks(
 private fun TasksContent(
     loading: Boolean,
     tasks: List<TaskUiState>,
-    onTaskClick: (String) -> Unit,
-    onTaskCheckedChange: (String) -> Unit,
+    onTaskClick: (Int) -> Unit,
+    onTaskCheckedChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     onAddNewProduct: () -> Unit,
+    onClearClick: (Int) -> Unit,
 ) {
     Column(
         modifier =
@@ -161,8 +180,11 @@ private fun TasksContent(
             items(tasks) { task ->
                 TaskItem(
                     task = task,
-                    onCheckedChange = { onTaskCheckedChange(task.id) },
-                    onTaskClick = onTaskClick,
+                    onCheckedChange = { onTaskCheckedChange(tasks.indexOf(task)) },
+                    onTaskClick = { onTaskClick(tasks.indexOf(task)) },
+                    onClearClick = {
+                        onClearClick(tasks.indexOf(task))
+                    },
                 )
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onSurface,
@@ -191,7 +213,8 @@ private fun TaskItem(
     onValueChange: (String) -> Unit = {},
     task: TaskUiState,
     onCheckedChange: () -> Unit,
-    onTaskClick: (String) -> Unit,
+    onTaskClick: () -> Unit,
+    onClearClick: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -201,7 +224,7 @@ private fun TaskItem(
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                     vertical = dimensionResource(id = R.dimen.list_item_padding),
-                ).clickable { onTaskClick(task.id) },
+                ).clickable { onTaskClick() },
     ) {
         Image(
             painter =
@@ -223,13 +246,18 @@ private fun TaskItem(
                 Modifier.weight(1f),
         ) {
             if (isRedacted) {
-                EditableTextField(
+                NewTaskEditableTextField(
                     value = task.name,
                     onValueChange = { onValueChange(it) },
+                    isError = false,
+                    errorMessage = "",
                     modifier =
                         Modifier.padding(
                             start = dimensionResource(id = R.dimen.horizontal_margin),
                         ),
+                    onClearClick = {
+                        onClearClick()
+                    },
                 )
             } else {
                 Text(
@@ -333,6 +361,7 @@ private fun TasksContentPreview() {
                 onTaskClick = { },
                 onTaskCheckedChange = {},
                 onAddNewProduct = { },
+                onClearClick = {},
             )
         }
     }
@@ -349,6 +378,7 @@ private fun TasksContentEmptyPreview() {
                 onTaskClick = { },
                 onTaskCheckedChange = {},
                 onAddNewProduct = { },
+                onClearClick = {},
             )
         }
     }
@@ -371,6 +401,7 @@ private fun TaskItemPreview() {
                     ),
                 onCheckedChange = { },
                 onTaskClick = { },
+                onClearClick = {},
             )
         }
     }
@@ -393,6 +424,7 @@ private fun TaskItemCompletedPreview() {
                     ),
                 onCheckedChange = { },
                 onTaskClick = { },
+                onClearClick = {},
             )
         }
     }

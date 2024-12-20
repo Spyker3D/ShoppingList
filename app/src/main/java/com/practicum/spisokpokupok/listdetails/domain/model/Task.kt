@@ -14,12 +14,14 @@ data class Task(
         get() = !isCompleted
 }
 
-enum class QuantityType {
-    KILOGRAM,
-    LITRE,
-    PACK,
-    PIECE,
-    UNKNOWN,
+enum class QuantityType(
+    val abbreviation: String,
+) {
+    KILOGRAM("кг"),
+    LITRE("л"),
+    PACK("уп"),
+    PIECE("шт"),
+    UNKNOWN(""),
 }
 
 fun quantityTypeFromString(quantityType: String): QuantityType =
