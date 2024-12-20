@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -100,7 +103,7 @@ fun CurrentListEditScreen(
                     onCheckedChange = {
                         action(ListEditAction.OnChooseAllItems)
                     },
-                    modifier = modifier,
+                    modifier = modifier.height(56.dp),
                     title = stringResource(R.string.choose_all_tasks),
                 )
             }
@@ -108,7 +111,13 @@ fun CurrentListEditScreen(
                 tasks = state.items,
                 onTaskClick = { action(ListEditAction.OnTaskClick(it)) },
                 onTaskCheckedChange = { action(ListEditAction.OnCheckClick(it)) },
-                modifier = Modifier.padding(paddingValues),
+                modifier =
+                    Modifier.padding(
+                        horizontal =
+                            paddingValues.calculateStartPadding(
+                                LocalLayoutDirection.current,
+                            ),
+                    ),
                 loading = state.loading,
                 onAddNewProduct = { action(ListEditAction.OnAddNewProduct) },
                 onClearClick = { action(ListEditAction.OnClearTaskNameClick(it)) },

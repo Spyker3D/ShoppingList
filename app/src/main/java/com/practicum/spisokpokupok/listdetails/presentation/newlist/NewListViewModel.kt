@@ -65,10 +65,7 @@ class NewListViewModel
             )
         private val _isConfirmButtonActive =
             MutableStateFlow(
-                _productItems.value.any {
-                    it.name.isNotEmpty()
-                } &&
-                    _title.value.titleOnTop.isNotEmpty(),
+                false,
             )
         val uiState: StateFlow<NewListUIState> =
             combine(
@@ -114,7 +111,10 @@ class NewListViewModel
                 NewListAction.OnTitleClick -> redactTitle()
                 NewListAction.OnAddNewProduct -> addNewItem()
                 is NewListAction.OnTaskClick -> redactItem(action.index)
-                is NewListAction.OnTitleChange -> changeTitle(action.title)
+                is NewListAction.OnTitleChange -> {
+                    changeTitle(action.title)
+                    checkConfirmButton()
+                }
                 is NewListAction.OnDecreaseClick -> decreaseQuantity(action.position)
                 is NewListAction.OnIncreaseClick -> encreaseQuantity(action.position)
                 is NewListAction.OnQuantityTypeChange ->
@@ -124,14 +124,28 @@ class NewListViewModel
                     )
 
                 NewListAction.OnSaveList -> saveList()
-                is NewListAction.OnSaveTask -> saveTask(action.index)
-                is NewListAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
+                is NewListAction.OnSaveTask -> {
+                    saveTask(action.index)
+                    checkConfirmButton()
+                }
+                is NewListAction.OnTaskNameChange -> {
+                    changeTaskName(action.index, action.title)
+                    checkConfirmButton()
+                }
                 NewListAction.OnAcceptTitleClick -> acceptTitle()
                 NewListAction.OnDeleteTitleClick -> emptyTitle()
                 NewListAction.SaveTitle -> saveTitle()
                 is NewListAction.OnClearTaskNameClick -> clearTaskName(action.index)
             }
         }
+
+        private fun checkConfirmButton() =
+            _isConfirmButtonActive.update {
+                _productItems.value.any {
+                    it.name.isNotEmpty()
+                } &&
+                    _title.value.titleOnTop.isNotEmpty()
+            }
 
         private fun clearTaskName(index: Int) {
             _productItems.update {
