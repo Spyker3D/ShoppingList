@@ -46,4 +46,6 @@ sealed interface ListEditAction {
     data class OnClearTaskNameClick(
         val index: Int,
     ) : ListEditAction
+
+    data object OnSortClick : ListEditAction
 }

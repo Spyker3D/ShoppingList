@@ -54,6 +54,7 @@ fun QuantityTypeChips(
                             index = index,
                             count = options.size,
                         ),
+                    icon = {},
                 ) {
                     Text(
                         text = option.abbreviation,

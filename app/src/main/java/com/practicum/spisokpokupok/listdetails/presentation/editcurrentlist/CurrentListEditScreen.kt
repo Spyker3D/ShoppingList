@@ -2,6 +2,7 @@ package com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,15 +25,24 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +51,6 @@ import com.practicum.buyinglist.R.drawable.ic_arrow_right
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.AddItem
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.BottomBar
-import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.NewTaskEditableTextField
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import com.practicum.spisokpokupok.utils.ActionIcon
 import com.practicum.spisokpokupok.utils.SwipeState
@@ -60,7 +70,7 @@ fun CurrentListEditScreen(
         topBar = {
             TaskDetailTopAppBar(
                 onBack = onBackPressed,
-                onSort = {},
+                onSort = { action(ListEditAction.OnSortClick) },
                 title = state.title,
             )
         },
@@ -99,7 +109,10 @@ fun CurrentListEditScreen(
         modifier = modifier,
     ) { paddingValues ->
         Column(
-            modifier = modifier.padding(paddingValues).fillMaxSize(),
+            modifier =
+                modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
@@ -129,6 +142,9 @@ fun CurrentListEditScreen(
                 onAddNewProduct = { action(ListEditAction.OnAddNewProduct) },
                 onClearClick = { action(ListEditAction.OnClearTaskNameClick(it)) },
                 onDeleteClick = { action(ListEditAction.OnDeleteClick(it)) },
+                onTaskNameChange = { index, newName ->
+                    action(ListEditAction.OnTaskNameChange(index, newName))
+                },
             )
         }
     }
@@ -178,6 +194,7 @@ private fun TasksContent(
     onAddNewProduct: () -> Unit,
     onClearClick: (Int) -> Unit,
     onDeleteClick: (Int) -> Unit,
+    onTaskNameChange: (Int, String) -> Unit,
 ) {
     Column(
         modifier =
@@ -186,10 +203,11 @@ private fun TasksContent(
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin)),
     ) {
         LazyColumn {
-            items(tasks) { task ->
+            items(tasks, key = { it.id }) { task ->
                 val swipeState = remember { SwipeState() }
                 val scope = rememberCoroutineScope()
                 SwipeableRightItem(
+                    modifier = Modifier.animateItem(),
                     swipeState = swipeState,
                     numberOfIcons = 1,
                     actions = {
@@ -210,10 +228,13 @@ private fun TasksContent(
                         TaskItem(
                             task = task,
                             onCheckedChange = { onTaskCheckedChange(tasks.indexOf(task)) },
-                            onTaskClick = { onTaskClick(tasks.indexOf(task)) },
+                            onTaskClick = {
+                                onTaskClick(tasks.indexOf(task))
+                            },
                             onClearClick = {
                                 onClearClick(tasks.indexOf(task))
                             },
+                            onValueChange = { onTaskNameChange(tasks.indexOf(task), it) },
                         )
                     },
                 )
@@ -242,11 +263,11 @@ private fun TasksContent(
 @Composable
 private fun TaskItem(
     isRedacted: Boolean = false,
-    onValueChange: (String) -> Unit = {},
+    onValueChange: (String) -> Unit,
     task: TaskUiState,
     onCheckedChange: () -> Unit,
-    onTaskClick: () -> Unit,
     onClearClick: () -> Unit,
+    onTaskClick: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -277,36 +298,7 @@ private fun TaskItem(
             modifier =
                 Modifier.weight(1f),
         ) {
-            if (isRedacted) {
-                NewTaskEditableTextField(
-                    value = task.name,
-                    onValueChange = { onValueChange(it) },
-                    isError = false,
-                    errorMessage = "",
-                    modifier =
-                        Modifier.padding(
-                            start = dimensionResource(id = R.dimen.horizontal_margin),
-                        ),
-                    onClearClick = {
-                        onClearClick()
-                    },
-                )
-            } else {
-                Text(
-                    text = task.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier =
-                        Modifier.padding(
-                            start = dimensionResource(id = R.dimen.horizontal_margin),
-                        ),
-                    textDecoration =
-                        if (task.isCompleted) {
-                            TextDecoration.LineThrough
-                        } else {
-                            null
-                        },
-                )
-            }
+            TaskNameTextField(task, onValueChange, isRedacted, onTaskClick)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -334,6 +326,56 @@ private fun TaskItem(
             modifier = Modifier.alpha(0.5f),
         )
     }
+}
+
+@Composable
+private fun TaskNameTextField(
+    task: TaskUiState,
+    onValueChange: (String) -> Unit,
+    isRedacted: Boolean,
+    onTaskClick: () -> Unit,
+) {
+    val textState = remember { mutableStateOf(TextFieldValue(task.name)) }
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    DisposableEffect(Unit) {
+        onDispose {
+            focusManager.clearFocus()
+        }
+    }
+    BasicTextField(
+        value = textState.value,
+        onValueChange = {
+            textState.value = it
+            onValueChange(it.text)
+        },
+        modifier =
+            Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.horizontal_margin),
+                ).focusRequester(focusRequester)
+                .focusTarget(
+                )
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        focusManager.clearFocus()
+                        onTaskClick()
+                    }
+                }.clickable {
+                    focusRequester.requestFocus()
+                },
+        singleLine = true,
+        maxLines = 1,
+        textStyle =
+            TextStyle(
+                textDecoration =
+                    if (isRedacted) {
+                        TextDecoration.LineThrough
+                    } else {
+                        TextDecoration.None
+                    },
+            ),
+    )
 }
 
 @Preview
@@ -375,6 +417,7 @@ private fun TasksContentPreview() {
                 onAddNewProduct = { },
                 onClearClick = {},
                 onDeleteClick = {},
+                onTaskNameChange = { _, _ -> },
             )
         }
     }
@@ -393,6 +436,7 @@ private fun TasksContentEmptyPreview() {
                 onAddNewProduct = { },
                 onClearClick = {},
                 onDeleteClick = {},
+                onTaskNameChange = { _, _ -> },
             )
         }
     }
@@ -416,6 +460,7 @@ private fun TaskItemPreview() {
                 onCheckedChange = { },
                 onTaskClick = { },
                 onClearClick = {},
+                onValueChange = {},
             )
         }
     }
@@ -439,6 +484,7 @@ private fun TaskItemCompletedPreview() {
                 onCheckedChange = { },
                 onTaskClick = { },
                 onClearClick = {},
+                onValueChange = {},
             )
         }
     }
