@@ -146,11 +146,16 @@ class CurrentLIstEditScreenViewModel
                 ListEditAction.OnAddNewProduct -> addNewItem()
                 is ListEditAction.OnCheckClick -> {
                     changeItemStatus(action.index)
+                    closeBottomSheet()
                 }
 
                 ListEditAction.OnChooseAllItems -> completeAllItems()
                 is ListEditAction.OnDecreaseClick -> decreaseQuantity(action.position)
-                is ListEditAction.OnDeleteClick -> deleteItem(action.position)
+                is ListEditAction.OnDeleteClick -> {
+                    deleteItem(action.position)
+                    closeBottomSheet()
+                }
+
                 is ListEditAction.OnEncreaseClick -> encreaseQuantity(action.position)
                 is ListEditAction.OnQuantityTypeChange ->
                     changeQuantityType(
@@ -164,7 +169,10 @@ class CurrentLIstEditScreenViewModel
                 ListEditAction.OnDeleteCompletedTasks -> deleteCompletedTasks()
                 ListEditAction.CompleteList -> moveListToCompletedLists()
                 is ListEditAction.OnClearTaskNameClick -> clearTaskName(action.index)
-                ListEditAction.OnSortClick -> sortItemsByAlphabetically()
+                ListEditAction.OnSortClick -> {
+                    sortItemsByAlphabetically()
+                    closeBottomSheet()
+                }
             }
         }
 
@@ -282,10 +290,13 @@ class CurrentLIstEditScreenViewModel
             _bottomSheetState.update {
                 it.copy(
                     isVisible = true,
-                    quantity = task?.quantity ?: 1,
-                    quantityType = task?.quantityType ?: QuantityType.UNKNOWN,
-                    index = task?.position ?: -1,
+                    quantity = task.quantity ?: 1,
+                    quantityType = task.quantityType ?: QuantityType.UNKNOWN,
+                    index = index,
                 )
+            }
+            viewModelScope.launch {
+                updateItemsPosition()
             }
         }
 
@@ -365,6 +376,7 @@ class CurrentLIstEditScreenViewModel
         }
 
         private fun completeAllItems() {
+            closeBottomSheet()
             if (uiState.value.items.any {
                     !it.isCompleted
                 }
