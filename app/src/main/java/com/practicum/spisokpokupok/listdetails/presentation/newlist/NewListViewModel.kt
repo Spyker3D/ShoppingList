@@ -2,14 +2,20 @@ package com.practicum.spisokpokupok.listdetails.presentation.newlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.usecases.CreateListUseCase
 import com.practicum.spisokpokupok.listdetails.domain.usecases.CreateTaskUseCase
+import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
+import com.practicum.spisokpokupok.lists.domain.usecases.GetActualListsUseCase
+import com.practicum.spisokpokupok.utils.Async
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -17,10 +23,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class NewListUIState(
+    val lists: List<ShoppingList> = emptyList(),
+    val loading: Boolean = false,
+    val userMessage: Int? = null,
     val titleState: TitleState = TitleState(),
     val bottomSheetState: BottomSheetState = BottomSheetState(),
     val productItems: List<NewListItemUiState> = emptyList(),
-    val isConfirmButtonActive: Boolean,
+    val isConfirmButtonActive: Boolean = false,
 )
 
 data class BottomSheetState(
@@ -54,7 +63,9 @@ class NewListViewModel
     constructor(
         private val createTaskUseCase: CreateTaskUseCase,
         private val createListUseCase: CreateListUseCase,
+        private val getActualListsUseCase: GetActualListsUseCase,
     ) : ViewModel() {
+        private val actualListsStream = getActualListsUseCase()
         private val _bottomSheetState = MutableStateFlow(BottomSheetState())
         private val _title = MutableStateFlow(TitleState())
         private val _productItems =
@@ -64,24 +75,49 @@ class NewListViewModel
                     NewListItemUiState(),
                 ),
             )
+        private val _listsAcync =
+            actualListsStream
+                .map {
+                    Async.Success(it)
+                }.catch<Async<List<ShoppingList>>> {
+                    emit(Async.Error(R.string.loading_error))
+                }
         val uiState: StateFlow<NewListUIState> =
             combine(
                 _bottomSheetState,
                 _title,
                 _productItems,
+                _listsAcync,
             ) {
                 bottomSheetState,
                 title,
                 productItems,
+                listsAsync,
                 ->
-                NewListUIState(
-                    titleState = title,
-                    bottomSheetState = bottomSheetState,
-                    productItems = productItems,
-                    isConfirmButtonActive =
-                        !_title.value.isError and productItems.all { !it.isNameError } and title.title.isNotBlank() and
-                            productItems.any { it.name.isNotBlank() },
-                )
+                when (listsAsync) {
+                    Async.Loading -> {
+                        NewListUIState(loading = true)
+                    }
+
+                    is Async.Error -> {
+                        NewListUIState(userMessage = listsAsync.errorMessage)
+                    }
+
+                    is Async.Success -> {
+                        NewListUIState(
+                            lists = listsAsync.data,
+                            loading = false,
+                            titleState = title,
+                            bottomSheetState = bottomSheetState,
+                            productItems = productItems,
+                            isConfirmButtonActive =
+                                !title.isError
+                                    and productItems.all { !it.isNameError }
+                                    and title.title.isNotBlank() and
+                                    productItems.any { it.name.isNotBlank() },
+                        )
+                    }
+                }
             }.onStart {
                 _title.update {
                     it.copy(
@@ -156,16 +192,18 @@ class NewListViewModel
         }
 
         private fun saveTitle() {
-            _title.update {
-                if (it.title.isEmpty()) {
-                    it.copy(
-                        isError = true,
-                        errorMessage = "Вы не ввели название",
-                    )
-                } else {
-                    it.copy(
-                        titleOnTop = it.title,
-                    )
+            if (!uiState.value.titleState.isError) {
+                _title.update {
+                    if (it.title.isEmpty()) {
+                        it.copy(
+                            isError = true,
+                            errorMessage = "Вы не ввели название",
+                        )
+                    } else {
+                        it.copy(
+                            titleOnTop = it.title,
+                        )
+                    }
                 }
             }
         }
@@ -186,8 +224,6 @@ class NewListViewModel
             _title.update {
                 it.copy(
                     isRedacted = true,
-                    errorMessage = if (it.title.isEmpty()) "Вы не ввели название" else "",
-                    isError = it.title.isEmpty(),
                 )
             }
             _bottomSheetState.update {
@@ -341,29 +377,41 @@ class NewListViewModel
 
         private fun changeTitle(title: String) {
             closeBottomSheet()
-
-            if (title.length > MAX_TITLE_LENGTH) {
+            if (uiState.value.lists.any {
+                    it.name == title
+                }
+            ) {
                 _title.update {
                     it.copy(
-                        title = title.substring(0, MAX_TITLE_LENGTH),
+                        title = title,
+                        isError = true,
+                        errorMessage = "Такое название списка уже есть",
                     )
                 }
             } else {
-                if (title.isEmpty() or title.isBlank()) {
+                if (title.length > MAX_TITLE_LENGTH) {
                     _title.update {
                         it.copy(
-                            title = "",
-                            isError = true,
-                            errorMessage = "Вы не ввели название",
+                            title = title.substring(0, MAX_TITLE_LENGTH),
                         )
                     }
                 } else {
-                    _title.update {
-                        it.copy(
-                            title = title,
-                            isError = title.isEmpty(),
-                            errorMessage = if (title.isEmpty()) "Вы не ввели название" else "",
-                        )
+                    if (title.isEmpty() or title.isBlank()) {
+                        _title.update {
+                            it.copy(
+                                title = "",
+                                isError = true,
+                                errorMessage = "Вы не ввели название",
+                            )
+                        }
+                    } else {
+                        _title.update {
+                            it.copy(
+                                title = title,
+                                isError = false,
+                                errorMessage = "",
+                            )
+                        }
                     }
                 }
             }
@@ -381,8 +429,6 @@ class NewListViewModel
             _title.update {
                 it.copy(
                     isRedacted = false,
-                    errorMessage = if (it.title.isEmpty()) "Вы не ввели название" else "",
-                    isError = it.title.isEmpty(),
                 )
             }
             _productItems.update {
