@@ -54,6 +54,19 @@ interface ShoppingTaskDao {
         quantityType: String,
     )
 
+    @Query(
+        "UPDATE shopping_task SET goodId = :goodId, quantity = :quantity, quantityType = :quantityType, " +
+            "position = :position, isCompleted = :isCompleted WHERE id = :taskId",
+    )
+    suspend fun updateTask(
+        taskId: String,
+        goodId: String,
+        quantity: Int,
+        quantityType: String,
+        position: Int,
+        isCompleted: Boolean,
+    )
+
     @Query("DELETE FROM shopping_task WHERE id = :shoppingListId")
     suspend fun deleteAll(shoppingListId: List<String>)
 
