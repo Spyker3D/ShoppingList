@@ -68,5 +68,6 @@ class RoomLocalListDataSource
 
         override suspend fun completeList(listId: String) {
             completedListDao.addCompletedList(LocalCompletedShoppingList(listId, 0))
+            shoppingListDao.deleteActualList(listId)
         }
-}
+    }
