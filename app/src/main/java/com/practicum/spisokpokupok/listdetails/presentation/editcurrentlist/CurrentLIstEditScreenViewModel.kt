@@ -165,7 +165,7 @@ class CurrentLIstEditScreenViewModel
 
                 ListEditAction.OnSaveTask -> closeBottomSheet()
                 is ListEditAction.OnTaskClick -> showBottomSheet(action.index)
-                is ListEditAction.OnTaskNameChange -> changeTaskName(action.index, action.title)
+                is ListEditAction.OnTaskNameChange -> changeTaskName(action.index, action.name)
                 ListEditAction.OnDeleteCompletedTasks -> deleteCompletedTasks()
                 ListEditAction.CompleteList -> moveListToCompletedLists()
                 is ListEditAction.OnClearTaskNameClick -> clearTaskName(action.index)
@@ -270,16 +270,27 @@ class CurrentLIstEditScreenViewModel
 
         private fun changeTaskName(
             index: Int,
-            title: String,
+            name: String,
         ) {
             viewModelScope.launch {
                 val task = uiState.value.items[index]
+                if (name.isEmpty() or name.isBlank()) {
+                    updateTaskUseCase(
+                        quantity = task.quantity,
+                        quantityType = task.quantityType,
+                        position = task.position,
+                        taskId = task.id,
+                        taskName = "",
+                        completed = task.isCompleted,
+                    )
+                    return@launch
+                }
                 updateTaskUseCase(
                     quantity = task.quantity,
                     quantityType = task.quantityType,
                     position = task.position,
                     taskId = task.id,
-                    taskName = title,
+                    taskName = name,
                     completed = task.isCompleted,
                 )
             }

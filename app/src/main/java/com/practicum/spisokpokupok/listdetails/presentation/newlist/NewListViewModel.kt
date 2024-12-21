@@ -32,6 +32,7 @@ data class BottomSheetState(
 
 data class NewListItemUiState(
     val name: String = "",
+    val label: String = "",
     val quantity: Int = 1,
     val quantityType: QuantityType = QuantityType.UNKNOWN,
     val isNameError: Boolean = false,
@@ -63,27 +64,23 @@ class NewListViewModel
                     NewListItemUiState(),
                 ),
             )
-        private val _isConfirmButtonActive =
-            MutableStateFlow(
-                false,
-            )
         val uiState: StateFlow<NewListUIState> =
             combine(
                 _bottomSheetState,
                 _title,
                 _productItems,
-                _isConfirmButtonActive,
             ) {
                 bottomSheetState,
                 title,
                 productItems,
-                isConfirmButtonActive,
                 ->
                 NewListUIState(
                     titleState = title,
                     bottomSheetState = bottomSheetState,
                     productItems = productItems,
-                    isConfirmButtonActive = isConfirmButtonActive,
+                    isConfirmButtonActive =
+                        !_title.value.isError and productItems.all { !it.isNameError } and title.title.isNotBlank() and
+                            productItems.any { it.name.isNotBlank() },
                 )
             }.onStart {
                 _title.update {
@@ -94,7 +91,7 @@ class NewListViewModel
                 _productItems.update {
                     it.mapIndexed { index, item ->
                         item.copy(
-                            name = "Продукт ${index + 1}",
+                            label = "Продукт ${index + 1}",
                             isNameRedacted = false,
                             quantityType = QuantityType.KILOGRAM,
                         )
@@ -103,7 +100,7 @@ class NewListViewModel
             }.stateIn(
                 initialValue =
                     NewListUIState(
-                        isConfirmButtonActive = _isConfirmButtonActive.value,
+                        isConfirmButtonActive = false,
                     ),
                 scope = viewModelScope,
                 started =
@@ -118,7 +115,6 @@ class NewListViewModel
                 is NewListAction.OnTaskClick -> redactItem(action.index)
                 is NewListAction.OnTitleChange -> {
                     changeTitle(action.title)
-                    checkConfirmButton()
                 }
 
                 is NewListAction.OnDecreaseClick -> decreaseQuantity(action.position)
@@ -132,12 +128,10 @@ class NewListViewModel
                 NewListAction.OnSaveList -> saveList()
                 is NewListAction.OnSaveTask -> {
                     saveTask(action.index)
-                    checkConfirmButton()
                 }
 
                 is NewListAction.OnTaskNameChange -> {
                     changeTaskName(action.index, action.title)
-                    checkConfirmButton()
                 }
 
                 NewListAction.OnAcceptTitleClick -> acceptTitle()
@@ -146,14 +140,6 @@ class NewListViewModel
                 is NewListAction.OnClearTaskNameClick -> clearTaskName(action.index)
             }
         }
-
-        private fun checkConfirmButton() =
-            _isConfirmButtonActive.update {
-                _productItems.value.any {
-                    it.name.isNotEmpty()
-                } &&
-                    _title.value.titleOnTop.isNotEmpty()
-            }
 
         private fun clearTaskName(index: Int) {
             _productItems.update {
@@ -224,7 +210,16 @@ class NewListViewModel
             index: Int,
             name: String,
         ) {
-            if (name.isEmpty()) {
+            if (name.length > MAX_TASK_LENGTH) {
+                _productItems.update {
+                    val productItems = it.toMutableList()
+                    productItems[index] =
+                        productItems[index].copy(
+                            name = name.substring(0, MAX_TASK_LENGTH),
+                        )
+                    productItems
+                }
+            } else if (name.isEmpty() or name.isBlank()) {
                 _productItems.update {
                     val productItems = it.toMutableList()
                     productItems[index] =
@@ -346,12 +341,31 @@ class NewListViewModel
 
         private fun changeTitle(title: String) {
             closeBottomSheet()
-            _title.update {
-                it.copy(
-                    title = title,
-                    isError = title.isEmpty(),
-                    errorMessage = if (title.isEmpty()) "Вы не ввели название" else "",
-                )
+
+            if (title.length > MAX_TITLE_LENGTH) {
+                _title.update {
+                    it.copy(
+                        title = title.substring(0, MAX_TITLE_LENGTH),
+                    )
+                }
+            } else {
+                if (title.isEmpty() or title.isBlank()) {
+                    _title.update {
+                        it.copy(
+                            title = "",
+                            isError = true,
+                            errorMessage = "Вы не ввели название",
+                        )
+                    }
+                } else {
+                    _title.update {
+                        it.copy(
+                            title = title,
+                            isError = title.isEmpty(),
+                            errorMessage = if (title.isEmpty()) "Вы не ввели название" else "",
+                        )
+                    }
+                }
             }
         }
 
@@ -411,6 +425,14 @@ class NewListViewModel
                         isNameRedacted = true,
                     )
             }
+            _bottomSheetState.update {
+                it.copy(
+                    isVisible = true,
+                    index = _productItems.value.lastIndex,
+                    quantity = 1,
+                    quantityType = QuantityType.PACK,
+                )
+            }
         }
 
         private fun saveList() {
@@ -459,3 +481,6 @@ class NewListViewModel
             }
         }
     }
+
+const val MAX_TITLE_LENGTH = 25
+const val MAX_TASK_LENGTH = 20
