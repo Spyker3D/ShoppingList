@@ -104,6 +104,15 @@ class NewListViewModel
                     }
 
                     is Async.Success -> {
+                        val productItems = productItems.toMutableList()
+                        productItems.forEachIndexed { index, item ->
+                            if (item.name.isBlank()) {
+                                productItems[index] =
+                                    item.copy(
+                                        isNameError = item.name.isBlank(),
+                                    )
+                            }
+                        }
                         NewListUIState(
                             lists = listsAsync.data,
                             loading = false,
@@ -436,10 +445,17 @@ class NewListViewModel
                     it.toMutableList().mapIndexed { position, item ->
                         if (position == index) {
                             item.copy(
+                                label = "",
                                 isNameRedacted = true,
                             )
                         } else {
                             item.copy(
+                                label =
+                                    if (item.name.isBlank()) {
+                                        "Продукт ${position + 1}"
+                                    } else {
+                                        ""
+                                    },
                                 isNameRedacted = false,
                             )
                         }
@@ -504,26 +520,26 @@ class NewListViewModel
                     }
                     return
                 }
-                viewModelScope.launch {
-                    val listId =
-                        createListUseCase(
-                            _title.value.title,
-                        )
-                    _productItems.value.forEachIndexed { index, item ->
-                        createTaskUseCase(
-                            listId,
-                            item.name,
-                            item.quantity,
-                            item.quantityType,
-                            index,
-                        )
-                    }
-                }
-                _bottomSheetState.update {
-                    it.copy(
-                        isVisible = false,
+            }
+            viewModelScope.launch {
+                val listId =
+                    createListUseCase(
+                        _title.value.title,
+                    )
+                _productItems.value.forEachIndexed { index, item ->
+                    createTaskUseCase(
+                        listId,
+                        item.name,
+                        item.quantity,
+                        item.quantityType,
+                        index,
                     )
                 }
+            }
+            _bottomSheetState.update {
+                it.copy(
+                    isVisible = false,
+                )
             }
         }
     }
