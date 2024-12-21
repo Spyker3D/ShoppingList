@@ -110,7 +110,7 @@ fun NewListScreen(
                         onValueChange = {
                             action(NewListAction.OnTaskNameChange(index, it))
                         },
-                        modifier = modifier.height(76.dp).fillMaxWidth(),
+                        modifier = modifier.height(76.dp).fillMaxWidth().animateItem(),
                         onClearClick = {
                             action(NewListAction.OnClearTaskNameClick(index))
                         },
@@ -257,7 +257,7 @@ fun BottomBar(
 
 @Composable
 fun NewListTopBar(
-    modifier: Modifier = Modifier.height(76.dp),
+    modifier: Modifier = Modifier.height(76.dp).padding(top = 32.dp),
     onBackPressed: () -> Unit,
     title: String,
 ) {

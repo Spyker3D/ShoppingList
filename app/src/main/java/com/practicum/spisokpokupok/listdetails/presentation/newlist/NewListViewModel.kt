@@ -481,9 +481,18 @@ class NewListViewModel
             _productItems.update {
                 val list =
                     it.map {
-                        it.copy(
-                            isNameRedacted = false,
-                        )
+                        if (it.name.isBlank()) {
+                            it.copy(
+                                label =
+                                    "Продукт ${_productItems.value.indexOf(it) + 1}",
+                                isNameRedacted = false,
+                            )
+                        } else {
+                            it.copy(
+                                label = "",
+                                isNameRedacted = true,
+                            )
+                        }
                     }
                 list +
                     NewListItemUiState(
