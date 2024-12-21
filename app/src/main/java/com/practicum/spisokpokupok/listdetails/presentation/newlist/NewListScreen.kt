@@ -100,7 +100,7 @@ fun NewListScreen(
                 items(state.productItems.size) { index ->
                     val item = state.productItems[index]
                     TaskElement(
-                        name = item.name,
+                        name = item.label.ifBlank { item.name },
                         quantity = item.quantity.toString(),
                         quantityType = item.quantityType,
                         isRedacted = item.isNameRedacted,
