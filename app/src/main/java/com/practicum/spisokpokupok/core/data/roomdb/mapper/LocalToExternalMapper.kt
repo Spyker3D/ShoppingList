@@ -1,13 +1,12 @@
 package com.practicum.spisokpokupok.core.data.roomdb.mapper
 
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalActualShoppingListWithName
-import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingList
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalCompletedShoppingListWithName
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalGood
 import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTaskWithGood
 import com.practicum.spisokpokupok.listdetails.domain.model.Good
+import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
-import com.practicum.spisokpokupok.listdetails.domain.model.quantityTypeFromString
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 
 fun LocalActualShoppingListWithName.toExternal() =
@@ -18,8 +17,7 @@ fun LocalActualShoppingListWithName.toExternal() =
         isCompleted = false,
     )
 
-fun List<LocalActualShoppingListWithName>.toExternalList() =
-    map(LocalActualShoppingListWithName::toExternal)
+fun List<LocalActualShoppingListWithName>.toExternalList() = map(LocalActualShoppingListWithName::toExternal)
 
 fun LocalShoppingTaskWithGood.toExternal() =
     Task(
@@ -47,6 +45,13 @@ fun LocalCompletedShoppingListWithName.toExternal() =
         isCompleted = true,
     )
 
-fun List<LocalCompletedShoppingListWithName>.toExternalCompletedList() =
-    map(LocalCompletedShoppingListWithName::toExternal)
+fun quantityTypeFromString(quantityType: String): QuantityType =
+    when (quantityType) {
+        KILOGRAM -> QuantityType.KILOGRAM
+        LITRE -> QuantityType.LITRE
+        PACK -> QuantityType.PACK
+        PIECE -> QuantityType.PIECE
+        else -> QuantityType.UNKNOWN
+    }
 
+fun List<LocalCompletedShoppingListWithName>.toExternalCompletedList() = map(LocalCompletedShoppingListWithName::toExternal)
