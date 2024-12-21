@@ -6,7 +6,7 @@ compileSdk = "35"
 #version
 major ="1"
 minor = "0"
-patch = "1"
+patch = "2"
 
 agp = "8.7.2"
 kotlin = "2.1.0"

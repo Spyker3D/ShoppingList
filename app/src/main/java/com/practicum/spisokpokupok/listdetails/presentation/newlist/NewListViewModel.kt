@@ -479,7 +479,13 @@ class NewListViewModel
                 )
             }
             _productItems.update {
-                it +
+                val list =
+                    it.map {
+                        it.copy(
+                            isNameRedacted = false,
+                        )
+                    }
+                list +
                     NewListItemUiState(
                         name = "",
                         quantity = 1,
