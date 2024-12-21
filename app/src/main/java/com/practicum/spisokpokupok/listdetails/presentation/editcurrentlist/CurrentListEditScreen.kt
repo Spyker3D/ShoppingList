@@ -69,6 +69,7 @@ fun CurrentListEditScreen(
     Scaffold(
         topBar = {
             TaskDetailTopAppBar(
+                modifier = modifier.padding(top = 32.dp),
                 onBack = onBackPressed,
                 onSort = { action(ListEditAction.OnSortClick) },
                 title = state.title,
@@ -354,8 +355,7 @@ private fun TaskNameTextField(
                 .padding(
                     start = dimensionResource(id = R.dimen.horizontal_margin),
                 ).focusRequester(focusRequester)
-                .focusTarget(
-                )
+                .focusTarget()
                 .pointerInput(Unit) {
                     detectTapGestures {
                         focusManager.clearFocus()
@@ -368,6 +368,8 @@ private fun TaskNameTextField(
         maxLines = 1,
         textStyle =
             TextStyle(
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                 textDecoration =
                     if (isRedacted) {
                         TextDecoration.LineThrough

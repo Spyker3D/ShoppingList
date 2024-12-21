@@ -62,6 +62,7 @@ fun PurchasesListSwipe(
                 val swipeState = remember { SwipeState() }
                 val scope = rememberCoroutineScope()
                 SwipeableRightItem(
+                    modifier = Modifier.animateItem(),
                     swipeState = swipeState,
                     numberOfIcons = 2,
                     actions = {
