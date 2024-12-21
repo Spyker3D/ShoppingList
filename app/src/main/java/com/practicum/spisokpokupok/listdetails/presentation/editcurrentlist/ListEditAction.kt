@@ -40,7 +40,7 @@ sealed interface ListEditAction {
 
     class OnTaskNameChange(
         val index: Int,
-        val title: String,
+        val name: String,
     ) : ListEditAction
 
     data class OnClearTaskNameClick(
