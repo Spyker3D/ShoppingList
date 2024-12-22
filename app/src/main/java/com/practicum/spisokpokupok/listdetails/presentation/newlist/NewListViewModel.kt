@@ -240,6 +240,13 @@ class NewListViewModel
                     isVisible = false,
                 )
             }
+            _productItems.update {
+                it.map {
+                    it.copy(
+                        isNameRedacted = false,
+                    )
+                }
+            }
         }
 
         private fun acceptTitle() {
@@ -264,7 +271,7 @@ class NewListViewModel
                         )
                     productItems
                 }
-            } else if (name.isEmpty() or name.isBlank()) {
+            } else if (name.isBlank()) {
                 _productItems.update {
                     val productItems = it.toMutableList()
                     productItems[index] =

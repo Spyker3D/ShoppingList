@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,11 +16,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -75,6 +78,10 @@ fun TitleEditableTextField(
                     )
                 }
             } else {
+                val focusRequester = remember { FocusRequester() }
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
+                }
                 BasicTextField(
                     value = value,
                     onValueChange = { onValueChange(it) },
@@ -99,7 +106,8 @@ fun TitleEditableTextField(
                     keyboardActions = keyboardActions,
                     modifier =
                         Modifier
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                            .focusRequester(focusRequester),
                     singleLine = true,
                 )
             }
@@ -147,13 +155,13 @@ fun NewTaskEditableTextField(
 ) {
     Column {
         val focusRequester = remember { FocusRequester() }
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
         Row(
             modifier =
                 modifier
-                    .height(76.dp)
-                    .clickable {
-                        focusRequester.requestFocus()
-                    },
+                    .height(76.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
