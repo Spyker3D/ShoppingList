@@ -1,5 +1,6 @@
 package com.practicum.spisokpokupok.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,36 +16,45 @@ import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.Curr
 import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.CurrentListEditScreen
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListScreen
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListViewModel
-import com.practicum.spisokpokupok.lists.presentation.HorizontalPagerScreen
+import com.practicum.spisokpokupok.lists.presentation.InfiniteHorizontalPager
 import kotlinx.serialization.Serializable
+
+const val MAX_PAGES = Short.MAX_VALUE.toInt()
+const val PAGE_COUNT = 2
+const val PAGER_INITIAL_POSITION = MAX_PAGES / PAGE_COUNT + MAX_PAGES % PAGE_COUNT
+const val PAGER_COMPLETED_LISTS = PAGER_INITIAL_POSITION + 1
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = HorizontalPagerRoute(targetPage = 0),
+        startDestination = HorizontalPagerRoute(targetPage = PAGER_INITIAL_POSITION),
     ) {
         composable<HorizontalPagerRoute> {
             val args = it.toRoute<HorizontalPagerRoute>()
-            HorizontalPagerScreen(
+            Log.e("ARGS", "${args.targetPage}")
+
+            InfiniteHorizontalPager(
                 initialPage = args.targetPage,
                 onNavigateToNewList = { navController.navigate(route = NewListRoute) },
                 onItemCurrentClicked = { id ->
                     navController.navigate(
                         route =
-                            CurrentListEditRoute(
-                                id = id,
-                            ),
+                        CurrentListEditRoute(
+                            id = id,
+                        ),
                     )
                 },
                 onItemCompletedClicked = { id ->
                     navController.navigate(
                         route =
-                            CompletedListEditRoute(
-                                listId = id,
-                            ),
+                        CompletedListEditRoute(
+                            listId = id,
+                        ),
                     )
                 },
+                pageCount = PAGE_COUNT,
+                maxPages = MAX_PAGES,
             )
         }
 
@@ -57,9 +67,13 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     navController.navigate(
                         route =
                             HorizontalPagerRoute(
-                                targetPage = 0,
+                                targetPage = PAGER_INITIAL_POSITION,
                             ),
-                    )
+                    ) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onBackPressed = { navController.popBackStack() },
                 action = viewModel::consumeAction,
@@ -77,9 +91,13 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     navController.navigate(
                         route =
                             HorizontalPagerRoute(
-                                targetPage = 1,
+                                targetPage = PAGER_COMPLETED_LISTS,
                             ),
-                    )
+                    ) {
+                        popUpTo<HorizontalPagerRoute>() {
+                            inclusive = true
+                        }
+                    }
                 },
                 onBackPressed = { navController.popBackStack() },
                 state = state,
@@ -97,9 +115,13 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     navController.navigate(
                         route =
                             HorizontalPagerRoute(
-                                targetPage = 0,
+                                targetPage = PAGER_INITIAL_POSITION,
                             ),
-                    )
+                    ) {
+                        popUpTo(navController.graph.id) {
+                                inclusive = true
+                        }
+                    }
                 },
                 onBackPressed = { navController.popBackStack() },
                 listOfItems = viewModel.listOfItems,
@@ -112,7 +134,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
 
 @Serializable
 data class HorizontalPagerRoute(
-    val targetPage: Int = 0,
+    val targetPage: Int = PAGER_INITIAL_POSITION,
 )
 
 @Serializable
