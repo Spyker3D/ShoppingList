@@ -199,37 +199,39 @@ fun NewTaskEditableTextField(
             Row(
                 modifier =
                     modifier
-                        .height(if (isError) 56.dp else 76.dp),
+                        .height(if (isError) 56.dp else 72.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                BasicTextField(
-                    value = textState.value,
-                    onValueChange = {
-                        onValueChange(it.text)
-                        textState.value = it
-                    },
-                    textStyle =
-                        if (isError) {
-                            TextStyle(
-                                fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        } else {
-                            TextStyle(
-                                fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
+                Column {
+                    BasicTextField(
+                        value = textState.value,
+                        onValueChange = {
+                            onValueChange(it.text)
+                            textState.value = it
                         },
-                    keyboardActions = keyboardActions,
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 16.dp)
-                            .focusRequester(focusRequester),
-                    singleLine = true,
-                )
+                        textStyle =
+                            if (isError) {
+                                TextStyle(
+                                    fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            } else {
+                                TextStyle(
+                                    fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            },
+                        keyboardActions = keyboardActions,
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 16.dp)
+                                .focusRequester(focusRequester),
+                        singleLine = true,
+                    )
+                }
                 Icon(
                     painter = painterResource(R.drawable.ic_close),
                     contentDescription = "",
@@ -242,19 +244,11 @@ fun NewTaskEditableTextField(
                             },
                 )
             }
-            if (isError) {
-                ShowError(
-                    isError = isError,
-                    errorMessage = errorMessage,
-                    modifier = Modifier.padding(end = 16.dp),
-                )
-            } else {
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    thickness = 1.dp,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            ShowError(
+                isError = isError,
+                errorMessage = errorMessage,
+                modifier = Modifier.padding(end = 16.dp),
+            )
         }
     } else {
         Column {
@@ -263,7 +257,7 @@ fun NewTaskEditableTextField(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
-                    modifier = Modifier.height(72.dp),
+                    modifier = Modifier.height(71.dp),
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
@@ -313,20 +307,11 @@ fun NewTaskEditableTextField(
                     modifier = Modifier.padding(end = 16.dp),
                 )
             }
-
-            if (isError) {
-                ShowError(
-                    isError = isError,
-                    errorMessage = errorMessage,
-                    modifier = Modifier.padding(end = 16.dp),
-                )
-            } else {
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    thickness = 1.dp,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            ShowError(
+                isError = isError,
+                errorMessage = errorMessage,
+                modifier = Modifier.padding(end = 16.dp),
+            )
         }
     }
 }

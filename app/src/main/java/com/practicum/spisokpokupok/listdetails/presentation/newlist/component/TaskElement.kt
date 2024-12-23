@@ -39,25 +39,20 @@ fun TaskElement(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
                 modifier
-                    .height(71.dp)
                     .fillMaxWidth()
                     .clickable { onElementClick() },
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-            ) {
-                NewTaskEditableTextField(
-                    value = name,
-                    onValueChange = onValueChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = isError,
-                    errorMessage = errorMesage,
-                    onClearClick = onClearClick,
-                    isRedacted = isRedacted,
-                    quantity = quantity,
-                    quantityType = quantityType,
-                )
-            }
+            NewTaskEditableTextField(
+                value = name,
+                onValueChange = onValueChange,
+                modifier = Modifier.fillMaxWidth(),
+                isError = isError,
+                errorMessage = errorMesage,
+                onClearClick = onClearClick,
+                isRedacted = isRedacted,
+                quantity = quantity,
+                quantityType = quantityType,
+            )
         }
         Icon(
             painter = painterResource(ic_arrow_right),
