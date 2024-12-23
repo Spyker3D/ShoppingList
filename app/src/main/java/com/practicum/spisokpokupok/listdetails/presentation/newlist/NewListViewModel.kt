@@ -45,7 +45,7 @@ data class NewListItemUiState(
     val quantity: Int = 1,
     val quantityType: QuantityType = QuantityType.UNKNOWN,
     val isNameError: Boolean = false,
-    val errorName: String = "",
+    val errorMessage: String = "",
     val isNameRedacted: Boolean = false,
 )
 
@@ -104,15 +104,15 @@ class NewListViewModel
                     }
 
                     is Async.Success -> {
-                        val productItems = productItems.toMutableList()
-                        productItems.forEachIndexed { index, item ->
-                            if (item.name.isBlank()) {
-                                productItems[index] =
-                                    item.copy(
-                                        isNameError = item.name.isBlank(),
-                                    )
-                            }
-                        }
+//                        val productItems = productItems.toMutableList()
+//                        productItems.forEachIndexed { index, item ->
+//                            if (item.name.isBlank()) {
+//                                productItems[index] =
+//                                    item.copy(
+//                                        isNameError = true,
+//                                    )
+//                            }
+//                        }
                         NewListUIState(
                             lists = listsAsync.data,
                             loading = false,
@@ -138,6 +138,7 @@ class NewListViewModel
                         item.copy(
                             label = "Продукт ${index + 1}",
                             isNameRedacted = false,
+                            isNameError = false,
                             quantityType = QuantityType.KILOGRAM,
                         )
                     }
@@ -194,7 +195,7 @@ class NewListViewModel
                         name = "",
                         isNameRedacted = true,
                         isNameError = true,
-                        errorName = "Вы не ввели название",
+                        errorMessage = "Вы не ввели название",
                     )
                 productItems
             }
@@ -279,7 +280,7 @@ class NewListViewModel
                             name = "",
                             isNameError = true,
                             isNameRedacted = true,
-                            errorName = "Вы не ввели название",
+                            errorMessage = "Вы не ввели название",
                         )
                     productItems
                 }
@@ -324,7 +325,7 @@ class NewListViewModel
                         productItems[index].copy(
                             isNameError = true,
                             isNameRedacted = true,
-                            errorName = "Вы не ввели название",
+                            errorMessage = "Вы не ввели название",
                         )
                     productItems
                 }
@@ -335,7 +336,7 @@ class NewListViewModel
                         productItems[index].copy(
                             isNameRedacted = false,
                             isNameError = false,
-                            errorName = "",
+                            errorMessage = "",
                         )
                     productItems
                 }
@@ -456,15 +457,20 @@ class NewListViewModel
                                 isNameRedacted = true,
                             )
                         } else {
-                            item.copy(
-                                label =
-                                    if (item.name.isBlank()) {
-                                        "Продукт ${position + 1}"
-                                    } else {
-                                        ""
-                                    },
-                                isNameRedacted = false,
-                            )
+                            if (item.name.isBlank()) {
+                                item.copy(
+                                    label =
+                                        "Продукт ${position + 1}",
+                                    isNameRedacted = false,
+                                    isNameError = true,
+                                    errorMessage = "Вы не ввели название",
+                                )
+                            } else {
+                                item.copy(
+                                    label = "",
+                                    isNameRedacted = false,
+                                )
+                            }
                         }
                     }
                 productItems
@@ -492,12 +498,14 @@ class NewListViewModel
                             it.copy(
                                 label =
                                     "Продукт ${_productItems.value.indexOf(it) + 1}",
+                                isNameError = true,
+                                errorMessage = "Вы не ввели название",
                                 isNameRedacted = false,
                             )
                         } else {
                             it.copy(
                                 label = "",
-                                isNameRedacted = true,
+                                isNameRedacted = false,
                             )
                         }
                     }
@@ -506,6 +514,8 @@ class NewListViewModel
                         name = "",
                         quantity = 1,
                         quantityType = QuantityType.PACK,
+                        isNameError = false,
+                        errorMessage = "Вы не ввели название",
                         isNameRedacted = true,
                     )
             }
@@ -535,7 +545,7 @@ class NewListViewModel
                     productItems[productItems.indexOf(item)] =
                         item.copy(
                             isNameError = true,
-                            errorName = "Вы не ввели название",
+                            errorMessage = "Вы не ввели название",
                         )
                     _productItems.update {
                         productItems

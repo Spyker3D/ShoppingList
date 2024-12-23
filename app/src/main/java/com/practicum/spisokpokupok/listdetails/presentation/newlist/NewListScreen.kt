@@ -116,7 +116,7 @@ fun NewListScreen(
                             action(NewListAction.OnClearTaskNameClick(index))
                         },
                         isError = item.isNameError,
-                        errorMesage = item.errorName,
+                        errorMesage = item.errorMessage,
                     )
                 }
                 item {
