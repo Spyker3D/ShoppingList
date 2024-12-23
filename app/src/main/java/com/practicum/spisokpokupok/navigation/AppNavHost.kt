@@ -1,6 +1,5 @@
 package com.practicum.spisokpokupok.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,7 +31,6 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
     ) {
         composable<HorizontalPagerRoute> {
             val args = it.toRoute<HorizontalPagerRoute>()
-            Log.e("ARGS", "${args.targetPage}")
 
             InfiniteHorizontalPager(
                 initialPage = args.targetPage,
