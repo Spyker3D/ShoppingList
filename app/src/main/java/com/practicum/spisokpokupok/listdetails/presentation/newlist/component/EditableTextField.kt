@@ -87,9 +87,9 @@ fun TitleEditableTextField(
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier =
-                    Modifier.clickable {
-                        onClearClick()
-                    },
+                        Modifier.clickable {
+                            onClearClick()
+                        },
                 )
             } else {
                 val textState = remember { mutableStateOf(TextFieldValue(value)) }
@@ -140,13 +140,12 @@ fun TitleEditableTextField(
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier =
-                    Modifier.clickable {
-                        textState.value = TextFieldValue("")
-                        onClearClick()
-                    },
+                        Modifier.clickable {
+                            textState.value = TextFieldValue("")
+                            onClearClick()
+                        },
                 )
             }
-
         }
         if (isError) {
             HorizontalDivider(
@@ -243,8 +242,19 @@ fun NewTaskEditableTextField(
                             },
                 )
             }
-
-            ShowError(isError, errorMessage, modifier)
+            if (isError) {
+                ShowError(
+                    isError = isError,
+                    errorMessage = errorMessage,
+                    modifier = Modifier.padding(end = 16.dp),
+                )
+            } else {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    thickness = 1.dp,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     } else {
         Column {
@@ -314,7 +324,7 @@ fun NewTaskEditableTextField(
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onSurface,
                     thickness = 1.dp,
-                    modifier = Modifier,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -328,25 +338,27 @@ private fun ShowError(
     modifier: Modifier,
 ) {
     if (isError) {
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.error,
-        )
+        Column {
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.error,
+            )
+            Text(
+                text = errorMessage,
+                modifier = modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.labelSmall,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
     } else {
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
-    if (isError) {
-        Text(
-            text = errorMessage,
-            modifier = modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.labelSmall,
-            fontSize = 14.sp,
-            fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        Column {
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
     }
 }
 

@@ -40,6 +40,7 @@ data class BottomSheetState(
 )
 
 data class NewListItemUiState(
+    val index: Int,
     val name: String = "",
     val label: String = "",
     val quantity: Int = 1,
@@ -65,15 +66,13 @@ class NewListViewModel
         private val createListUseCase: CreateListUseCase,
         private val getActualListsUseCase: GetActualListsUseCase,
     ) : ViewModel() {
+        private var currentIndex = 0
         private val actualListsStream = getActualListsUseCase()
         private val _bottomSheetState = MutableStateFlow(BottomSheetState())
         private val _title = MutableStateFlow(TitleState())
         private val _productItems =
             MutableStateFlow(
-                listOf(
-                    NewListItemUiState(),
-                    NewListItemUiState(),
-                ),
+                listOf<NewListItemUiState>(),
             )
         private val _listsAcync =
             actualListsStream
@@ -104,15 +103,6 @@ class NewListViewModel
                     }
 
                     is Async.Success -> {
-//                        val productItems = productItems.toMutableList()
-//                        productItems.forEachIndexed { index, item ->
-//                            if (item.name.isBlank()) {
-//                                productItems[index] =
-//                                    item.copy(
-//                                        isNameError = true,
-//                                    )
-//                            }
-//                        }
                         NewListUIState(
                             lists = listsAsync.data,
                             loading = false,
@@ -134,6 +124,19 @@ class NewListViewModel
                     )
                 }
                 _productItems.update {
+                    val newList = it.toMutableList()
+                    newList.add(
+                        NewListItemUiState(
+                            index = currentIndex,
+                        ),
+                    )
+                    currentIndex++
+                    newList.add(
+                        NewListItemUiState(
+                            index = currentIndex,
+                        ),
+                    )
+                    currentIndex++
                     it.mapIndexed { index, item ->
                         item.copy(
                             label = "Продукт ${index + 1}",
@@ -184,6 +187,22 @@ class NewListViewModel
                 NewListAction.OnDeleteTitleClick -> emptyTitle()
                 NewListAction.SaveTitle -> saveTitle()
                 is NewListAction.OnClearTaskNameClick -> clearTaskName(action.index)
+                is NewListAction.OnDeleteTaskClick -> deleteTask(action.itemIndex)
+            }
+        }
+
+        private fun deleteTask(itemIndex: Int) {
+            if ((itemIndex == _bottomSheetState.value.index) or _productItems.value.isEmpty()) {
+                _bottomSheetState.update {
+                    it.copy(
+                        isVisible = false,
+                    )
+                }
+            }
+            _productItems.update {
+                val productItems = it.toMutableList()
+                productItems.removeAt(itemIndex)
+                productItems
             }
         }
 
@@ -517,6 +536,7 @@ class NewListViewModel
                         isNameError = false,
                         errorMessage = "Вы не ввели название",
                         isNameRedacted = true,
+                        index = currentIndex,
                     )
             }
             _bottomSheetState.update {
@@ -527,6 +547,7 @@ class NewListViewModel
                     quantityType = QuantityType.PACK,
                 )
             }
+            currentIndex++
         }
 
         private fun saveList() {

@@ -48,4 +48,8 @@ sealed interface NewListAction {
     data class OnClearTaskNameClick(
         val index: Int,
     ) : NewListAction
+
+    data class OnDeleteTaskClick(
+        val itemIndex: Int,
+    ) : NewListAction
 }
