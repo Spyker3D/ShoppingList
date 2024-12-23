@@ -41,7 +41,7 @@ fun QuantityTypeChips(
                             activeContainerColor = MaterialTheme.colorScheme.surface,
                             activeContentColor = MaterialTheme.colorScheme.onSurface,
                             inactiveContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            inactiveContentColor = MaterialTheme.colorScheme.onSurface,
+                            inactiveContentColor = MaterialTheme.colorScheme.surface,
                         ),
                     modifier =
                         Modifier
