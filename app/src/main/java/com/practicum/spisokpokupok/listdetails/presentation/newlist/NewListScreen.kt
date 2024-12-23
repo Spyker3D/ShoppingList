@@ -1,6 +1,7 @@
 package com.practicum.spisokpokupok.listdetails.presentation.newlist
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -115,7 +116,7 @@ fun NewListScreen(
                             action(NewListAction.OnClearTaskNameClick(index))
                         },
                         isError = item.isNameError,
-                        errorMesage = item.errorName,
+                        errorMesage = item.errorMessage,
                     )
                 }
                 item {
@@ -145,7 +146,7 @@ fun NewListTitle(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             val focusManager = LocalFocusManager.current
             TitleEditableTextField(
@@ -257,7 +258,7 @@ fun BottomBar(
 
 @Composable
 fun NewListTopBar(
-    modifier: Modifier = Modifier.height(76.dp).padding(top = 32.dp),
+    modifier: Modifier = Modifier.height(76.dp).padding(top = 16.dp),
     onBackPressed: () -> Unit,
     title: String,
 ) {

@@ -69,7 +69,7 @@ fun CurrentListEditScreen(
     Scaffold(
         topBar = {
             TaskDetailTopAppBar(
-                modifier = modifier.padding(top = 32.dp),
+                modifier = modifier.padding(top = 16.dp),
                 onBack = onBackPressed,
                 onSort = { action(ListEditAction.OnSortClick) },
                 title = state.title,

@@ -16,7 +16,6 @@ import com.practicum.spisokpokupok.navigation.AppNavHost
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
