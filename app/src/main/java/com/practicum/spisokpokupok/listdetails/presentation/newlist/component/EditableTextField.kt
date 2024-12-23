@@ -82,6 +82,15 @@ fun TitleEditableTextField(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier =
+                    Modifier.clickable {
+                        onClearClick()
+                    },
+                )
             } else {
                 val textState = remember { mutableStateOf(TextFieldValue(value)) }
                 val focusRequester = remember { FocusRequester() }
@@ -126,16 +135,18 @@ fun TitleEditableTextField(
                             .focusRequester(focusRequester),
                     singleLine = true,
                 )
-            }
-            Icon(
-                painter = painterResource(R.drawable.ic_close),
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier =
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier =
                     Modifier.clickable {
+                        textState.value = TextFieldValue("")
                         onClearClick()
                     },
-            )
+                )
+            }
+
         }
         if (isError) {
             HorizontalDivider(
