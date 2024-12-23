@@ -137,7 +137,7 @@ class NewListViewModel
                         ),
                     )
                     currentIndex++
-                    it.mapIndexed { index, item ->
+                    val updatedNewList = newList.mapIndexed { index, item ->
                         item.copy(
                             label = "Продукт ${index + 1}",
                             isNameRedacted = false,
@@ -145,6 +145,7 @@ class NewListViewModel
                             quantityType = QuantityType.KILOGRAM,
                         )
                     }
+                    updatedNewList
                 }
             }.stateIn(
                 initialValue =
