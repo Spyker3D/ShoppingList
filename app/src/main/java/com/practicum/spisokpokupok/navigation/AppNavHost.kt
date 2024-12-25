@@ -65,9 +65,9 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 onNavigateToCurrentLists = {
                     navController.navigate(
                         route =
-                            HorizontalPagerRoute(
-                                targetPage = PAGER_INITIAL_POSITION,
-                            ),
+                        HorizontalPagerRoute(
+                            targetPage = PAGER_INITIAL_POSITION,
+                        ),
                     ) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
@@ -104,12 +104,12 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 onNavigateToCurrentLists = {
                     navController.navigate(
                         route =
-                            HorizontalPagerRoute(
-                                targetPage = PAGER_INITIAL_POSITION,
-                            ),
+                        HorizontalPagerRoute(
+                            targetPage = PAGER_INITIAL_POSITION,
+                        ),
                     ) {
                         popUpTo(navController.graph.id) {
-                                inclusive = true
+                            inclusive = true
                         }
                     }
                 },
@@ -125,6 +125,18 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             SuccessScreen(
                 listName = args.listName,
                 onNavigateToCompletedList = {
+                    navController.navigate(
+                        route =
+                        HorizontalPagerRoute(
+                            targetPage = PAGER_COMPLETED_LISTS,
+                        ),
+                    ) {
+                        popUpTo<HorizontalPagerRoute>() {
+                            inclusive = true
+                        }
+                    }
+                },
+                onBackPressed = {
                     navController.navigate(
                         route =
                         HorizontalPagerRoute(

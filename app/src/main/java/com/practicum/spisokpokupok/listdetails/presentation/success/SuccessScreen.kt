@@ -1,5 +1,6 @@
 package com.practicum.spisokpokupok.listdetails.presentation.success
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,8 +29,12 @@ import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 fun SuccessScreen(
     modifier: Modifier = Modifier,
     listName: String,
-    onNavigateToCompletedList: () -> Unit
+    onNavigateToCompletedList: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
+    BackHandler {
+        onBackPressed()
+    }
     Column(
         modifier =
         Modifier
@@ -109,7 +114,8 @@ fun SuccessScreenPreview() {
     ToDoListTheme {
         SuccessScreen(
             listName = "Ингредиенты",
-            onNavigateToCompletedList = {}
+            onNavigateToCompletedList = {},
+            onBackPressed = {}
         )
     }
 }
