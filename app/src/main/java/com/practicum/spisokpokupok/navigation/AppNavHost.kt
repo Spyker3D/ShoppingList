@@ -15,6 +15,7 @@ import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.Curr
 import com.practicum.spisokpokupok.listdetails.presentation.editcurrentlist.CurrentListEditScreen
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListScreen
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.NewListViewModel
+import com.practicum.spisokpokupok.listdetails.presentation.success.SuccessScreen
 import com.practicum.spisokpokupok.lists.presentation.InfiniteHorizontalPager
 import kotlinx.serialization.Serializable
 
@@ -85,17 +86,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             val state by viewModel.uiState.collectAsStateWithLifecycle()
 
             CurrentListEditScreen(
-                onNavigateToCompletedList = {
-                    navController.navigate(
-                        route =
-                            HorizontalPagerRoute(
-                                targetPage = PAGER_COMPLETED_LISTS,
-                            ),
-                    ) {
-                        popUpTo<HorizontalPagerRoute>() {
-                            inclusive = true
-                        }
-                    }
+                onNavigateToSuccessScreen = { listName ->
+                    navController.navigate(route = SuccessRoute(listName = listName))
                 },
                 onBackPressed = { navController.popBackStack() },
                 state = state,
@@ -127,6 +119,25 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 moveFromCompletedToActualList = viewModel::moveFromCompletedToActualLists,
             )
         }
+
+        composable<SuccessRoute> {
+            val args = it.toRoute<SuccessRoute>()
+            SuccessScreen(
+                listName = args.listName,
+                onNavigateToCompletedList = {
+                    navController.navigate(
+                        route =
+                        HorizontalPagerRoute(
+                            targetPage = PAGER_COMPLETED_LISTS,
+                        ),
+                    ) {
+                        popUpTo<HorizontalPagerRoute>() {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -146,4 +157,9 @@ data class CurrentListEditRoute(
 @Serializable
 data class CompletedListEditRoute(
     val listId: String,
+)
+
+@Serializable
+data class SuccessRoute(
+    val listName: String
 )

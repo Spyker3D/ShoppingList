@@ -61,7 +61,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CurrentListEditScreen(
     onBackPressed: () -> Unit,
-    onNavigateToCompletedList: () -> Unit,
+    onNavigateToSuccessScreen: (String) -> Unit,
     modifier: Modifier = Modifier,
     state: LIstEditUIState,
     action: (ListEditAction) -> Unit,
@@ -85,7 +85,7 @@ fun CurrentListEditScreen(
                 onBottomButtonClick = {
                     if (state.allItemsChecked) {
                         action(ListEditAction.CompleteList)
-                        onNavigateToCompletedList()
+                        onNavigateToSuccessScreen(state.title)
                     } else {
                         action(ListEditAction.OnDeleteCompletedTasks)
                     }
@@ -499,7 +499,7 @@ private fun CurrentListEditScreenPreview() {
         Surface {
             CurrentListEditScreen(
                 onBackPressed = { },
-                onNavigateToCompletedList = { },
+                onNavigateToSuccessScreen = {},
                 action = { },
                 state =
                     LIstEditUIState(
