@@ -1,6 +1,7 @@
 package com.practicum.spisokpokupok.listdetails.presentation.newlist
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -18,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -31,6 +35,10 @@ import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.Ad
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.TaskElement
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.TitleEditableTextField
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
+import com.practicum.spisokpokupok.utils.ActionIcon
+import com.practicum.spisokpokupok.utils.SwipeState
+import com.practicum.spisokpokupok.utils.SwipeableRightItem
+import kotlinx.coroutines.launch
 
 @Composable
 fun NewListScreen(
@@ -97,25 +105,76 @@ fun NewListScreen(
                         .padding(top = 10.dp)
                         .fillMaxHeight(),
             ) {
-                items(state.productItems.size) { index ->
-                    val item = state.productItems[index]
-                    TaskElement(
-                        name = item.label.ifBlank { item.name },
-                        quantity = item.quantity.toString(),
-                        quantityType = item.quantityType,
-                        isRedacted = item.isNameRedacted,
-                        onElementClick = {
-                            action(NewListAction.OnTaskClick(index))
+                items(
+                    items = state.productItems,
+                    key = { it.index },
+                ) { item ->
+
+                    val swipeState = remember { SwipeState() }
+                    val scope = rememberCoroutineScope()
+                    val focusManager = LocalFocusManager.current
+                    SwipeableRightItem(
+                        modifier = Modifier.animateItem(),
+                        swipeState = swipeState,
+                        numberOfIcons = 1,
+                        actions = {
+                            Spacer(modifier = Modifier.padding(start = 4.dp))
+                            ActionIcon(
+                                onClick = {
+                                    focusManager.clearFocus()
+                                    action(
+                                        NewListAction.OnDeleteTaskClick(
+                                            state.productItems.indexOf(
+                                                item,
+                                            ),
+                                        ),
+                                    )
+                                    scope.launch {
+                                        swipeState.hide()
+                                    }
+                                },
+                                backgroundColor = MaterialTheme.colorScheme.onError,
+                                icon = painterResource(id = R.drawable.ic_delete_blue),
+                                modifier = Modifier.fillMaxHeight(),
+                            )
                         },
-                        onValueChange = {
-                            action(NewListAction.OnTaskNameChange(index, it))
+                        swipeableContent = {
+                            TaskElement(
+                                name = item.label.ifBlank { item.name },
+                                quantity = item.quantity.toString(),
+                                quantityType = item.quantityType,
+                                isRedacted = item.isNameRedacted,
+                                onElementClick = {
+                                    action(NewListAction.OnTaskClick(state.productItems.indexOf(item)))
+                                },
+                                onValueChange = {
+                                    action(
+                                        NewListAction.OnTaskNameChange(
+                                            state.productItems.indexOf(
+                                                item,
+                                            ),
+                                            it,
+                                        ),
+                                    )
+                                },
+                                modifier =
+                                    modifier
+                                        .height(76.dp)
+                                        .fillMaxWidth()
+                                        .animateItem(),
+                                onClearClick = {
+                                    action(
+                                        NewListAction.OnClearTaskNameClick(
+                                            state.productItems.indexOf(
+                                                item,
+                                            ),
+                                        ),
+                                    )
+                                },
+                                isError = item.isNameError,
+                                errorMesage = item.errorMessage,
+                            )
                         },
-                        modifier = modifier.height(76.dp).fillMaxWidth().animateItem(),
-                        onClearClick = {
-                            action(NewListAction.OnClearTaskNameClick(index))
-                        },
-                        isError = item.isNameError,
-                        errorMesage = item.errorName,
                     )
                 }
                 item {
@@ -145,7 +204,7 @@ fun NewListTitle(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             val focusManager = LocalFocusManager.current
             TitleEditableTextField(
@@ -257,7 +316,10 @@ fun BottomBar(
 
 @Composable
 fun NewListTopBar(
-    modifier: Modifier = Modifier.height(76.dp).padding(top = 32.dp),
+    modifier: Modifier =
+        Modifier
+            .height(76.dp)
+            .padding(top = 16.dp),
     onBackPressed: () -> Unit,
     title: String,
 ) {
@@ -295,8 +357,20 @@ private fun NewListScreenPreview() {
                 NewListUIState(
                     productItems =
                         listOf(
-                            NewListItemUiState(),
-                            NewListItemUiState(),
+                            NewListItemUiState(
+                                index = 0,
+                                name = "Молоко",
+                                label = "Молоко",
+                                quantity = 1,
+                                quantityType = QuantityType.KILOGRAM,
+                            ),
+                            NewListItemUiState(
+                                index = 1,
+                                name = "Хлеб",
+                                label = "Хлеб",
+                                quantity = 1,
+                                quantityType = QuantityType.KILOGRAM,
+                            ),
                         ),
                     isConfirmButtonActive = true,
                 ),

@@ -63,6 +63,17 @@ class FakeTaskDao(
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateTask(
+        taskId: String,
+        goodId: String,
+        quantity: Int,
+        quantityType: String,
+        position: Int,
+        isCompleted: Boolean,
+    ) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteAll(shoppingListId: List<String>) {
         TODO("Not yet implemented")
     }

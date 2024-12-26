@@ -40,12 +40,13 @@ data class BottomSheetState(
 )
 
 data class NewListItemUiState(
+    val index: Int,
     val name: String = "",
     val label: String = "",
     val quantity: Int = 1,
     val quantityType: QuantityType = QuantityType.UNKNOWN,
     val isNameError: Boolean = false,
-    val errorName: String = "",
+    val errorMessage: String = "",
     val isNameRedacted: Boolean = false,
 )
 
@@ -65,15 +66,13 @@ class NewListViewModel
         private val createListUseCase: CreateListUseCase,
         private val getActualListsUseCase: GetActualListsUseCase,
     ) : ViewModel() {
+        private var currentIndex = 0
         private val actualListsStream = getActualListsUseCase()
         private val _bottomSheetState = MutableStateFlow(BottomSheetState())
         private val _title = MutableStateFlow(TitleState())
         private val _productItems =
             MutableStateFlow(
-                listOf(
-                    NewListItemUiState(),
-                    NewListItemUiState(),
-                ),
+                listOf<NewListItemUiState>(),
             )
         private val _listsAcync =
             actualListsStream
@@ -104,15 +103,6 @@ class NewListViewModel
                     }
 
                     is Async.Success -> {
-                        val productItems = productItems.toMutableList()
-                        productItems.forEachIndexed { index, item ->
-                            if (item.name.isBlank()) {
-                                productItems[index] =
-                                    item.copy(
-                                        isNameError = item.name.isBlank(),
-                                    )
-                            }
-                        }
                         NewListUIState(
                             lists = listsAsync.data,
                             loading = false,
@@ -134,13 +124,28 @@ class NewListViewModel
                     )
                 }
                 _productItems.update {
-                    it.mapIndexed { index, item ->
+                    val newList = it.toMutableList()
+                    newList.add(
+                        NewListItemUiState(
+                            index = currentIndex,
+                        ),
+                    )
+                    currentIndex++
+                    newList.add(
+                        NewListItemUiState(
+                            index = currentIndex,
+                        ),
+                    )
+                    currentIndex++
+                    val updatedNewList = newList.mapIndexed { index, item ->
                         item.copy(
                             label = "Продукт ${index + 1}",
                             isNameRedacted = false,
+                            isNameError = false,
                             quantityType = QuantityType.KILOGRAM,
                         )
                     }
+                    updatedNewList
                 }
             }.stateIn(
                 initialValue =
@@ -183,6 +188,22 @@ class NewListViewModel
                 NewListAction.OnDeleteTitleClick -> emptyTitle()
                 NewListAction.SaveTitle -> saveTitle()
                 is NewListAction.OnClearTaskNameClick -> clearTaskName(action.index)
+                is NewListAction.OnDeleteTaskClick -> deleteTask(action.itemIndex)
+            }
+        }
+
+        private fun deleteTask(itemIndex: Int) {
+            if ((itemIndex == _bottomSheetState.value.index) or _productItems.value.isEmpty()) {
+                _bottomSheetState.update {
+                    it.copy(
+                        isVisible = false,
+                    )
+                }
+            }
+            _productItems.update {
+                val productItems = it.toMutableList()
+                productItems.removeAt(itemIndex)
+                productItems
             }
         }
 
@@ -194,7 +215,7 @@ class NewListViewModel
                         name = "",
                         isNameRedacted = true,
                         isNameError = true,
-                        errorName = "Вы не ввели название",
+                        errorMessage = "Вы не ввели название",
                     )
                 productItems
             }
@@ -240,6 +261,13 @@ class NewListViewModel
                     isVisible = false,
                 )
             }
+            _productItems.update {
+                it.map {
+                    it.copy(
+                        isNameRedacted = false,
+                    )
+                }
+            }
         }
 
         private fun acceptTitle() {
@@ -264,7 +292,7 @@ class NewListViewModel
                         )
                     productItems
                 }
-            } else if (name.isEmpty() or name.isBlank()) {
+            } else if (name.isBlank()) {
                 _productItems.update {
                     val productItems = it.toMutableList()
                     productItems[index] =
@@ -272,7 +300,7 @@ class NewListViewModel
                             name = "",
                             isNameError = true,
                             isNameRedacted = true,
-                            errorName = "Вы не ввели название",
+                            errorMessage = "Вы не ввели название",
                         )
                     productItems
                 }
@@ -317,7 +345,7 @@ class NewListViewModel
                         productItems[index].copy(
                             isNameError = true,
                             isNameRedacted = true,
-                            errorName = "Вы не ввели название",
+                            errorMessage = "Вы не ввели название",
                         )
                     productItems
                 }
@@ -328,7 +356,7 @@ class NewListViewModel
                         productItems[index].copy(
                             isNameRedacted = false,
                             isNameError = false,
-                            errorName = "",
+                            errorMessage = "",
                         )
                     productItems
                 }
@@ -449,15 +477,20 @@ class NewListViewModel
                                 isNameRedacted = true,
                             )
                         } else {
-                            item.copy(
-                                label =
-                                    if (item.name.isBlank()) {
-                                        "Продукт ${position + 1}"
-                                    } else {
-                                        ""
-                                    },
-                                isNameRedacted = false,
-                            )
+                            if (item.name.isBlank()) {
+                                item.copy(
+                                    label =
+                                        "Продукт ${position + 1}",
+                                    isNameRedacted = false,
+                                    isNameError = true,
+                                    errorMessage = "Вы не ввели название",
+                                )
+                            } else {
+                                item.copy(
+                                    label = "",
+                                    isNameRedacted = false,
+                                )
+                            }
                         }
                     }
                 productItems
@@ -485,12 +518,14 @@ class NewListViewModel
                             it.copy(
                                 label =
                                     "Продукт ${_productItems.value.indexOf(it) + 1}",
+                                isNameError = true,
+                                errorMessage = "Вы не ввели название",
                                 isNameRedacted = false,
                             )
                         } else {
                             it.copy(
                                 label = "",
-                                isNameRedacted = true,
+                                isNameRedacted = false,
                             )
                         }
                     }
@@ -499,7 +534,10 @@ class NewListViewModel
                         name = "",
                         quantity = 1,
                         quantityType = QuantityType.PACK,
+                        isNameError = false,
+                        errorMessage = "Вы не ввели название",
                         isNameRedacted = true,
+                        index = currentIndex,
                     )
             }
             _bottomSheetState.update {
@@ -510,6 +548,7 @@ class NewListViewModel
                     quantityType = QuantityType.PACK,
                 )
             }
+            currentIndex++
         }
 
         private fun saveList() {
@@ -528,7 +567,7 @@ class NewListViewModel
                     productItems[productItems.indexOf(item)] =
                         item.copy(
                             isNameError = true,
-                            errorName = "Вы не ввели название",
+                            errorMessage = "Вы не ввели название",
                         )
                     _productItems.update {
                         productItems
