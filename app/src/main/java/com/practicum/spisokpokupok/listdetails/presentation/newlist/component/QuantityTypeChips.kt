@@ -36,12 +36,13 @@ fun QuantityTypeChips(
         ) {
             options.forEachIndexed { index, option ->
                 SegmentedButton(
-                    colors = SegmentedButtonDefaults.colors(
-                        activeContainerColor = MaterialTheme.colorScheme.surface,
-                        activeContentColor = MaterialTheme.colorScheme.onSurface,
-                        inactiveContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        inactiveContentColor = MaterialTheme.colorScheme.onSurface,
-                    ),
+                    colors =
+                        SegmentedButtonDefaults.colors(
+                            activeContainerColor = MaterialTheme.colorScheme.surface,
+                            activeContentColor = MaterialTheme.colorScheme.onSurface,
+                            inactiveContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            inactiveContentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
                     modifier =
                         Modifier
                             .height(36.dp)
@@ -53,16 +54,10 @@ fun QuantityTypeChips(
                             index = index,
                             count = options.size,
                         ),
+                    icon = {},
                 ) {
                     Text(
-                        text =
-                            when (option) {
-                                QuantityType.PIECE -> "шт"
-                                QuantityType.KILOGRAM -> "кг"
-                                QuantityType.LITRE -> "л"
-                                QuantityType.PACK -> "уп"
-                                QuantityType.UNKNOWN -> "ед"
-                            },
+                        text = option.abbreviation,
                     )
                 }
             }

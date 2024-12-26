@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "shopping_list",
 )
-data class LocalShoppingList(
-    @ColumnInfo(name = "name") val name: String,
+class LocalShoppingList(
+    @ColumnInfo(name = "name")
+    val name: String,
+    @ColumnInfo
     @PrimaryKey val id: String,
 )

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -27,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,8 +62,11 @@ fun PurchasesListSwipe(
                 val swipeState = remember { SwipeState() }
                 val scope = rememberCoroutineScope()
                 SwipeableRightItem(
+                    modifier = Modifier.animateItem(),
                     swipeState = swipeState,
+                    numberOfIcons = 2,
                     actions = {
+                        Spacer(modifier = Modifier.padding(start = 4.dp))
                         ActionIcon(
                             onClick = {
                                 onDeleteItemListener(purchase.id)
@@ -75,6 +78,7 @@ fun PurchasesListSwipe(
                             icon = painterResource(id = R.drawable.ic_delete_blue),
                             modifier = Modifier.fillMaxHeight()
                         )
+                        Spacer(modifier = Modifier.padding(start = 4.dp))
                         ActionIcon(
                             onClick = {
                                 onFavoriteItemListener?.invoke(purchase.id, !purchase.isFavorite)
@@ -86,10 +90,9 @@ fun PurchasesListSwipe(
                             icon = painterResource(id = R.drawable.ic_blue_paperclip),
                             modifier = Modifier.fillMaxHeight()
                         )
-                    }
-                ) {
-                    ItemCardSwipe(purchase, onClickListener)
-                }
+                    },
+                    swipeableContent = { ItemCardSwipe(purchase, onClickListener) },
+                )
             } else {
                 ItemCardSwipe(purchase, onClickListener)
             }
@@ -109,39 +112,37 @@ fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit)
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .clickable { onClickListener(purchaseList.id) },
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                modifier = Modifier.wrapContentSize(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (purchaseList.isFavorite && !purchaseList.isCompleted) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_paperclip),
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                }
-                if (purchaseList.isCompleted) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_check),
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                }
-                Text(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    text = purchaseList.name,
-                    fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                    fontSize = 16.sp,
-                    color = if (purchaseList.isFavorite) {
-                        MaterialTheme.colorScheme.onSurface
-                    } else {
-                        MaterialTheme.colorScheme.onTertiary
-                    }
+            if (purchaseList.isFavorite && !purchaseList.isCompleted) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_paperclip),
+                    contentDescription = null
                 )
+                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
             }
+            if (purchaseList.isCompleted) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_check),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+            }
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .weight(1f),
+                text = purchaseList.name,
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                fontSize = 16.sp,
+                color = if (purchaseList.isFavorite) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onTertiary
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
                 contentDescription = null

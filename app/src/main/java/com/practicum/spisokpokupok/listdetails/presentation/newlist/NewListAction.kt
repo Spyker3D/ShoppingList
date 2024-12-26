@@ -5,6 +5,10 @@ import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 sealed interface NewListAction {
     data object OnTitleClick : NewListAction
 
+    data object OnDeleteTitleClick : NewListAction
+
+    data object OnAcceptTitleClick : NewListAction
+
     data class OnTaskClick(
         val index: Int,
     ) : NewListAction
@@ -15,11 +19,14 @@ sealed interface NewListAction {
         val title: String,
     ) : NewListAction
 
-    data object OnSaveTask : NewListAction
+    data class OnSaveTask(
+        val index: Int,
+    ) : NewListAction
 
     data object OnSaveList : NewListAction
 
     data class OnQuantityTypeChange(
+        val position: Int,
         val quantityType: QuantityType,
     ) : NewListAction
 
@@ -34,5 +41,11 @@ sealed interface NewListAction {
     class OnTaskNameChange(
         val index: Int,
         val title: String,
+    ) : NewListAction
+
+    data object SaveTitle : NewListAction
+
+    data class OnClearTaskNameClick(
+        val index: Int,
     ) : NewListAction
 }

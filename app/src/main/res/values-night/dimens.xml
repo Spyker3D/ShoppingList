@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="horizontal_margin">16.dp</dimen>
-    <dimen name="list_item_padding">8.dp</dimen>
     <dimen name="top_bar_padding">32.dp</dimen>
 </resources>

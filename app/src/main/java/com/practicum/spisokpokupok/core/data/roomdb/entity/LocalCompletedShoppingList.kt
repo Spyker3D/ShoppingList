@@ -1,5 +1,6 @@
 package com.practicum.spisokpokupok.core.data.roomdb.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,13 +9,15 @@ import androidx.room.Relation
 @Entity(
     tableName = "completed_shopping_list",
 )
-data class LocalCompletedShoppingList(
+class LocalCompletedShoppingList(
+    @ColumnInfo(name = "shoppingListId")
     val shoppingListId: String,
+    @ColumnInfo
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 )
 
-data class LocalCompletedShoppingListWithName(
+class LocalCompletedShoppingListWithName(
     @Embedded val localCompletedShoppingList: LocalCompletedShoppingList,
     @Relation(
         parentColumn = "shoppingListId",

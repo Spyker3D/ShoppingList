@@ -16,7 +16,6 @@
 
 package com.practicum.spisokpokupok.utils
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,8 +38,10 @@ fun TaskDetailTopAppBar(
     onBack: () -> Unit,
     onSort: () -> Unit,
     title: String,
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
+        modifier = modifier,
         title = {
             Text(text = title)
         },
@@ -57,9 +58,9 @@ fun TaskDetailTopAppBar(
                 )
             }
         },
-        modifier = Modifier.fillMaxWidth(),
     )
 }
+
 @Preview
 @Composable
 private fun TaskDetailTopAppBarPreview() {

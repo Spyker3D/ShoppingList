@@ -9,7 +9,10 @@ plugins {
 
 android {
     namespace = "com.practicum.buyinglist"
-    compileSdk = 35
+    compileSdk =
+        libs.versions.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "com.practicum.buyinglist"
@@ -53,10 +56,17 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            buildConfigField("boolean", "IS_RELEASE_BUILD", "true")
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 
@@ -87,6 +97,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

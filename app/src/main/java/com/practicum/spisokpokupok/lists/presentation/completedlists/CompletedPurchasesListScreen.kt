@@ -52,7 +52,8 @@ fun CompletedPurchasesListScreen(
     completedShoppingList: List<ShoppingList>,
     onNavigateToNewList: () -> Unit,
     onItemClicked: (String) -> Unit,
-    onDeleteItem: (String) -> Unit
+    onDeleteItem: (String) -> Unit,
+    isAllListsEmpty: Boolean
 ) {
     Box(
         modifier = modifier,
@@ -87,7 +88,7 @@ fun CompletedPurchasesListScreen(
                             bottom = paddingValues.calculateBottomPadding()
                         )
                 ) {
-                    if (completedShoppingList.isNotEmpty()) {
+                    if (!isAllListsEmpty) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -138,7 +139,7 @@ fun CompletedPurchasesListScreen(
                                     onFavoriteItemListener = null
                                 )
                             }
-                        } else {
+                        } else if(isAllListsEmpty) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -168,7 +169,7 @@ fun CompletedPurchasesListScreen(
                 BottomBar(onNavigateToNewList = onNavigateToNewList)
             }
         )
-        if (completedShoppingList.isEmpty()) {
+        if (isAllListsEmpty) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.End
@@ -247,6 +248,7 @@ fun CompletedPurchasesListScreenPreview() {
             onNavigateToNewList = {},
             onItemClicked = {},
             onDeleteItem = {},
+            isAllListsEmpty = false,
             completedShoppingList = listOf(
                 ShoppingList(
                     id = "123",

@@ -41,7 +41,7 @@ class TaskDaoTest {
                     goodId = 1,
                     quantity = 1,
                     quantityType = "quantityType",
-                    id = 1,
+                    id = "1",
                     isCompleted = false,
                     position = 0,
                 )

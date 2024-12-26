@@ -32,16 +32,17 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 onItemCurrentClicked = { id ->
                     navController.navigate(
                         route =
-                        CurrentListEditRoute(
-                            id = id,
-                        ),
+                            CurrentListEditRoute(
+                                id = id,
+                            ),
                     )
                 },
                 onItemCompletedClicked = { id ->
                     navController.navigate(
-                        route = CompletedListEditRoute(
-                            id = id
-                        )
+                        route =
+                            CompletedListEditRoute(
+                                listId = id,
+                            ),
                     )
                 },
             )
@@ -54,9 +55,10 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             NewListScreen(
                 onNavigateToCurrentLists = {
                     navController.navigate(
-                        route = HorizontalPagerRoute(
-                            targetPage = 0,
-                        ),
+                        route =
+                            HorizontalPagerRoute(
+                                targetPage = 0,
+                            ),
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
@@ -73,9 +75,10 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             CurrentListEditScreen(
                 onNavigateToCompletedList = {
                     navController.navigate(
-                        route = HorizontalPagerRoute(
-                            targetPage = 1,
-                        ),
+                        route =
+                            HorizontalPagerRoute(
+                                targetPage = 1,
+                            ),
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
@@ -87,23 +90,21 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable<CompletedListEditRoute> {
             val args = it.toRoute<CompletedListEditRoute>()
             val viewModel: EditCompletedListViewModel = hiltViewModel(it)
-            viewModel.getListOfItemsById(args.id)
 
             CompletedListEditScreen(
-                listId = args.id,
+                listId = args.listId,
                 onNavigateToCurrentLists = {
                     navController.navigate(
-                        route = HorizontalPagerRoute(
-                            targetPage = 0,
-                        ),
+                        route =
+                            HorizontalPagerRoute(
+                                targetPage = 0,
+                            ),
                     )
                 },
                 onBackPressed = { navController.popBackStack() },
-                getListOfTasks = viewModel::getListOfItemsById,
-                getCompletedListById = viewModel::getListName,
                 listOfItems = viewModel.listOfItems,
                 listName = viewModel.listName,
-                moveFromCompletedToActualList = viewModel::moveFromCompletedToActualLists
+                moveFromCompletedToActualList = viewModel::moveFromCompletedToActualLists,
             )
         }
     }
@@ -124,5 +125,5 @@ data class CurrentListEditRoute(
 
 @Serializable
 data class CompletedListEditRoute(
-    val id: String,
+    val listId: String,
 )
