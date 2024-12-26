@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -41,7 +42,6 @@ import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
-
 @Composable
 fun CurrentPurchasesListScreen(
     modifier: Modifier = Modifier,
@@ -49,7 +49,7 @@ fun CurrentPurchasesListScreen(
     onItemClicked: (String) -> Unit,
     shoppingList: List<ShoppingList>,
     onDeleteItem: (String) -> Unit,
-    onFavoriteItem: (String, Boolean) -> Unit
+    onFavoriteItem: (String, Boolean) -> Unit,
 ) {
     Box(
         modifier = modifier,
@@ -61,54 +61,62 @@ fun CurrentPurchasesListScreen(
             },
             content = { paddingValues ->
                 Box(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxSize()
                         .padding(
                             top = paddingValues.calculateTopPadding(),
-                            bottom = paddingValues.calculateBottomPadding()
-                        )
+                            bottom = paddingValues.calculateBottomPadding(),
+                        ),
                 ) {
                     if (shoppingList.isNotEmpty()) {
                         Box(
-                            modifier = Modifier
+                            modifier =
+                            Modifier
                                 .fillMaxSize()
                                 .background(
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
+                                    brush =
+                                    Brush.verticalGradient(
+                                        colors =
+                                        listOf(
                                             Color.Transparent,
-                                            MaterialTheme.colorScheme.surface
-                                        )
-                                    )
-                                )
+                                            MaterialTheme.colorScheme.surface,
+                                        ),
+                                    ),
+                                ),
                         ) {
                             Icon(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .padding(bottom = 0.dp)
-                                    .size(250.dp),
-                                painter = painterResource(
-                                    id = if (isSystemInDarkTheme()) {
-                                        R.drawable.ic_bags_dark
-                                    } else {
-                                        R.drawable.ic_bags
-                                    }
-                                ),
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .padding(bottom = 0.dp)
+                                        .size(250.dp),
+                                painter =
+                                    painterResource(
+                                        id =
+                                            if (isSystemInDarkTheme()) {
+                                                R.drawable.ic_bags_dark
+                                            } else {
+                                                R.drawable.ic_bags
+                                            },
+                                    ),
                                 contentDescription = null,
-                                tint = Color.Unspecified
+                                tint = Color.Unspecified,
                             )
                         }
                     }
 
                     Column(
                         modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceBetween
+                        verticalArrangement = Arrangement.SpaceBetween,
                     ) {
                         if (shoppingList.isNotEmpty()) {
                             Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .padding(top = 24.dp)
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth()
+                                        .padding(top = 24.dp),
                             ) {
                                 PurchasesListSwipe(
                                     isCompletedListsScreen = false,
@@ -117,20 +125,21 @@ fun CurrentPurchasesListScreen(
                                     onDeleteItemListener = {
                                         onDeleteItem(it)
                                     },
-                                    onFavoriteItemListener = onFavoriteItem
+                                    onFavoriteItemListener = onFavoriteItem,
                                 )
                             }
                         } else {
                             Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 16.dp)
-                                    .background(Color.Transparent),
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 16.dp)
+                                        .background(Color.Transparent),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                    horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(bottom = 16.dp),
@@ -138,7 +147,7 @@ fun CurrentPurchasesListScreen(
                                         fontSize = 22.sp,
                                         color = MaterialTheme.colorScheme.onTertiary,
                                         textAlign = TextAlign.Center,
-                                        fontFamily = FontFamily(Font(R.font.sf_pro_display_regular))
+                                        fontFamily = FontFamily(Font(R.font.sf_pro_display_regular)),
                                     )
                                 }
                             }
@@ -148,21 +157,22 @@ fun CurrentPurchasesListScreen(
             },
             bottomBar = {
                 BottomBar(onNavigateToNewList = onNavigateToNewList)
-            }
+            },
         )
         if (shoppingList.isEmpty()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.End,
             ) {
                 Spacer(modifier = Modifier.weight(1.5f))
                 Image(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 36.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(end = 36.dp),
                     painter = painterResource(id = R.drawable.ic_new_list_arrow),
                     contentDescription = null,
-                    contentScale = ContentScale.FillHeight
+                    contentScale = ContentScale.FillHeight,
                 )
                 Spacer(modifier = Modifier.weight(0.37f))
             }
@@ -172,53 +182,56 @@ fun CurrentPurchasesListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(modifier: Modifier = Modifier, purchasesList: List<ShoppingList>) {
+private fun TopBar(
+    modifier: Modifier = Modifier,
+    purchasesList: List<ShoppingList>,
+) {
     LargeTopAppBar(
-        modifier = modifier
-            .padding(top = 0.dp)
-            .wrapContentHeight(),
+        modifier =
+            modifier
+                .padding(top = 0.dp)
+                .wrapContentHeight(),
         title = {
             Text(
                 modifier = Modifier.padding(horizontal = 0.dp),
-                text = if (purchasesList.isNotEmpty()) {
-                    "Все ваши списки"
-                } else {
-                    "Все ваши списки здесь"
-                },
+                text = stringResource(R.string.all_your_lists),
                 fontSize = 44.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium,
-                lineHeight = 44.sp
+                lineHeight = 44.sp,
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
     )
 }
 
 @Composable
 private fun BottomBar(onNavigateToNewList: () -> Unit) {
     BottomAppBar(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .height(192.dp),
-        containerColor = MaterialTheme.colorScheme.surface
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp)
+                .height(192.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp, top = 16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp, top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_back),
                     tint = MaterialTheme.colorScheme.inversePrimary,
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 Text(
                     modifier = Modifier.width(200.dp),
@@ -227,19 +240,20 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     lineHeight = 16.sp,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_forward),
                     tint = MaterialTheme.colorScheme.inversePrimary,
-                    contentDescription = null
+                    contentDescription = null,
                 )
             }
             Icon(
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .size(48.dp)
-                    .clickable { onNavigateToNewList() },
+                modifier =
+                    Modifier
+                        .padding(bottom = 24.dp)
+                        .size(48.dp)
+                        .clickable { onNavigateToNewList() },
                 painter = painterResource(id = R.drawable.ic_add),
                 tint = MaterialTheme.colorScheme.inversePrimary,
                 contentDescription = null,
@@ -259,25 +273,26 @@ fun CurrentPurchasesListScreenScaffoldPreview() {
             onFavoriteItem = { id, isFavorite ->
                 println("Item $id marked as favorite: $isFavorite")
             },
-            shoppingList = listOf(
-                ShoppingList(
-                    id = "123",
-                    name = "Продукты",
-                    isFavorite = true,
+            shoppingList =
+                listOf(
+                    ShoppingList(
+                        id = "123",
+                        name = "Продукты",
+                        isFavorite = true,
+                    ),
+                    ShoppingList(
+                        id = "111",
+                        name = "Канцтовары",
+                    ),
+                    ShoppingList(
+                        id = "11100",
+                        name = "Еда для животных",
+                    ),
+                    ShoppingList(
+                        id = "1111200",
+                        name = "Еда для людей",
+                    ),
                 ),
-                ShoppingList(
-                    id = "111",
-                    name = "Канцтовары",
-                ),
-                ShoppingList(
-                    id = "11100",
-                    name = "Еда для животных",
-                ),
-                ShoppingList(
-                    id = "1111200",
-                    name = "Еда для людей",
-                ),
-            )
         )
     }
 }

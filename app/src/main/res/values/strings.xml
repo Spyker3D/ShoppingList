@@ -5,4 +5,5 @@
     <string name="loading_error">Ошибка во время загрузки покупки</string>
     <string name="tasks_are_completed">Всё в корзине</string>
     <string name="choose_all_tasks">Выделить все продукты</string>
+    <string name="all_your_lists">Все ваши списки</string>
 </resources>
