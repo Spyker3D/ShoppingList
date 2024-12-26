@@ -33,7 +33,7 @@ private val lightScheme =
         errorContainer = red,
         outline = lightOutline, // граница для счетчика количества
         inversePrimary = cyan, // для кнопки "+ Добавить продукт", кнопок + и < > на главном экране со списками
-        surfaceContainer = cyan // для иконки удаления при свайпе
+        surfaceContainer = cyan, // для иконки удаления при свайпе
     )
 
 private val darkScheme =
@@ -45,19 +45,19 @@ private val darkScheme =
         onSurfaceVariant = darkWhite,
         onTertiary = white,
         outlineVariant = grey,
-        secondary = lightGrey,  // ok
+        secondary = lightGrey,
         onSecondary = greyDark,
-        secondaryContainer = lightBlue, // ok
-        onSecondaryContainer = white,  // ok
+        secondaryContainer = lightBlue,
+        onSecondaryContainer = white,
         tertiaryContainer = white, // контейнер выбранной единицы измерения в счетчике
-        onTertiaryContainer = black, // ok
+        onTertiaryContainer = black,
         surfaceVariant = blueDark,
         onBackground = blue, // для стрелки вниз "создать первый список" при отсутствии списков
-        onError = red, // ok
-        errorContainer = red,  // ok
+        onError = red,
+        errorContainer = red,
         outline = greyStrokeDark, // граница для счетчика количества
         inversePrimary = blue, // для кнопки "+ Добавить продукт", кнопок + и < > на главном экране со списками
-        surfaceContainer = cyan // для иконки удаления при свайпе
+        surfaceContainer = cyan, // для иконки удаления при свайпе
     )
 
 @Immutable
