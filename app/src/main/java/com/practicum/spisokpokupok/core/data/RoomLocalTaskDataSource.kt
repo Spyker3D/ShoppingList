@@ -10,9 +10,9 @@ import com.practicum.spisokpokupok.core.data.roomdb.mapper.toLocal
 import com.practicum.spisokpokupok.listdetails.data.repository.LocalTaskDataSource
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
+import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import com.practicum.spisokpokupok.lists.domain.model.ShoppingList
 import javax.inject.Inject
 
 class RoomLocalTaskDataSource
@@ -20,7 +20,7 @@ class RoomLocalTaskDataSource
     constructor(
         private val shoppingTaskDao: ShoppingTaskDao,
         private val goodDao: GoodDao,
-        private val completedListDao: CompletedListDao
+        private val completedListDao: CompletedListDao,
     ) : LocalTaskDataSource {
         override suspend fun createTask(
             task: Task,
@@ -76,11 +76,14 @@ class RoomLocalTaskDataSource
                 ),
             )
             val goodId = goodDao.getGoodIdByName(goodName)
-            shoppingTaskDao.updateTaskGoodId(id, goodId.toString())
-            shoppingTaskDao.updateTaskQuantity(id, quantity)
-            shoppingTaskDao.updateTaskQuantityType(id, quantityType.name)
-            shoppingTaskDao.updateTaskPosition(id, position)
-            shoppingTaskDao.updateTaskStatus(id, isCompleted)
+            shoppingTaskDao.updateTask(
+                id,
+                goodId.toString(),
+                quantity,
+                quantityType.name,
+                position,
+                isCompleted,
+            )
         }
 
         override suspend fun getTaskById(taskId: String): Task {

@@ -24,7 +24,6 @@ constructor(
     private val updateFavoriteStatusUseCase: UpdateFavoriteStatusUseCase,
 ) : ViewModel() {
 
-    private var listId = ""
     private val _listStream = getActualListsUseCase()
     val listStream: StateFlow<List<ShoppingList>> =
         _listStream.stateIn(

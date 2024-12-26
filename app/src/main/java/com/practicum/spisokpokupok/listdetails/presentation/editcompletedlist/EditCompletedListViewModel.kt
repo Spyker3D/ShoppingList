@@ -3,6 +3,7 @@ package com.practicum.spisokpokupok.listdetails.presentation.editcompletedlist
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.spisokpokupok.listdetails.domain.model.Task
@@ -16,35 +17,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditCompletedListViewModel
-@Inject
-constructor(
-    private val getListOfItemsUseCase: GetListOfItemsUseCase,
-    private val getCompleletdListByIdUseCase: GetCompletedListByIdUseCase,
-    private val deleteFromCompletedListUseCase: DeleteFromCompletedListUseCase,
-    private val moveToActualListUseCase: MoveToActualListUseCase,
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val getListOfItemsUseCase: GetListOfItemsUseCase,
+        private val getCompleletdListByIdUseCase: GetCompletedListByIdUseCase,
+        private val deleteFromCompletedListUseCase: DeleteFromCompletedListUseCase,
+        private val moveToActualListUseCase: MoveToActualListUseCase,
+        state: SavedStateHandle,
+    ) : ViewModel() {
+        var listOfItems by mutableStateOf<List<Task>>(emptyList())
+            private set
+        var listName by mutableStateOf<String>("")
+            private set
+        private val listId: String = state.get<String>("listId")!!
 
-    var listOfItems by mutableStateOf<List<Task>>(emptyList())
-        private set
-    var listName by mutableStateOf<String>("")
-        private set
+        init {
+            viewModelScope.launch {
+                listOfItems = getListOfItemsUseCase(listId)
+                listName = getCompleletdListByIdUseCase(listId).name
+            }
+        }
 
-    fun getListOfItemsById(shoppingListId: String) {
-        viewModelScope.launch {
-            listOfItems = getListOfItemsUseCase(shoppingListId)
+        fun moveFromCompletedToActualLists(listId: String) {
+            viewModelScope.launch {
+                deleteFromCompletedListUseCase(listId)
+                moveToActualListUseCase(listId)
+            }
         }
     }
-
-    fun getListName(shoppingListId: String) {
-        viewModelScope.launch {
-            listName = getCompleletdListByIdUseCase(shoppingListId).name
-        }
-    }
-
-    fun moveFromCompletedToActualLists(listId: String) {
-        viewModelScope.launch {
-            deleteFromCompletedListUseCase(listId)
-            moveToActualListUseCase(listId)
-        }
-    }
-}

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -32,23 +31,25 @@ import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 @Composable
 fun CompletedListItem(
     modifier: Modifier,
-    task: Task
+    task: Task,
 ) {
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .padding(vertical = 14.dp)
-                .fillMaxWidth()
+            modifier =
+                modifier
+                    .padding(vertical = 14.dp)
+                    .fillMaxWidth(),
         ) {
             Checkbox(
                 checked = task.isCompleted,
                 onCheckedChange = { },
                 enabled = false,
-                colors = CheckboxDefaults.colors(
-                    checkedColor = MaterialTheme.colorScheme.primary,
-                    disabledCheckedColor = MaterialTheme.colorScheme.primary
-                )
+                colors =
+                    CheckboxDefaults.colors(
+                        checkedColor = MaterialTheme.colorScheme.primary,
+                        disabledCheckedColor = MaterialTheme.colorScheme.primary,
+                    ),
             )
             Spacer(modifier = Modifier.padding(horizontal = 8.dp))
             Column {
@@ -56,10 +57,11 @@ fun CompletedListItem(
                     text = task.goodName,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        textDecoration = TextDecoration.LineThrough
-                    )
+                    style =
+                        TextStyle(
+                            fontSize = 16.sp,
+                            textDecoration = TextDecoration.LineThrough,
+                        ),
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -67,39 +69,38 @@ fun CompletedListItem(
                     Text(
                         text = task.quantity.toString(),
                         fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
                         text = " ",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
                         text = QuantityTypeToStringShort(task.quantityType),
                         fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
-
         }
         HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
             color = MaterialTheme.colorScheme.outlineVariant,
-            thickness = 0.5.dp
+            thickness = 0.5.dp,
         )
     }
 }
 
-private fun QuantityTypeToStringShort(quantityType: QuantityType): String {
-    return when (quantityType) {
+private fun QuantityTypeToStringShort(quantityType: QuantityType): String =
+    when (quantityType) {
         QuantityType.KILOGRAM -> "кг"
         QuantityType.LITRE -> "л"
         QuantityType.PACK -> "уп"
         QuantityType.PIECE -> "шт"
         QuantityType.UNKNOWN -> "шт"
     }
-}
 
 @Composable
 fun CompletedListAddItem(modifier: Modifier) {
@@ -126,14 +127,16 @@ fun CompletedListAddItem(modifier: Modifier) {
 fun ListItemPreview() {
     ToDoListTheme {
         CompletedListItem(
-            modifier = Modifier, task = Task(
-                goodName = "Сухой корм",
-                isCompleted = true,
-                id = "123",
-                quantity = 1,
-                quantityType = QuantityType.KILOGRAM,
-                position = 0
-            )
+            modifier = Modifier,
+            task =
+                Task(
+                    goodName = "Сухой корм",
+                    isCompleted = true,
+                    id = "123",
+                    quantity = 1,
+                    quantityType = QuantityType.KILOGRAM,
+                    position = 0,
+                ),
         )
     }
 }
@@ -143,7 +146,7 @@ fun ListItemPreview() {
 fun AddItemPreview() {
     ToDoListTheme {
         CompletedListAddItem(
-            modifier = Modifier
+            modifier = Modifier,
         )
     }
 }

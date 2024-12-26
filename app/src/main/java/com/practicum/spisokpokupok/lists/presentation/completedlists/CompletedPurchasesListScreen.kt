@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,7 +52,8 @@ fun CompletedPurchasesListScreen(
     completedShoppingList: List<ShoppingList>,
     onNavigateToNewList: () -> Unit,
     onItemClicked: (String) -> Unit,
-    onDeleteItem: (String) -> Unit
+    onDeleteItem: (String) -> Unit,
+    isAllListsEmpty: Boolean
 ) {
     Box(
         modifier = modifier,
@@ -73,8 +75,7 @@ fun CompletedPurchasesListScreen(
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.onTertiary
+                        containerColor = MaterialTheme.colorScheme.surface,
                     )
                 )
             },
@@ -87,7 +88,7 @@ fun CompletedPurchasesListScreen(
                             bottom = paddingValues.calculateBottomPadding()
                         )
                 ) {
-                    if (completedShoppingList.isNotEmpty()) {
+                    if (!isAllListsEmpty) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -105,7 +106,13 @@ fun CompletedPurchasesListScreen(
                                     .align(Alignment.BottomCenter)
                                     .padding(bottom = 0.dp)
                                     .size(250.dp),
-                                painter = painterResource(id = R.drawable.img_bags),
+                                painter = painterResource(
+                                    id = if (isSystemInDarkTheme()) {
+                                        R.drawable.ic_bags_dark
+                                    } else {
+                                        R.drawable.ic_bags
+                                    }
+                                ),
                                 contentDescription = null,
                                 tint = Color.Unspecified
                             )
@@ -132,7 +139,7 @@ fun CompletedPurchasesListScreen(
                                     onFavoriteItemListener = null
                                 )
                             }
-                        } else {
+                        } else if(isAllListsEmpty) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -162,7 +169,7 @@ fun CompletedPurchasesListScreen(
                 BottomBar(onNavigateToNewList = onNavigateToNewList)
             }
         )
-        if (completedShoppingList.isEmpty()) {
+        if (isAllListsEmpty) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.End
@@ -202,7 +209,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_back),
-                    tint = cyan,
+                    tint = MaterialTheme.colorScheme.inversePrimary,
                     contentDescription = null
                 )
                 Text(
@@ -216,7 +223,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_navigate_forward),
-                    tint = cyan,
+                    tint = MaterialTheme.colorScheme.inversePrimary,
                     contentDescription = null
                 )
             }
@@ -226,7 +233,7 @@ private fun BottomBar(onNavigateToNewList: () -> Unit) {
                     .size(48.dp)
                     .clickable { onNavigateToNewList() },
                 painter = painterResource(id = R.drawable.ic_add),
-                tint = cyan,
+                tint = MaterialTheme.colorScheme.inversePrimary,
                 contentDescription = null,
             )
         }
@@ -241,6 +248,7 @@ fun CompletedPurchasesListScreenPreview() {
             onNavigateToNewList = {},
             onItemClicked = {},
             onDeleteItem = {},
+            isAllListsEmpty = false,
             completedShoppingList = listOf(
                 ShoppingList(
                     id = "123",

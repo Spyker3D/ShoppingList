@@ -1,8 +1,8 @@
 package com.practicum.buyinglist.db.data.dao
 
-import com.practicum.spisokpokupok.core.data.roomDb.dao.ShoppingTaskDao
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTask
-import com.practicum.spisokpokupok.core.data.roomDb.entity.LocalShoppingTaskWithGood
+import com.practicum.spisokpokupok.core.data.roomdb.dao.ShoppingTaskDao
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTask
+import com.practicum.spisokpokupok.core.data.roomdb.entity.LocalShoppingTaskWithGood
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -16,6 +16,10 @@ class FakeTaskDao(
         TODO("Not yet implemented")
     }
 
+    override fun observeAllWithGoods(listId: String): Flow<List<LocalShoppingTaskWithGood>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun upsert(task: LocalShoppingTask) {
         TODO("Not yet implemented")
     }
@@ -24,19 +28,37 @@ class FakeTaskDao(
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateCompleted(
+    override suspend fun updateTaskStatus(
         taskId: String,
-        completed: Boolean,
+        isCompleted: Boolean,
     ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateTask(
+    override suspend fun updateTaskPosition(
+        taskId: String,
+        position: Int,
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateTaskGoodId(
         taskId: String,
         goodId: String,
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateTaskQuantity(
+        taskId: String,
         quantity: Int,
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateTaskQuantityType(
+        taskId: String,
         quantityType: String,
-        position: Int
     ) {
         TODO("Not yet implemented")
     }
@@ -54,6 +76,10 @@ class FakeTaskDao(
     }
 
     override suspend fun getShoppingTasksWithGoods(shoppingListId: String): List<LocalShoppingTaskWithGood> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTaskById(taskId: String): List<LocalShoppingTaskWithGood> {
         TODO("Not yet implemented")
     }
 }

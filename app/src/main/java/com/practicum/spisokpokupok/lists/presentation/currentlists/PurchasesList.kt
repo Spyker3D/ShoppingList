@@ -3,6 +3,7 @@ package com.practicum.spisokpokupok.lists.presentation.currentlists
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,8 +62,11 @@ fun PurchasesListSwipe(
                 val swipeState = remember { SwipeState() }
                 val scope = rememberCoroutineScope()
                 SwipeableRightItem(
+                    modifier = Modifier.animateItem(),
                     swipeState = swipeState,
+                    numberOfIcons = 2,
                     actions = {
+                        Spacer(modifier = Modifier.padding(start = 4.dp))
                         ActionIcon(
                             onClick = {
                                 onDeleteItemListener(purchase.id)
@@ -74,6 +78,7 @@ fun PurchasesListSwipe(
                             icon = painterResource(id = R.drawable.ic_delete_blue),
                             modifier = Modifier.fillMaxHeight()
                         )
+                        Spacer(modifier = Modifier.padding(start = 4.dp))
                         ActionIcon(
                             onClick = {
                                 onFavoriteItemListener?.invoke(purchase.id, !purchase.isFavorite)
@@ -81,14 +86,13 @@ fun PurchasesListSwipe(
                                     swipeState.hide()
                                 }
                             },
-                            backgroundColor = MaterialTheme.colorScheme.primary,
+                            backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
                             icon = painterResource(id = R.drawable.ic_blue_paperclip),
                             modifier = Modifier.fillMaxHeight()
                         )
-                    }
-                ) {
-                    ItemCardSwipe(purchase, onClickListener)
-                }
+                    },
+                    swipeableContent = { ItemCardSwipe(purchase, onClickListener) },
+                )
             } else {
                 ItemCardSwipe(purchase, onClickListener)
             }
@@ -98,18 +102,16 @@ fun PurchasesListSwipe(
 
 @Composable
 fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit) {
-    Row(
+    Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surface)
-            .height(56.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clickable { onClickListener(purchaseList.id) },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier
+                .height(56.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clickable { onClickListener(purchaseList.id) },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (purchaseList.isFavorite && !purchaseList.isCompleted) {
@@ -127,7 +129,9 @@ fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit)
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
             }
             Text(
-                modifier = Modifier.padding(vertical = 8.dp),
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .weight(1f),
                 text = purchaseList.name,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
                 fontSize = 16.sp,
@@ -135,20 +139,22 @@ fun ItemCardSwipe(purchaseList: ShoppingList, onClickListener: (String) -> Unit)
                     MaterialTheme.colorScheme.onSurface
                 } else {
                     MaterialTheme.colorScheme.onTertiary
-                }
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_right),
+                contentDescription = null
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_right),
-            contentDescription = null
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = 0.5.dp
         )
     }
-    HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth(),
-        color = MaterialTheme.colorScheme.outlineVariant,
-        thickness = 0.5.dp
-    )
 }
 
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)

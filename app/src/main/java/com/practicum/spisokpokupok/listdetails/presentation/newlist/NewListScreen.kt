@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,23 +20,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.practicum.buyinglist.R
 import com.practicum.spisokpokupok.listdetails.domain.model.QuantityType
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.AddNewItemBottomSheet
-import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.EditableTextField
 import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.TaskElement
+import com.practicum.spisokpokupok.listdetails.presentation.newlist.component.TitleEditableTextField
 import com.practicum.spisokpokupok.ui.theme.ToDoListTheme
 
 @Composable
 fun NewListScreen(
-    modifier: Modifier = Modifier,
     onNavigateToCurrentLists: () -> Unit,
     onBackPressed: () -> Unit,
     action: (NewListAction) -> Unit,
     state: NewListUIState,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
@@ -44,7 +46,7 @@ fun NewListScreen(
         topBar = {
             NewListTopBar(
                 onBackPressed = onBackPressed,
-                title = state.title,
+                title = state.titleState.titleOnTop,
             )
         },
         bottomBar = {
@@ -64,13 +66,14 @@ fun NewListScreen(
                 onEncreeseClick = {
                     action(NewListAction.OnIncreaseClick(it))
                 },
-                onQuantityTypeChange = {
-                    action(NewListAction.OnQuantityTypeChange(it))
+                onQuantityTypeChange = { position, quantityType ->
+                    action(NewListAction.OnQuantityTypeChange(position, quantityType))
                 },
                 onSaveTask = {
-                    action(NewListAction.OnSaveTask)
+                    action(NewListAction.OnSaveTask(it))
                 },
                 bottomButtonTitle = "Сохранить список",
+                isConfirmButtonActive = state.isConfirmButtonActive,
             )
         },
     ) { innerPadding ->
@@ -83,15 +86,10 @@ fun NewListScreen(
                         bottom = innerPadding.calculateBottomPadding(),
                     ).padding(horizontal = 16.dp),
         ) {
-            EditableTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.title,
-                onValueChange = {
-                    action(NewListAction.OnTitleChange(it))
-                },
-            )
-            Spacer(
-                modifier = Modifier.padding(bottom = 20.dp),
+            NewListTitle(
+                state = state,
+                action = action,
+                modifier = modifier,
             )
             LazyColumn(
                 modifier =
@@ -101,33 +99,23 @@ fun NewListScreen(
             ) {
                 items(state.productItems.size) { index ->
                     val item = state.productItems[index]
-
                     TaskElement(
-                        isRedacted = item.isNameRedacted,
-                        name = item.name,
-                        onElementClick = {
-                            action(
-                                NewListAction.OnTaskClick(
-                                    index,
-                                ),
-                            )
-                        },
-                        modifier = Modifier,
+                        name = item.label.ifBlank { item.name },
                         quantity = item.quantity.toString(),
                         quantityType = item.quantityType,
-                        onValueChange = {
-                            action(
-                                NewListAction.OnTaskNameChange(
-                                    index,
-                                    it,
-                                ),
-                            )
+                        isRedacted = item.isNameRedacted,
+                        onElementClick = {
+                            action(NewListAction.OnTaskClick(index))
                         },
-                    )
-
-                    HorizontalDivider(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        thickness = 1.dp,
+                        onValueChange = {
+                            action(NewListAction.OnTaskNameChange(index, it))
+                        },
+                        modifier = modifier.height(76.dp).fillMaxWidth().animateItem(),
+                        onClearClick = {
+                            action(NewListAction.OnClearTaskNameClick(index))
+                        },
+                        isError = item.isNameError,
+                        errorMesage = item.errorName,
                     )
                 }
                 item {
@@ -148,6 +136,53 @@ fun NewListScreen(
 }
 
 @Composable
+fun NewListTitle(
+    action: (NewListAction) -> Unit,
+    state: NewListUIState,
+    modifier: Modifier = Modifier,
+) {
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+        ) {
+            val focusManager = LocalFocusManager.current
+            TitleEditableTextField(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            action(NewListAction.OnTitleClick)
+                        },
+                value = state.titleState.title,
+                onValueChange = {
+                    action(NewListAction.OnTitleChange(it))
+                },
+                label = "Название",
+                topLabel = "Введите название списка",
+                isRedacted = state.titleState.isRedacted,
+                isError = state.titleState.isError,
+                errorMessage = state.titleState.errorMessage,
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            action(NewListAction.SaveTitle)
+                        },
+                    ),
+                onClearClick = { action(NewListAction.OnDeleteTitleClick) },
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+@Composable
 fun BottomBar(
     position: Int,
     bottomSheetIsVisible: Boolean,
@@ -158,8 +193,9 @@ fun BottomBar(
     onBottomButtonClick: () -> Unit,
     onDecreeseClick: (Int) -> Unit,
     onEncreeseClick: (Int) -> Unit,
-    onQuantityTypeChange: (QuantityType) -> Unit,
-    onSaveTask: () -> Unit,
+    onQuantityTypeChange: (Int, QuantityType) -> Unit,
+    onSaveTask: (Int) -> Unit,
+    isConfirmButtonActive: Boolean,
 ) {
     Column(
         modifier =
@@ -176,13 +212,14 @@ fun BottomBar(
                 counter = quantity,
                 onDecreeseClick = { onDecreeseClick(position) },
                 onEncreeseClick = { onEncreeseClick(position) },
-                onQuantityTypeChange = onQuantityTypeChange,
+                onQuantityTypeChange = { onQuantityTypeChange(position, it) },
             )
         }
         Spacer(
             modifier = Modifier.padding(vertical = 32.dp),
         )
         Button(
+            enabled = if (bottomSheetIsVisible) true else isConfirmButtonActive,
             colors =
                 ButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -193,16 +230,26 @@ fun BottomBar(
             modifier = modifier.fillMaxWidth(),
             onClick = {
                 if (bottomSheetIsVisible) {
-                    onSaveTask()
+                    onSaveTask(position)
                 } else {
                     onBottomButtonClick()
                 }
             },
         ) {
             if (bottomSheetIsVisible) {
-                Text("Готово")
+                Text(
+                    text = "Готово",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    fontSize = 16.sp,
+                )
             } else {
-                Text(bottomButtonTitle)
+                Text(
+                    text = bottomButtonTitle,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    fontSize = 16.sp,
+                )
             }
         }
     }
@@ -210,7 +257,7 @@ fun BottomBar(
 
 @Composable
 fun NewListTopBar(
-    modifier: Modifier = Modifier.height(76.dp),
+    modifier: Modifier = Modifier.height(76.dp).padding(top = 32.dp),
     onBackPressed: () -> Unit,
     title: String,
 ) {
@@ -244,7 +291,15 @@ private fun NewListScreenPreview() {
             onNavigateToCurrentLists = {},
             onBackPressed = {},
             action = {},
-            state = NewListUIState(),
+            state =
+                NewListUIState(
+                    productItems =
+                        listOf(
+                            NewListItemUiState(),
+                            NewListItemUiState(),
+                        ),
+                    isConfirmButtonActive = true,
+                ),
         )
     }
 }
