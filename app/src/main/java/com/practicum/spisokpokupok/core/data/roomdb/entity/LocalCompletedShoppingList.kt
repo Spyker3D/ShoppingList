@@ -12,6 +12,7 @@ import androidx.room.Relation
 class LocalCompletedShoppingList(
     @ColumnInfo(name = "shoppingListId")
     val shoppingListId: String,
+    @ColumnInfo
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 )

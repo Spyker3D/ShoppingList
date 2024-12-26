@@ -20,5 +20,6 @@ class LocalShoppingTask(
     val isCompleted: Boolean = false,
     @ColumnInfo(name = "position")
     val position: Int,
+    @ColumnInfo
     @PrimaryKey val id: String,
 )

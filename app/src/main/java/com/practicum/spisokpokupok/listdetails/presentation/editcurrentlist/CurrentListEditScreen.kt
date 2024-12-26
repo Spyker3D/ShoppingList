@@ -117,7 +117,7 @@ fun CurrentListEditScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 ChooseAllTasks(
                     checked = state.allItemsChecked,

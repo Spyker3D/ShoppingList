@@ -10,5 +10,6 @@ import androidx.room.PrimaryKey
 class LocalShoppingList(
     @ColumnInfo(name = "name")
     val name: String,
+    @ColumnInfo
     @PrimaryKey val id: String,
 )

@@ -14,6 +14,7 @@ class LocalActualShoppingList(
     val shoppingListId: String,
     @ColumnInfo(name = "isFavorite")
     val isFavorite: Boolean,
+    @ColumnInfo
     @PrimaryKey(autoGenerate = true) val id: Int,
 )
 

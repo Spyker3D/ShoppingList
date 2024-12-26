@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey
 class LocalGood(
     @ColumnInfo(name = "name")
     val name: String,
+    @ColumnInfo
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 )
